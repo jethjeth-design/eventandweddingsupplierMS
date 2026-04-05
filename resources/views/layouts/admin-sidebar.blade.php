@@ -23,7 +23,7 @@
                     <span class="nav-tooltip">Dashboard</span>
                 </a>
 
-                <a href="#" class="nav-item {{ request()->is('events*') ? 'active' : '' }}">
+                <a href="{{ route('admin.events.index') }}" class="nav-item {{ request()->is('events*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <rect x="3" y="4" width="14" height="13" rx="2"/>
                         <path d="M7 2v4M13 2v4M3 9h14"/>
@@ -33,7 +33,7 @@
                     <span class="nav-badge">3</span>
                 </a>
 
-                <a href="#" class="nav-item {{ request()->is('suppliers*') ? 'active' : '' }}">
+                <a href="{{ route('admin.suppliers.index') }}" class="nav-item {{ request()->is('suppliers*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <circle cx="9" cy="8" r="4"/>
                         <path d="M2 17c0-3.3 3.1-6 7-6M17 14l-3-3-3 3M14 11v6"/>
@@ -166,12 +166,12 @@
                             </svg>
                             Payments
                         </a>
-                        <!--<a href="#" class="nav-subitem {{ request()->is('settings/notifications*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.homepage.banners') }}" class="nav-subitem {{ request()->is('settings/admin.*') ? 'active' : '' }}">
                             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
                                 <path d="M8 2a4 4 0 014 4v2.5l1.5 2H2.5L4 8.5V6a4 4 0 014-4zM6.5 12.5a1.5 1.5 0 003 0"/>
                             </svg>
-                            Notifications
-                        </a>-->
+                            Homepage Banners
+                        </a>
                         <!--<a href="#" class="nav-subitem {{ request()->is('settings/appearance*') ? 'active' : '' }}">
                             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
                                 <path d="M2 14c3-6 9-6 12 0"/>

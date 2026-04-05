@@ -250,7 +250,7 @@
                                         <select id="fi_cat" name="category" class="bv-sel" required onchange="updatePreview()">
                                             <option value="" disabled>Select category...</option>
                                             @foreach($categories as $categories)
-                                                <option value="{{ $categories->id }}">
+                                                <option value="{{ $categories->name }}" {{ (old('category', $supplierProfile->category) == $categories->name) ? 'selected' : '' }}>
                                                     {{ $categories->name }}
                                                 </option>
                                             @endforeach
@@ -258,20 +258,21 @@
                                     </div>
                                     @error('category')<div class="bv-err">{{ $message }}</div>@enderror
                                 </div>
+
                                 <div class="bv-f">
-                                    <label class="bv-lbl" for="fi_exp">Experience Level <span class="bv-opt">Optional</span></label>
+                                    <label class="bv-lbl" for="fi_exp">Experience Level <span class="bv-req">Required</span></label>
                                     <div class="bv-sw">
-                                        <select id="experience" name="experience" class="bv-select">
+                                        <select id="fi_exp" name="experience" class="bv-sel" required               onchange="updatePreview()">
                                             <option value="" disabled selected>Select experience level...</option>
-                                            <option value="Less than 1 year" disabled selected>Less than 1 year</option>
-                                            <option value="1-3 years" disabled selected>1-3 years</option>
-                                            <option value="4-7 years" disabled selected>4-7 years</option>
-                                            <option value="8-10 years" disabled selected>8-10 years</option>
-                                            <option value="More than 10 years" disabled selected>More than 10 years</option>
+                                            <option value="" disabled {{ !old('experience', $supplierProfile->experience)?'selected':'' }}>Select level...</option>
+                                            @foreach(['less_than_1'=>'Less than 1 year','1_2'=>'1–2 years','3_5'=>'3–5 years','6_10'=>'6–10 years','10_plus'=>'10+ years'] as $val=>$lbl)
+                                                <option value="{{ $val }}" {{ old('experience', $supplierProfile->experience)==$val?'selected':'' }}>{{ $lbl }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     @error('experience')<div class="bv-err">{{ $message }}</div>@enderror
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -358,14 +359,14 @@
                                 <div class="bv-cf"><span class="bv-cc" id="descC">{{ strlen(old('description', $supplierProfile->description??'')) }} / 1000</span></div>
                                 @error('description')<div class="bv-err">{{ $message }}</div>@enderror
                             </div>
-                            <div class="bv-f">
+                            {{--<div class="bv-f">
                                 <label class="bv-lbl" for="fi_expn">Experience Notes <span class="bv-opt">Optional</span></label>
                                 <textarea id="fi_expn" name="experience" class="bv-ta"
                                         placeholder="Notable events, clients, or professional background..."
                                         maxlength="500" oninput="bvCt('expC',this,500)">{{ old('experience', $supplierProfile->experience) }}</textarea>
                                 <div class="bv-cf"><span class="bv-cc" id="expC">{{ strlen(old('experience', $supplierProfile->experience??'')) }} / 500</span></div>
                                 @error('experience')<div class="bv-err">{{ $message }}</div>@enderror
-                            </div>
+                            </div>--}}
                         </div>
                         <div class="bv-sc-foot">
                             <a href="{{ route('supplier.supplierprofile', $supplierProfile->id) }}" class="bv-btn-back">

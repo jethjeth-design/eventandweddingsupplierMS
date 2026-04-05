@@ -20,6 +20,6 @@ class SupplierPortfolio extends Model
 
     public function supplier()
     {
-        return $this->belongsTo(User::class, 'supplier_id');
+        return $this->belongsTo(SupplierProfile::class, 'supplier_id');
     }
 }

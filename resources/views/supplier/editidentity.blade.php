@@ -104,7 +104,7 @@
                 <h1 class="bv-page-title">Edit Personal <em>Information</em></h1>
                 <p class="bv-page-sub">Update your supplier profile details</p>
             </div>
-            <a href="{{ route('supplier.profile', $supplierProfile->id) }}" class="bv-btn-back">
+            <a href="{{ route('supplier.supplierprofile', $supplierProfile->id) }}" class="bv-btn-back">
                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2L4 7l5 5"/></svg>
                 Back to View
             </a>
@@ -162,7 +162,7 @@
             {{-- ══ RIGHT: Edit form ══ --}}
             <div class="bv-main-stack">
 
-                <form method="POST" action="{{ route('supplier.update', $supplierProfile->id) }}"
+                <form method="POST" action="{{ route('supplier.updateidentity', $supplierProfile->id) }}"
                 enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -250,7 +250,7 @@
                                         <select id="fi_cat" name="category" class="bv-sel" required onchange="updatePreview()">
                                             <option value="" disabled>Select category...</option>
                                             @foreach($categories as $categories)
-                                                <option value="{{ $categories->id }}">
+                                                <option value="{{ $categories->name }}" {{ old('category', $supplierProfile->category)==$categories->name?'selected':'' }}>
                                                     {{ $categories->name }}
                                                 </option>
                                             @endforeach
@@ -261,108 +261,15 @@
                                 <div class="bv-f">
                                     <label class="bv-lbl" for="fi_exp">Experience Level <span class="bv-opt">Optional</span></label>
                                     <div class="bv-sw">
-                                        <select id="fi_exp" name="experience_level" class="bv-sel">
-                                            <option value="" disabled {{ !old('experience_level', $supplierProfile->experience_level)?'selected':'' }}>Select level...</option>
+                                        <select id="fi_exp" name="experience" class="bv-sel">
+                                            <option value="" disabled {{ !old('experience', $supplierProfile->experience)?'selected':'' }}>Select level...</option>
                                             @foreach(['less_than_1'=>'Less than 1 year','1_2'=>'1–2 years','3_5'=>'3–5 years','6_10'=>'6–10 years','10_plus'=>'10+ years'] as $val=>$lbl)
-                                                <option value="{{ $val }}" {{ old('experience_level', $supplierProfile->experience_level)==$val?'selected':'' }}>{{ $lbl }}</option>
+                                                <option value="{{ $val }}" {{ old('experience', $supplierProfile->experience)==$val?'selected':'' }}>{{ $lbl }}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    @error('experience_level')<div class="bv-err">{{ $message }}</div>@enderror
+                                    @error('experience')<div class="bv-err">{{ $message }}</div>@enderror
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- ── Section 2: Contact & Location ── --}}
-                    <div class="bv-sc" style="margin-top:1.25rem;">
-                        <div class="bv-sc-head">
-                            <div class="bv-sc-head-l">
-                                <div class="bv-sc-icon">
-                                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 5a2 2 0 012-2h1l2 4-1.5 1.5a11 11 0 004 4L12 11l4 2v1a2 2 0 01-2 2C7.5 16 4 12.5 4 7a2 2 0 011-1.7V5z"/></svg>
-                                </div>
-                                <div>
-                                    <div class="bv-sc-title">Contact & Location</div>
-                                    <div class="bv-sc-desc">Phone, address and location details</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bv-sc-body">
-                            <div class="bv-fg">
-                                <div class="bv-f">
-                                    <label class="bv-lbl" for="fi_ph">Phone <span class="bv-opt">Optional</span></label>
-                                    <div class="bv-iw">
-                                        <svg class="bv-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 5a2 2 0 012-2h1l2 4-1.5 1.5a11 11 0 004 4L12 11l4 2v1a2 2 0 01-2 2C7.5 16 4 12.5 4 7a2 2 0 011-1.7V5z"/></svg>
-                                        <input id="fi_ph" name="phone" type="tel" class="bv-inp" value="{{ old('phone', $supplierProfile->phone) }}" placeholder="+63 917 000 0000">
-                                    </div>
-                                    @error('phone')<div class="bv-err">{{ $message }}</div>@enderror
-                                </div>
-                                <div class="bv-f bv-fg-full">
-                                    <label class="bv-lbl" for="fi_addr">Full Address <span class="bv-opt">Optional</span></label>
-                                    <div class="bv-iw">
-                                        <svg class="bv-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7h14M3 11h14M5 15h10M7 3h6"/></svg>
-                                        <input id="fi_addr" name="address" type="text" class="bv-inp" value="{{ old('address', $supplierProfile->address) }}" placeholder="e.g. 123 Magsaysay Ave, Barangay Centro">
-                                    </div>
-                                    @error('address')<div class="bv-err">{{ $message }}</div>@enderror
-                                </div>
-                                <div class="bv-f">
-                                    <label class="bv-lbl" for="fi_city">City <span class="bv-opt">Optional</span></label>
-                                    <div class="bv-iw">
-                                        <svg class="bv-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 2C7.2 2 5 4.2 5 7c0 4.4 5 11 5 11s5-6.6 5-11c0-2.8-2.2-5-5-5z"/><circle cx="10" cy="7" r="1.5"/></svg>
-                                        <input id="fi_city" name="city" type="text" class="bv-inp" value="{{ old('city', $supplierProfile->city) }}" placeholder="e.g. Naga City">
-                                    </div>
-                                    @error('city')<div class="bv-err">{{ $message }}</div>@enderror
-                                </div>
-                                <div class="bv-f">
-                                    <label class="bv-lbl" for="fi_prov">Province <span class="bv-opt">Optional</span></label>
-                                    <div class="bv-iw">
-                                        <svg class="bv-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 10h16M10 2l8 8-8 8-8-8 8-8z"/></svg>
-                                        <input id="fi_prov" name="province" type="text" class="bv-inp" value="{{ old('province', $supplierProfile->province) }}" placeholder="e.g. Camarines Sur">
-                                    </div>
-                                    @error('province')<div class="bv-err">{{ $message }}</div>@enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- ── Section 3: About & Service ── --}}
-                    <div class="bv-sc" style="margin-top:1.25rem;">
-                        <div class="bv-sc-head">
-                            <div class="bv-sc-head-l">
-                                <div class="bv-sc-icon">
-                                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="2" width="12" height="16" rx="2"/><path d="M7 7h6M7 10h6M7 13h4"/></svg>
-                                </div>
-                                <div>
-                                    <div class="bv-sc-title">About & Service</div>
-                                    <div class="bv-sc-desc">Bio, service description and experience notes</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bv-sc-body" style="display:flex;flex-direction:column;gap:1rem;">
-                            <div class="bv-f">
-                                <label class="bv-lbl" for="fi_bio">Bio <span class="bv-opt">Optional</span></label>
-                                <textarea id="fi_bio" name="bio" class="bv-ta"
-                                        placeholder="Tell clients about your style and passion..."
-                                        maxlength="500" oninput="bvCt('bioC',this,500)">{{ old('bio', $supplierProfile->bio) }}</textarea>
-                                <div class="bv-cf"><span class="bv-cc" id="bioC">{{ strlen(old('bio', $supplierProfile->bio??'')) }} / 500</span></div>
-                                @error('bio')<div class="bv-err">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="bv-f">
-                                <label class="bv-lbl" for="fi_desc">Service Description <span class="bv-req">Required</span></label>
-                                <textarea id="fi_desc" name="description" class="bv-ta" style="min-height:110px;"
-                                        placeholder="Describe your services, pricing range, availability..."
-                                        maxlength="1000" oninput="bvCt('descC',this,1000)"
-                                        required>{{ old('description', $supplierProfile->description) }}</textarea>
-                                <div class="bv-cf"><span class="bv-cc" id="descC">{{ strlen(old('description', $supplierProfile->description??'')) }} / 1000</span></div>
-                                @error('description')<div class="bv-err">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="bv-f">
-                                <label class="bv-lbl" for="fi_expn">Experience Notes <span class="bv-opt">Optional</span></label>
-                                <textarea id="fi_expn" name="experience" class="bv-ta"
-                                        placeholder="Notable events, clients, or professional background..."
-                                        maxlength="500" oninput="bvCt('expC',this,500)">{{ old('experience', $supplierProfile->experience) }}</textarea>
-                                <div class="bv-cf"><span class="bv-cc" id="expC">{{ strlen(old('experience', $supplierProfile->experience??'')) }} / 500</span></div>
-                                @error('experience')<div class="bv-err">{{ $message }}</div>@enderror
                             </div>
                         </div>
                         <div class="bv-sc-foot">
@@ -376,7 +283,6 @@
                             </button>
                         </div>
                     </div>
-
                 </form>
             </div>{{-- end main-stack --}}
         </div>{{-- end layout --}}

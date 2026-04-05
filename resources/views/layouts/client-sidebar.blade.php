@@ -23,7 +23,7 @@
                     <span class="nav-tooltip">Dashboard</span>
                 </a>
  
-                <a href="#" class="nav-item {{ request()->is('client/events*') ? 'active' : '' }}">
+                <a href="{{ route('client.events') }}" class="nav-item {{ request()->is('client/events*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <rect x="3" y="4" width="14" height="13" rx="2"/>
                         <path d="M7 2v4M13 2v4M3 9h14"/>
@@ -43,7 +43,7 @@
                     <span class="nav-badge">5</span>
                 </a>
  
-                <a href="#" class="nav-item {{ request()->is('client/messages*') ? 'active' : '' }}">
+                <a href="{{ route('client.inbox') }}" class="nav-item {{ request()->is('client/messages*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <path d="M4 4h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 3V6a2 2 0 012-2z"/>
                     </svg>
@@ -55,7 +55,7 @@
                 <div class="sidebar-divider"></div>
                 <div class="nav-group-label">Planning</div>
  
-                <a href="#" class="nav-item {{ request()->is('client/suppliers*') ? 'active' : '' }}">
+                <a href="{{route('client.suppliers')}}" class="nav-item {{ request()->is('client/suppliers*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <circle cx="9" cy="8" r="4"/>
                         <path d="M2 17c0-3.3 3.1-6 7-6M17 14l-3-3-3 3M14 11v6"/>

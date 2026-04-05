@@ -247,8 +247,34 @@
         .fb-lb-thumb{width:50px;height:50px;object-fit:cover;border-radius:5px;cursor:pointer;opacity:0.5;border:2px solid transparent;transition:opacity 0.2s,border-color 0.2s;flex-shrink:0;}
         .fb-lb-thumb.lb-active{opacity:1;border-color:var(--gold);}
         .fb-lb-thumb:hover{opacity:0.85;}
+
+          /* Success alert */
+        .bv-alert-success {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            background: #F0FDF4;
+            border: 1px solid #A7F3D0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.82rem;
+            color: #065F46;
+            margin-bottom: 1.5rem;
+        }
+        .bv-alert-success svg { width: 16px; height: 16px; color: #10B981; flex-shrink: 0; }
     </style>
 
+
+{{-- Success message --}}
+    @if(session('success'))
+    <div class="bv-alert-success">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 10l4 4 6-6"/>
+            <circle cx="10" cy="10" r="8"/>
+        </svg>
+        {{ session('success') }}
+    </div>
+    @endif
     <div class="page-content">
 
         {{-- Page header --}}
@@ -396,7 +422,7 @@
                                 <div class="bv-sc-desc">Name, business identity and category</div>
                             </div>
                         </div>
-                        <a href="{{ route('supplier.edit', $supplierProfile->id) }}" class="bv-btn-edit">
+                        <a href="{{ route('supplier.editidentity', $supplierProfile->id) }}" class="bv-btn-edit">
                             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>
                             Edit
                         </a>

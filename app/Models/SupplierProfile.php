@@ -21,8 +21,8 @@ class SupplierProfile extends Model
         'category',
         'description',
         'address',
-        'price',
         'rating',
+        'price',
         'is_available',
     ];
 
@@ -44,8 +44,16 @@ class SupplierProfile extends Model
 
     public function portfolios()
     {
-        return $this->hasMany(SupplierPortfolio::class);
+        return $this->hasMany(SupplierPortfolio::class, 'supplier_id');
     }
 
-    
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'event_supplier_profile');
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'supplier_category');
+    }
 }

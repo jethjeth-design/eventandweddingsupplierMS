@@ -23,7 +23,7 @@
                     <span class="nav-tooltip">Dashboard</span>
                 </a>
  
-                <a href="{{ route('supplier.portfolio.index') }}" class="nav-item {{ request()->is('supplier/supplierprofile*') ? 'active' : '' }}">
+                <a href="#" class="nav-item {{ request()->is()? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <rect x="3" y="3" width="6" height="6" rx="1"/>
                         <rect x="11" y="3" width="6" height="6" rx="1"/>
@@ -35,13 +35,12 @@
                     <span class="nav-badge">4</span>
                 </a>
  
-                <a href="#" class="nav-item {{ request()->is('supplier/inquiries*') ? 'active' : '' }}">
+                <a href="{{ route('supplier.inquiries.inbox') }}" class="nav-item {{ request()->is('supplier/inbox*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <path d="M4 4h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 3V6a2 2 0 012-2z"/>
                     </svg>
                     <span>Inquiries</span>
                     <span class="nav-tooltip">Inquiries</span>
-                    <span class="nav-badge">8</span>
                 </a>
  
                 <a href="#" class="nav-item {{ request()->is('supplier/bookings*') ? 'active' : '' }}">

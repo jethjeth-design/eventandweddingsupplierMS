@@ -8,6 +8,9 @@ class Category extends Model
 { 
     protected $fillable = ['name', 'description'];
 
-    
+    public function suppliers()
+    {
+        return $this->belongsToMany(SupplierProfile::class, 'supplier_category');
+    }
 }
 

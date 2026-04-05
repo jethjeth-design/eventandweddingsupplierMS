@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\CategoryController;
@@ -11,12 +13,16 @@ use App\Http\Controllers\SupplierProfileController;
 use App\Http\Controllers\SupplierPortfolioController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\EventController;
-use App\Http\Controllers\AIRecommendationController;
+use App\Http\Controllers\BrowseSupplierController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\InquiryController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('welcomepage.welcome');
+    Route::get('/profile', [HomeController::class, 'showprofile'])->name('welcomepage.profile');
+    Route::get('/profile/{id}', [HomeController::class, 'showprofiledetails'])->name('welcomepage.profiledetails');
+    Route::get('/gallery', [HomeController::class, 'showgallery'])->name('welcomepage.gallery');
+
 
 Route::get('/dashboard', function () {
     $role = auth()->user()->role;
@@ -138,15 +144,22 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/locations/{location}', [LocationController::class, 'destroy'])->name('admin.location.destroy');
     });
 
+//admin supplier management
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/suppliers', [SupplierProfileController::class, 'list'])->name('admin.suppliers.index');
+    Route::delete('/admin/suppliers/{supplier}', [SupplierProfileController::class, 'destroyAdmin'])->name('admin.suppliers.destroy');
+});
 
 
 //Supplier routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/supplier-profile', [SupplierProfileController::class, 'index'])->name('supplier.supplierprofile');
-    Route::get('/supplier/supplierProfiles/create', [SupplierProfileController::class, 'create'])->name('supplier.create');
     Route::post('/supplier/supplierProfiles', [SupplierProfileController::class, 'store'])->name('supplier.store');
-    //Route::get('/supplier/themes/{theme}', [LocationController::class, 'show'])->name('supplier.themes.show');
     Route::get('/supplier/supplierProfiles/{supplierProfile}/edit', [SupplierProfileController::class, 'edit'])->name('supplier.edit');
+    //Seperated edit
+    Route::get('/supplier/supplierProfiles/{supplierProfile}/editidentity', [SupplierProfileController::class, 'editidentity'])->name('supplier.editidentity');
+    Route::put('/supplier/supplierProfiles/{supplierProfile}/updateidentity', [SupplierProfileController::class, 'updateidentity'])
+    ->name('supplier.updateidentity');
     Route::put('/supplier/supplierProfiles/{supplierProfile}', [SupplierProfileController::class, 'update'])->name('supplier.update');
     Route::delete('/supplier/supplierProfiles/{supplierProfile}', [SupplierProfileController::class, 'destroy'])->name('supplier.destroy');
 });
@@ -164,16 +177,69 @@ Route::middleware(['auth'])->group(function () {
 //Event for Client
 Route::middleware(['auth'])->group(function () {
 
-    // Create Event
-    Route::get('/event/create', [EventController::class, 'index'])
-        ->name('events.index');
+     // CLIENT
+    Route::get('/client/events', [EventController::class, 'create'])->name('client.events');
+    Route::post('/client/events', [EventController::class, 'store'])->name('client.events.store');
+    Route::get('/client/events/{event}/edit', [EventController::class, 'edit'])->name('client.events.edit');
+    Route::put('/client/events/{event}', [EventController::class, 'update'])->name('client.events.update');
+    Route::delete('/client/events/{event}', [EventController::class, 'destroy'])->name('client.events.destroy');
 
-    Route::post('/event/store', [EventController::class, 'store'])
-        ->name('events.store');
+    // SHOW EVENT (with AI results)
+    Route::get('/events/{id}', [EventController::class, 'show'])
+        ->name('events.show');
+        
+    Route::post('/client/events/{id}/cancel', [EventController::class, 'cancel'])
+        ->name('client.events.cancel');
+    
+     // ADMIN
+    Route::get('/admin/events', [EventController::class, 'index'])
+        ->name('admin.events.index');
 
-    // AI Recommendation
-    Route::get('/ai/recommend', [AIRecommendationController::class, 'recommend'])
-        ->name('ai.recommend');
+    Route::post('/admin/events/{id}/approve', [EventController::class, 'approve'])
+        ->name('admin.events.approve');
+
+    Route::post('/admin/events/{id}/reject', [EventController::class, 'reject'])
+        ->name('admin.events.reject');
+
 });
+
+//Browse suppliers for clients
+Route::middleware(['auth'])->group(function () {
+    Route::get('/client/suppliers', [BrowseSupplierController::class, 'browse'])->name('client.suppliers');
+    Route::get('/client/suppliers/{id}', [BrowseSupplierController::class, 'show'])->name('client.suppliers.show');
+});
+
+//Messaging for suppliers AND clients (only inbox for suppliers, clients can only message from supplier details page)
+Route::middleware(['auth'])->group(function () {
+    
+    // ✅ Client Inbox
+    Route::get('/client/inbox', [MessageController::class, 'inbox'])
+        ->name('client.inbox');
+
+    // Open chat (both client & supplier)
+    Route::get('/chat/{userId}/{supplierId}', [MessageController::class, 'chat'])
+        ->name('chat');
+
+    // Send message (both client & supplier)
+    Route::post('/chat/send', [MessageController::class, 'send'])
+        ->name('chat.send');
+
+});
+
+// Banner Routes
+Route::middleware(['auth'])->group(function () {
+    route::get('/home', [BannerController::class, 'index'])->name('admin.homepage.banners');
+    Route::post('/banners/store', [BannerController::class, 'store'])->name('banners.store');
+     Route::get('/banners/{banner}/edit', [BannerController::class, 'edit'])->name('banners.edit');
+    Route::put('/banners/{banner}', [BannerController::class, 'update'])->name('banners.update');
+    Route::delete('/banners/{id}', [BannerController::class, 'destroy'])->name('banners.destroy');
+});
+   
+   Route::get('/supplier/inbox', [InquiryController::class, 'inbox'])->middleware('auth')->name('supplier.inquiries.inbox');
+   Route::get('/supplier/chatbox', [InquiryController::class, 'chatbox'])->name('supplier.chatbox');
+   Route::post('/supplier/inquiry/{id}/read', [InquiryController::class, 'markAsRead'])->name('supplier.inquiry.read');
+   Route::post('/inquiry/send', [InquiryController::class, 'store'])->name('inquiry.store'); 
+   
+
 
 require __DIR__.'/auth.php';
