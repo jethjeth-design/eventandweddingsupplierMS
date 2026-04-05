@@ -6,10 +6,12 @@
         <title>Bikol's Craft – Event & Wedding Supplier Management</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-
+        
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @endif
+
+@if($banner)
 
         <style>
             *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -59,14 +61,14 @@
                 text-transform: uppercase; color: var(--warm-grey);
                 text-decoration: none; transition: color 0.2s;
             }
-            .nav-links a:hover { color: var(--gold-dark); }
+            .nav-links a:hover, .nav-links a.active { color: var(--gold-dark); }
             .nav-cta {
                 background: var(--charcoal); color: var(--white) !important;
                 padding: 0.55rem 1.4rem; border-radius: 2px;
                 font-size: 0.8rem !important; letter-spacing: 0.06em !important;
                 transition: background 0.2s !important;
             }
-            .nav-cta:hover { background: var(--gold-dark) !important; color: var(--white) !important; }
+            .nav-cta:hover { background: var(--gold-dark) !important; }
 
             /* ── HERO BANNER ── */
             .hero {
@@ -84,12 +86,15 @@
                 content: ''; position: absolute; inset: 0;
                 background: linear-gradient(135deg,rgba(30,27,24,0.65) 0%,rgba(30,27,24,0.3) 50%,rgba(201,168,76,0.15) 100%);
             }
-            .slide-1 { background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=80'); }
-            .slide-2 { background-image: url('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1600&q=80'); }
-            .slide-3 { background-image: url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1600&q=80'); }
-            .slide-4 { background-image: url('https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=1600&q=80'); }
-            .slide-5 { background-image: url('https://images.unsplash.com/photo-1478146059778-26028b07395a?w=1600&q=80'); }
-
+            
+            @for ($i = 1; $i <= 5; $i++)
+                .slide-{{ $i }} {
+                    background-image: url("{{ isset($banner) && $banner->{'slide_'.$i} ? asset('storage/'.$banner->{'slide_'.$i}) : storage('images/default.jpg') }}");
+                }
+                
+            @endfor
+            
+            
             .hero-content {
                 position: relative; z-index: 2;
                 height: 120%; display: flex; flex-direction: column;
@@ -263,7 +268,7 @@
             }
             .cat-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--white); line-height: 1.2; }
             .cat-count { font-size: 0.68rem; color: var(--gold-light); letter-spacing: 0.06em; margin-top: 0.15rem; }
-            .cat-venues   { background-image: url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&q=70'); }
+            .cat-venues   { background-image: url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&q=701'); }
             .cat-catering { background-image: url('https://images.unsplash.com/photo-1555244162-803834f70033?w=400&q=70'); }
             .cat-photo    { background-image: url('https://images.unsplash.com/photo-1500541374084-6b26a9d1e5c9?w=400&q=70'); }
             .cat-flowers  { background-image: url('https://images.unsplash.com/photo-1487530811015-780a5b16f8c1?w=400&q=70'); }
@@ -430,18 +435,20 @@
                 .mobile-menu { display: flex; }
             }
         </style>
+@endif
     </head>
     <body>
+        @if($banner)
 
         <!-- NAVBAR -->
         <nav class="main-nav">
             <div class="nav-logo">Bikol's<span>Craft</span></div>
             <div class="nav-links">
-                <a href="#">Home</a>
-                <a href="#">Suppliers</a>
+                <a href="{{ route('welcomepage.welcome') }} " class="active">Home</a>
+                <a href="{{ route('welcomepage.profile') }}">Suppliers</a>
                 <a href="#">Events</a>
                 <a href="#">Packages</a>
-                <a href="#">Gallery</a>
+                <a href="{{ route('welcomepage.gallery') }}">Gallery</a>
                 @if (Route::has('login'))
                     @auth
                         <a href="{{ url('/dashboard') }}" class="nav-cta">Dashboard</a>
@@ -460,10 +467,11 @@
 
         <!-- MOBILE DRAWER -->
         <div class="mobile-menu" id="mobileMenu">
-            <a href="#" onclick="closeMenu()">Suppliers</a>
+            <a href="{{ route('welcomepage.welcome') }}" onclick="closeMenu()">Home</a>
+            <a href="{{ route('welcomepage.profile') }}" onclick="closeMenu()">Suppliers</a>
             <a href="#" onclick="closeMenu()">Events</a>
             <a href="#" onclick="closeMenu()">Packages</a>
-            <a href="#" onclick="closeMenu()">Gallery</a>
+            <a href="{{route('welcomepage.gallery')}}" onclick="closeMenu()">Gallery</a>
             @if (Route::has('login'))
                 @auth
                     <a href="{{ url('/dashboard') }}" class="mob-cta">Dashboard</a>
@@ -486,9 +494,9 @@
                 <div class="slide slide-5"></div>
             </div>
             <div class="hero-content">
-                <div class="hero-tag">Premium Supplier Platform</div>
-                <h1 class="hero-title">Your Perfect Event,<br><em>Beautifully Managed</em></h1>
-                <p class="hero-subtitle">Connect with the finest venues, caterers, photographers, and decorators. Streamline every detail of your wedding or event in one elegant platform.</p>
+                <div class="hero-tag">{{ $banner->hero_tag }}</div>
+                <h1 class="hero-title">{{ $banner->hero_title_1 }}<br><em>{{ $banner->hero_title_2 }}</em></h1>
+                <p class="hero-subtitle">{{ $banner->hero_subtitle }}</p>
                 <div class="hero-actions">
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}" class="btn-primary">Start Planning Free</a>
@@ -656,82 +664,82 @@
             </div>
             <div class="footer-copy">© {{ date('Y') }} Bikol'sCraft. All rights reserved.</div>
         </footer>
-
+    @endif
         <script>
-        (function () {
-            const slides = document.querySelectorAll('.slide');
-            const dotsContainer = document.getElementById('slideDots');
-            const currentEl = document.getElementById('currentSlide');
-            const totalEl = document.getElementById('totalSlides');
-            const progressBar = document.getElementById('progressBar');
-            const INTERVAL = 5000;
-            let current = 0, timer;
+            (function () {
+                const slides = document.querySelectorAll('.slide');
+                const dotsContainer = document.getElementById('slideDots');
+                const currentEl = document.getElementById('currentSlide');
+                const totalEl = document.getElementById('totalSlides');
+                const progressBar = document.getElementById('progressBar');
+                const INTERVAL = 5000;
+                let current = 0, timer;
 
-            totalEl.textContent = String(slides.length).padStart(2, '0');
+                totalEl.textContent = String(slides.length).padStart(2, '0');
 
-            slides.forEach((_, i) => {
-                const d = document.createElement('div');
-                d.className = 'dot' + (i === 0 ? ' active' : '');
-                d.addEventListener('click', () => goTo(i));
-                dotsContainer.appendChild(d);
-            });
-
-            function goTo(idx) {
-                slides[current].classList.remove('active');
-                dotsContainer.children[current].classList.remove('active');
-                current = idx % slides.length;
-                slides[current].classList.add('active');
-                dotsContainer.children[current].classList.add('active');
-                currentEl.textContent = String(current + 1).padStart(2, '0');
-                resetProgress();
-            }
-
-            function resetProgress() {
-                progressBar.style.transition = 'none';
-                progressBar.style.width = '0%';
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        progressBar.style.transition = `width ${INTERVAL}ms linear`;
-                        progressBar.style.width = '100%';
-                    });
+                slides.forEach((_, i) => {
+                    const d = document.createElement('div');
+                    d.className = 'dot' + (i === 0 ? ' active' : '');
+                    d.addEventListener('click', () => goTo(i));
+                    dotsContainer.appendChild(d);
                 });
-            }
 
-            function startAuto() {
-                clearInterval(timer);
-                timer = setInterval(() => goTo(current + 1), INTERVAL);
-                resetProgress();
-            }
+                function goTo(idx) {
+                    slides[current].classList.remove('active');
+                    dotsContainer.children[current].classList.remove('active');
+                    current = idx % slides.length;
+                    slides[current].classList.add('active');
+                    dotsContainer.children[current].classList.add('active');
+                    currentEl.textContent = String(current + 1).padStart(2, '0');
+                    resetProgress();
+                }
 
-            startAuto();
-        })();
+                function resetProgress() {
+                    progressBar.style.transition = 'none';
+                    progressBar.style.width = '0%';
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            progressBar.style.transition = `width ${INTERVAL}ms linear`;
+                            progressBar.style.width = '100%';
+                        });
+                    });
+                }
 
-        const reveals = document.querySelectorAll('.reveal');
-        const io = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+                function startAuto() {
+                    clearInterval(timer);
+                    timer = setInterval(() => goTo(current + 1), INTERVAL);
+                    resetProgress();
+                }
+
+                startAuto();
+            })();
+
+            const reveals = document.querySelectorAll('.reveal');
+            const io = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+                });
+            }, { threshold: 0.15 });
+            reveals.forEach(el => io.observe(el));
+
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            hamburger.addEventListener('click', () => {
+                const isOpen = mobileMenu.classList.toggle('open');
+                hamburger.classList.toggle('open', isOpen);
+                document.body.style.overflow = isOpen ? 'hidden' : '';
             });
-        }, { threshold: 0.15 });
-        reveals.forEach(el => io.observe(el));
 
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobileMenu');
+            function closeMenu() {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                document.body.style.overflow = '';
+            }
 
-        hamburger.addEventListener('click', () => {
-            const isOpen = mobileMenu.classList.toggle('open');
-            hamburger.classList.toggle('open', isOpen);
-            document.body.style.overflow = isOpen ? 'hidden' : '';
-        });
-
-        function closeMenu() {
-            mobileMenu.classList.remove('open');
-            hamburger.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) closeMenu();
-        });
+            document.addEventListener('click', (e) => {
+                if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) closeMenu();
+            });
         </script>
     </body>
 </html>

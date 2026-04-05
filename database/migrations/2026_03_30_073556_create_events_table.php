@@ -19,11 +19,15 @@ return new class extends Migration
             $table->string('event_type');
             $table->date('event_date');
             $table->string('location');
-            $table->integer('budget');
+            $table->decimal('budget', 10, 2);
             $table->integer('guest_count');
             $table->string('theme')->nullable();
             $table->text('notes')->nullable();
-            
+
+            // NEW (important)
+            $table->string('status')->default('pending'); 
+            // pending | approved | planned
+
             $table->timestamps();
         });
     }

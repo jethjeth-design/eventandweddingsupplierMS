@@ -498,13 +498,12 @@
         <div class="bv-field">
             <label class="bv-label" for="experience">Experience <span class="bv-label-opt">Optional</span></label>
             <div class="bv-select-wrap">
-                <select id="experience" name="experience" class="bv-select">
+                <select id="fi_exp" name="experience" class="bv-sel" required onchange="updatePreview()">
                     <option value="" disabled selected>Select experience level...</option>
-                    <option value="Less than 1 year" disabled selected>Less than 1 year</option>
-                    <option value="1-3 years" disabled selected>1-3 years</option>
-                    <option value="4-7 years" disabled selected>4-7 years</option>
-                    <option value="8-10 years" disabled selected>8-10 years</option>
-                    <option value="More than 10 years" disabled selected>More than 10 years</option>
+                    <option value="" disabled {{ !old('experience')?'selected':'' }}>Select level...</option>
+                        @foreach(['less_than_1'=>'Less than 1 year','1_2'=>'1–2 years','3_5'=>'3–5 years','6_10'=>'6–10 years','10_plus'=>'10+ years'] as $val=>$lbl)
+                            <option value="{{ $val }}" {{ old('experience')==$val?'selected':'' }}>{{ $lbl }}</option>
+                        @endforeach
                 </select>
             </div>
             @error('experience')<div class="bv-error">{{ $message }}</div>@enderror

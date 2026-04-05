@@ -14,6 +14,17 @@ class Event extends Model
         'budget',
         'guest_count',
         'theme',
-        'notes'
+        'notes',
+        'status',
     ];
+
+    public function client()
+    {
+        return $this->belongsTo(User::class, 'client_id');
+    }
+
+    public function suppliers()
+{
+    return $this->belongsToMany(SupplierProfile::class, 'event_supplier_profile');
+}
 }
