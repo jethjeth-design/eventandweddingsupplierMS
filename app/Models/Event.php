@@ -7,24 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $fillable = [
-        'client_id',
+        'user_id',
+        'event_name',
         'event_type',
-        'event_date',
-        'location',
         'budget',
+        'description',
         'guest_count',
-        'theme',
-        'notes',
-        'status',
+        'venue',
     ];
 
-    public function client()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'client_id');
+        return $this->belongsTo(User::class);
     }
-
-    public function suppliers()
-{
-    return $this->belongsToMany(SupplierProfile::class, 'event_supplier_profile');
-}
 }

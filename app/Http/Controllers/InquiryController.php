@@ -15,7 +15,16 @@ class InquiryController extends Controller
      */
     public function inbox()
     {
-        $supplier = auth()->user()->supplierProfile;
+        
+        $user = auth()->user();
+
+        // ✅ Make sure supplier exists
+        $supplier = $user->supplier;
+
+        if (!$supplier) {
+            return redirect()->back()->with('error', 'No supplier profile found.');
+            // or: abort(404);
+        }
         
         $conversations = Message::where('receiver_id', auth()->id())
         ->orWhere('sender_id', auth()->id())
@@ -27,7 +36,7 @@ class InquiryController extends Controller
                 ? $msg->receiver_id
                 : $msg->sender_id;
         });
-
+        
         // 💬 CLIENT MESSAGES
         $clientMessages = Message::with('sender')
             ->where('supplier_id', $supplier->id)
@@ -124,6 +133,8 @@ class InquiryController extends Controller
      */
     public function destroy(Inquiry $inquiry)
     {
-        //
+        $inquiry->delete();
+        
+        return redirect()->route('supplier.inquiries.inbox')->with('success', 'Inquiry deleted successfully.');
     }
 }

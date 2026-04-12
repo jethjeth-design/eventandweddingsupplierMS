@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use App\Models\Category;
 use Illuminate\Http\Request;
+
 
 class CategoryController extends Controller
 {
@@ -34,7 +36,15 @@ class CategoryController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        Category::create($request->only('name', 'description'));
+        $slug = Str::slug($request->name);
+
+        // Ensure unique slug
+        $count = Category::where('slug', 'LIKE', "{$slug}%")->count();
+        if ($count) {
+            $slug = "{$slug}-{$count}";
+        }
+
+        Category::create($request->only('name', 'slug', 'description'));
 
         return redirect()->route('admin.categories.list')->with('success', 'Category created successfully.');
     }
@@ -65,7 +75,18 @@ class CategoryController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $category->update($request->only('name', 'description'));
+        $slug = Str::slug($request->name);
+
+            // Ensure unique slug (exclude current category)
+            $count = Category::where('slug', 'LIKE', "{$slug}%")
+                ->where('id', '!=', $category->id)
+                ->count();
+
+            if ($count) {
+                $slug = "{$slug}-{$count}";
+            }
+
+        $category->update($request->only('name', 'slug', 'description'));
 
         return redirect()->route('admin.categories.list')->with('success', 'Category updated successfully.');
     }

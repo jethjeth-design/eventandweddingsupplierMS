@@ -58,51 +58,143 @@
         .pf-empty-icon svg{width:22px;height:22px;}
         .pf-empty p{font-size:0.82rem;color:var(--warm-grey);line-height:1.6;}
 
+        /* ══════════════════════════════════════════════════════
+           CHANGED: Full-width single-column layout.
+           The identity card is now a horizontal banner card
+           sitting above the section cards — all in one stack.
+        ══════════════════════════════════════════════════════ */
+        .bv-pi-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
 
-        /* ── Layout ── */
-        .bv-pi-layout{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;align-items:start;}
-        @media(max-width:880px){.bv-pi-layout{grid-template-columns:1fr;}}
+        /* ── Identity card — horizontal banner style ── */
+        .bv-id-card {
+            background: var(--white);
+            border-radius: 14px;
+            border: 1px solid #F0EBE5;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(30,27,24,0.06);
+        }
+        .bv-id-card-banner {
+            height: 80px;
+            background: linear-gradient(135deg,var(--charcoal) 0%,#2a2016 60%,#3d2f14 100%);
+            position: relative;
+        }
 
-        /* ── LEFT: Identity card ── */
-        .bv-id-card{background:var(--white);border-radius:14px;border:1px solid #F0EBE5;overflow:hidden;box-shadow:0 2px 8px rgba(30,27,24,0.06);}
-        .bv-id-card-banner{height:72px;background:linear-gradient(135deg,var(--charcoal) 0%,#2a2016 60%,#3d2f14 100%);position:relative;}
-        .bv-id-card-banner::after{content:'';position:absolute;bottom:0;left:0;right:0;height:32px;background:var(--white);clip-path:ellipse(60% 100% at 50% 100%);}
-        .bv-id-avatar-wrap{position:relative;width:80px;height:80px;margin:-40px auto 0;z-index:2;}
-        .bv-id-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--white);overflow:hidden;border:3px solid var(--white);box-shadow:0 2px 12px rgba(30,27,24,0.15);}
+        /* Horizontal inner layout inside the id card */
+        .bv-id-card-inner {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            padding: 0 1.5rem 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Avatar pulled up over banner */
+        .bv-id-avatar-wrap {
+            position: relative;
+            width: 88px;
+            height: 88px;
+            margin-top: -44px;
+            flex-shrink: 0;
+            z-index: 2;
+        }
+        .bv-id-avatar {
+            width: 88px; height: 88px; border-radius: 50%;
+            background: linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display); font-size: 2rem; font-weight: 700;
+            color: var(--white); overflow: hidden;
+            border: 3px solid var(--white);
+            box-shadow: 0 2px 12px rgba(30,27,24,0.15);
+        }
         .bv-id-avatar img{width:100%;height:100%;object-fit:cover;display:none;}
         .bv-id-avatar.has-photo img{display:block;}
         .bv-id-avatar.has-photo span{display:none;}
-        .bv-id-card-body{padding:0.75rem 1.4rem 1.4rem;text-align:center;}
-        .bv-id-name{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--charcoal);margin-bottom:0.15rem;line-height:1.25;}
-        .bv-id-category{font-size:0.7rem;color:var(--gold-dark);letter-spacing:0.05em;font-weight:600;text-transform:uppercase;margin-bottom:0.75rem;}
-        .bv-id-badge{display:inline-flex;align-items:center;gap:0.35rem;padding:0.22rem 0.75rem;border-radius:999px;background:rgba(201,168,76,0.1);color:var(--gold-dark);font-size:0.65rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:1.1rem;}
-        .bv-id-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);}
-        .bv-id-divider{height:1px;background:#F0EBE5;margin:0.85rem 0;}
-        .bv-id-meta{display:flex;flex-direction:column;gap:0.55rem;text-align:left;}
-        .bv-id-meta-row{display:flex;align-items:flex-start;gap:0.6rem;}
-        .bv-id-meta-icon{width:14px;height:14px;color:var(--gold-dark);flex-shrink:0;margin-top:1px;}
-        .bv-id-meta-text{font-size:0.75rem;color:var(--warm-grey);line-height:1.4;word-break:break-word;}
-        .bv-id-meta-text strong{display:block;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:#C0B8B0;font-weight:600;margin-bottom:0.08rem;}
-        .bv-id-tagline{font-size:0.75rem;color:var(--warm-grey);font-style:italic;line-height:1.55;padding:0.75rem 0.9rem;background:rgba(201,168,76,0.05);border-radius:8px;border-left:2px solid rgba(201,168,76,0.3);text-align:left;margin-top:0.1rem;}
-        .bv-completion{margin-top:1rem;}
+
+        /* Main info beside avatar */
+        .bv-id-main {
+            flex: 1;
+            min-width: 200px;
+            padding-top: 0.9rem;
+        }
+        .bv-id-name {
+            font-family: var(--font-display);
+            font-size: 1.25rem; font-weight: 700;
+            color: var(--charcoal); margin-bottom: 0.15rem; line-height: 1.2;
+        }
+        .bv-id-category {
+            font-size: 0.7rem; color: var(--gold-dark);
+            letter-spacing: 0.05em; font-weight: 600;
+            text-transform: uppercase; margin-bottom: 0.6rem;
+        }
+        .bv-id-badge {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.22rem 0.75rem; border-radius: 999px;
+            background: rgba(201,168,76,0.1); color: var(--gold-dark);
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em;
+            text-transform: uppercase; margin-bottom: 0.85rem;
+        }
+        .bv-id-badge::before {content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);}
+
+        /* Meta row — horizontal pills */
+        .bv-id-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem 1.25rem;
+        }
+        .bv-id-meta-row {display:flex;align-items:center;gap:0.45rem;}
+        .bv-id-meta-icon {width:13px;height:13px;color:var(--gold-dark);flex-shrink:0;}
+        .bv-id-meta-text {
+            font-size: 0.75rem; color: var(--warm-grey); line-height: 1.4;
+        }
+        .bv-id-meta-text strong {
+            display: inline;
+            font-size: 0.68rem; text-transform: uppercase;
+            letter-spacing: 0.06em; color: #C0B8B0; font-weight: 600;
+            margin-right: 0.25rem;
+        }
+
+        /* Tagline */
+        .bv-id-tagline {
+            font-size: 0.75rem; color: var(--warm-grey); font-style: italic;
+            line-height: 1.55; padding: 0.65rem 0.9rem;
+            background: rgba(201,168,76,0.05); border-radius: 8px;
+            border-left: 2px solid rgba(201,168,76,0.3);
+            margin-top: 0.9rem;
+        }
+
+        /* Completion bar — right side */
+        .bv-id-right {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            padding-top: 1rem;
+            min-width: 200px;
+            align-self: flex-start;
+        }
         .bv-completion-label{display:flex;justify-content:space-between;font-size:0.68rem;color:var(--warm-grey);margin-bottom:0.4rem;}
         .bv-completion-label strong{color:var(--gold-dark);}
         .bv-completion-bar{height:4px;background:#F0EBE5;border-radius:2px;overflow:hidden;}
         .bv-completion-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;}
 
-        /* LEFT card quick-action links */
-        .bv-id-links{display:flex;flex-direction:column;gap:0.35rem;margin-top:0.75rem;}
-        .bv-id-link{
-            display:flex;align-items:center;gap:0.55rem;
-            padding:0.55rem 0.75rem;border-radius:8px;
-            font-family:var(--font-body);font-size:0.78rem;font-weight:500;
-            color:var(--warm-grey);text-decoration:none;
-            transition:background 0.15s,color 0.15s;
+        /* Quick links — horizontal row */
+        .bv-id-links {
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+            margin-top: 0.25rem;
         }
-        .bv-id-link svg{width:13px;height:13px;flex-shrink:0;}
-        .bv-id-link:hover{background:rgba(201,168,76,0.08);color:var(--gold-dark);}
-        .bv-id-link.settings{color:var(--warm-grey);}
-        .bv-id-link.settings:hover{background:rgba(201,168,76,0.08);color:var(--gold-dark);}
+        .bv-id-link {
+            display: inline-flex; align-items: center; gap: 0.45rem;
+            padding: 0.45rem 0.85rem; border-radius: 8px;
+            font-family: var(--font-body); font-size: 0.76rem; font-weight: 500;
+            color: var(--warm-grey); text-decoration: none;
+            border: 1.5px solid #E5DDD5; background: var(--white);
+            transition: border-color 0.15s, color 0.15s, background 0.15s;
+        }
+        .bv-id-link svg{width:12px;height:12px;flex-shrink:0;}
+        .bv-id-link:hover{background:rgba(201,168,76,0.07);color:var(--gold-dark);border-color:var(--gold);}
 
         /* ── RIGHT: Section cards ── */
         .bv-main-stack{display:flex;flex-direction:column;gap:1.25rem;}
@@ -157,14 +249,9 @@
 
         /* ═══════════════════════════════════════
            FACEBOOK-STYLE PORTFOLIO POST STYLES
-           (added — zero existing CSS changed)
         ═══════════════════════════════════════ */
-
-        /* Portfolio feed */
         .pf-portfolio-list{display:flex;flex-direction:column;gap:1.25rem;}
         .pf-post{border-radius:12px;border:1px solid #F0EBE5;overflow:hidden;background:var(--white);box-shadow:0 1px 4px rgba(30,27,24,0.05);}
-
-        /* Post header */
         .pf-post-head{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.1rem 0.6rem;}
         .pf-post-head-l{display:flex;align-items:center;gap:0.65rem;}
         .pf-post-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:0.95rem;font-weight:700;color:var(--white);flex-shrink:0;overflow:hidden;}
@@ -174,11 +261,7 @@
         .pf-post-delete-btn{display:inline-flex;align-items:center;gap:0.3rem;padding:0.32rem 0.7rem;border-radius:6px;border:1.5px solid #FADBD8;background:transparent;font-family:var(--font-body);font-size:0.7rem;font-weight:500;color:#C0392B;cursor:pointer;transition:background 0.15s,border-color 0.15s;}
         .pf-post-delete-btn svg{width:10px;height:10px;}
         .pf-post-delete-btn:hover{background:#FFF5F5;border-color:#C0392B;}
-
-        /* Description */
         .pf-post-desc{padding:0 1.1rem 0.75rem;font-size:0.82rem;color:var(--warm-grey);line-height:1.6;}
-
-        /* Facebook-style image mosaics */
         .pf-mosaic{overflow:hidden;background:#F5F0EB;cursor:pointer;}
         .pf-mosaic.count-1{aspect-ratio:16/9;}
         .pf-mosaic.count-1 img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s;}
@@ -193,29 +276,21 @@
         .pf-mos-cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.25s;}
         .pf-mos-cell:hover img{transform:scale(1.04);}
         .pf-mos-more{position:absolute;inset:0;background:rgba(30,27,24,0.55);display:flex;align-items:center;justify-content:center;color:var(--white);font-family:var(--font-display);font-size:1.5rem;font-weight:700;pointer-events:none;}
-
-        /* Video */
         .pf-post-video{background:#000;}
         .pf-post-video video{width:100%;max-height:400px;display:block;object-fit:contain;}
-
-        /* Post footer tags */
         .pf-post-foot{padding:0.6rem 1.1rem;border-top:1px solid #F7F3EF;display:flex;align-items:center;gap:0.4rem;}
         .pf-post-tag{display:inline-flex;align-items:center;gap:0.25rem;padding:0.16rem 0.55rem;border-radius:999px;background:rgba(201,168,76,0.1);color:var(--gold-dark);font-size:0.63rem;font-weight:600;}
         .pf-post-tag::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold);}
-
-        /* Empty gallery */
         .pf-gallery-empty{text-align:center;padding:2.5rem 1.5rem;}
         .pf-gallery-empty-icon{width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;color:var(--gold-dark);}
         .pf-gallery-empty-icon svg{width:22px;height:22px;}
         .pf-gallery-empty p{font-size:0.8rem;color:var(--warm-grey);line-height:1.6;}
 
         /* ═══════════════════════════════
-           FACEBOOK-STYLE LIGHTBOX (added)
+           LIGHTBOX
         ═══════════════════════════════ */
         .fb-lb{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.96);display:none;flex-direction:column;}
         .fb-lb.open{display:flex;}
-
-        /* Top bar */
         .fb-lb-bar{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 1.1rem;background:rgba(0,0,0,0.6);flex-shrink:0;}
         .fb-lb-bar-title{font-family:var(--font-display);font-size:0.9rem;font-weight:700;color:var(--white);display:flex;flex-direction:column;gap:0.1rem;}
         .fb-lb-bar-date{font-size:0.65rem;color:rgba(255,255,255,0.45);font-family:var(--font-body);font-weight:400;}
@@ -223,22 +298,16 @@
         .fb-lb-icon-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--white);transition:background 0.2s;}
         .fb-lb-icon-btn:hover{background:rgba(255,255,255,0.22);}
         .fb-lb-icon-btn svg{width:16px;height:16px;}
-
-        /* Main viewer */
         .fb-lb-main{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;min-height:0;}
         .fb-lb-media-wrap{display:flex;align-items:center;justify-content:center;max-width:100%;max-height:100%;width:100%;height:100%;}
         .fb-lb-media-wrap img{max-width:100%;max-height:100%;object-fit:contain;display:block;border-radius:4px;user-select:none;}
         .fb-lb-media-wrap video{max-width:100%;max-height:100%;width:100%;display:block;object-fit:contain;}
-
-        /* Nav arrows */
         .fb-lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.14);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--white);transition:background 0.2s;z-index:2;}
         .fb-lb-nav:hover{background:rgba(255,255,255,0.28);}
         .fb-lb-nav svg{width:20px;height:20px;}
         .fb-lb-nav.lb-prev{left:14px;}
         .fb-lb-nav.lb-next{right:14px;}
         .fb-lb-nav[style*="display:none"],.fb-lb-nav.lb-hide{display:none !important;}
-
-        /* Bottom strip */
         .fb-lb-bottom{background:rgba(0,0,0,0.65);flex-shrink:0;}
         .fb-lb-counter{text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.45);padding:0.4rem 0 0;}
         .fb-lb-strip{display:flex;align-items:center;justify-content:center;gap:0.35rem;padding:0.55rem 1rem;overflow-x:auto;}
@@ -248,33 +317,33 @@
         .fb-lb-thumb.lb-active{opacity:1;border-color:var(--gold);}
         .fb-lb-thumb:hover{opacity:0.85;}
 
-          /* Success alert */
+        /* Success alert */
         .bv-alert-success {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            background: #F0FDF4;
-            border: 1px solid #A7F3D0;
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            font-size: 0.82rem;
-            color: #065F46;
-            margin-bottom: 1.5rem;
+            display:flex;align-items:center;gap:0.65rem;
+            background:#F0FDF4;border:1px solid #A7F3D0;border-radius:8px;
+            padding:0.75rem 1rem;font-size:0.82rem;color:#065F46;margin-bottom:1.5rem;
         }
-        .bv-alert-success svg { width: 16px; height: 16px; color: #10B981; flex-shrink: 0; }
+        .bv-alert-success svg{width:16px;height:16px;color:#10B981;flex-shrink:0;}
+
+        /* Mobile */
+        @media(max-width:680px){
+            .bv-id-card-inner{flex-direction:column;gap:0.75rem;padding:0 1rem 1.25rem;}
+            .bv-id-right{min-width:unset;width:100%;padding-top:0;}
+            .bv-id-links{gap:0.4rem;}
+            .bv-header-actions{flex-wrap:wrap;}
+        }
     </style>
 
-
-{{-- Success message --}}
+    {{-- Success message --}}
     @if(session('success'))
     <div class="bv-alert-success">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 10l4 4 6-6"/>
-            <circle cx="10" cy="10" r="8"/>
+            <path d="M5 10l4 4 6-6"/><circle cx="10" cy="10" r="8"/>
         </svg>
         {{ session('success') }}
     </div>
     @endif
+
     <div class="page-content">
 
         {{-- Page header --}}
@@ -283,15 +352,14 @@
                 <h1 class="bv-page-title">Personal <em>Information</em></h1>
                 <p class="bv-page-sub">Your supplier profile details</p>
             </div>
-
             @if($supplierProfile)
             <div class="bv-header-actions">
                 <a href="{{ route('supplier.portfolio.index') }}" class="bv-btn-secondary">
-                   Add Portfolio
+                    Add Portfolio
                 </a>
-               <a href="{{ route('supplier.profile') }}" class="bv-btn-secondary">
+                <a href="{{ route('supplier.profile') }}" class="bv-btn-secondary">
                     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="7" r="2"/><path d="M7 1v1.2M7 11.8V13M1 7h1.2M11.8 7H13M2.8 2.8l.85.85M10.35 10.35l.85.85M10.35 3.65l-.85.85M3.65 10.35l-.85.85"/></svg>
-                  Account Settings
+                    Account Settings
                 </a>
                 <a href="{{ route('supplier.edit', $supplierProfile->id) }}" class="bv-btn-primary">
                     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>
@@ -310,13 +378,30 @@
 
         @if($supplierProfile)
 
+        @php
+            $filled = collect([
+                $supplierProfile->first_name, $supplierProfile->last_name,
+                $supplierProfile->phone,      $supplierProfile->city,
+                $supplierProfile->categories->isNotEmpty() ? true : null,
+                $supplierProfile->bio,        $supplierProfile->description,
+                $supplierProfile->photo
+            ])->filter()->count();
+            $pct = round(($filled / 8) * 100);
+            $expLabels = ['less_than_1'=>'< 1 year','1_2'=>'1–2 years','3_5'=>'3–5 years','6_10'=>'6–10 years','10_plus'=>'10+ years'];
+        @endphp
+
+        {{-- ══════════════════════════════════════════════
+             SINGLE-COLUMN STACK — identity card on top
+        ══════════════════════════════════════════════ --}}
         <div class="bv-pi-layout">
 
-            {{-- LEFT: Identity card --}}
-            <div>
-                <div class="bv-id-card">
-                    <div class="bv-id-card-banner"></div>
+            {{-- ── IDENTITY CARD (horizontal banner) ── --}}
+            <div class="bv-id-card">
+                <div class="bv-id-card-banner"></div>
 
+                <div class="bv-id-card-inner">
+
+                    {{-- Avatar --}}
                     <div class="bv-id-avatar-wrap">
                         <div class="bv-id-avatar {{ $supplierProfile->photo ? 'has-photo' : '' }}">
                             @if($supplierProfile->photo)
@@ -327,36 +412,21 @@
                         </div>
                     </div>
 
-                    <div class="bv-id-card-body">
+                    {{-- Main info --}}
+                    <div class="bv-id-main">
                         <div class="bv-id-name">
                             {{ $supplierProfile->business_name ?: trim(($supplierProfile->first_name ?? '').' '.($supplierProfile->last_name ?? '')) ?: Auth::user()->name }}
                         </div>
-                        <div class="bv-id-category">{{ $supplierProfile->category ?? 'No Category Set' }}</div>
+                        <div class="bv-id-category">
+                            @forelse($supplierProfile->categories as $category)
+                                <span class="bv-tag">{{ $category->name }}</span>
+                            @empty
+                                No Category Set
+                            @endforelse
+                        </div>
                         <div class="bv-id-badge">Active Supplier</div>
 
-                        @php
-                            $filled = collect([
-                                $supplierProfile->first_name, $supplierProfile->last_name,
-                                $supplierProfile->phone,      $supplierProfile->city,
-                                $supplierProfile->category,   $supplierProfile->bio,
-                                $supplierProfile->description,$supplierProfile->photo
-                            ])->filter()->count();
-                            $pct = round(($filled / 8) * 100);
-                            $expLabels = ['less_than_1'=>'< 1 year','1_2'=>'1–2 years','3_5'=>'3–5 years','6_10'=>'6–10 years','10_plus'=>'10+ years'];
-                        @endphp
-
-                        <div class="bv-completion">
-                            <div class="bv-completion-label">
-                                <span>Profile completion</span>
-                                <strong>{{ $pct }}%</strong>
-                            </div>
-                            <div class="bv-completion-bar">
-                                <div class="bv-completion-fill" style="width:{{ $pct }}%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="bv-id-divider"></div>
-
+                        {{-- Horizontal meta row --}}
                         <div class="bv-id-meta">
                             <div class="bv-id-meta-row">
                                 <svg class="bv-id-meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M1 6l7 4 7-4"/></svg>
@@ -383,31 +453,43 @@
                         </div>
 
                         @if($supplierProfile->tagline)
-                        <div class="bv-id-divider"></div>
                         <div class="bv-id-tagline">"{{ $supplierProfile->tagline }}"</div>
                         @endif
 
-                        {{-- Quick links --}}
-                        <div class="bv-id-divider"></div>
-                        <div class="bv-id-links">
+                        {{-- Quick-action links --}}
+                        <div class="bv-id-links" style="margin-top:1rem;">
                             <a href="{{ route('supplier.edit', $supplierProfile->id) }}" class="bv-id-link">
                                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>
                                 Edit Profile
                             </a>
-                            <a href="{{ route('supplier.profile') }}" class="bv-id-link settings">
+                            <a href="{{ route('supplier.profile') }}" class="bv-id-link">
                                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="7" r="2"/><path d="M7 1v1.2M7 11.8V13M1 7h1.2M11.8 7H13M2.8 2.8l.85.85M10.35 10.35l.85.85M10.35 3.65l-.85.85M3.65 10.35l-.85.85"/></svg>
                                 Account Settings
                             </a>
                             <a href="{{ route('supplier.portfolio.index', $supplierProfile->id) }}" class="bv-id-link">
+                                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="12" height="9" rx="1.5"/><circle cx="5" cy="6.5" r="1"/><path d="M1 10l3-3 2.5 2.5 2-2 3.5 3.5"/></svg>
                                 Portfolio
                             </a>
                         </div>
-
                     </div>
-                </div>
-            </div>
 
-            {{-- RIGHT: Info sections --}}
+                    {{-- Completion bar on the right --}}
+                    <div class="bv-id-right">
+                        <div>
+                            <div class="bv-completion-label">
+                                <span>Profile completion</span>
+                                <strong>{{ $pct }}%</strong>
+                            </div>
+                            <div class="bv-completion-bar">
+                                <div class="bv-completion-fill" style="width:{{ $pct }}%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>{{-- /bv-id-card-inner --}}
+            </div>{{-- /bv-id-card --}}
+
+            {{-- ── SECTION CARDS ── --}}
             <div class="bv-main-stack">
 
                 {{-- Personal Identity --}}
@@ -444,7 +526,9 @@
                             <div>
                                 <div class="bv-info-k"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="1" y="1" width="4" height="4" rx="1"/><rect x="7" y="1" width="4" height="4" rx="1"/><rect x="1" y="7" width="4" height="4" rx="1"/><rect x="7" y="7" width="4" height="4" rx="1"/></svg>Category</div>
                                 <div class="bv-info-v">
-                                    @if($supplierProfile->category)<span class="bv-tag">{{ $supplierProfile->category }}</span>@else<span class="nil">—</span>@endif
+                                    @foreach($supplierProfile->categories as $category)
+                                        <span class="bv-tag">{{ $category->name }}</span>
+                                    @endforeach
                                 </div>
                             </div>
                             <div class="bv-row-full">
@@ -530,17 +614,12 @@
                             <div class="bv-info-k" style="margin-bottom:0.4rem;"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="1" y="1" width="10" height="10" rx="1.5"/><path d="M3 4.5h6M3 7h4"/></svg>Service Description</div>
                             <div class="bv-prose {{ !$supplierProfile->description ? 'nil' : '' }}">{{ $supplierProfile->description ?: 'No service description yet. Describe your services to attract more bookings.' }}</div>
                         </div>
-                        @if($supplierProfile->experience)
-                        <div>
-                            <div class="bv-info-k" style="margin-bottom:0.4rem;"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="1" y="2" width="10" height="8" rx="1.5"/><path d="M3 5h6M3 7h4"/></svg>Experience Notes</div>
-                            <div class="bv-prose">{{ $supplierProfile->experience }}</div>
-                        </div>
-                        @endif
+    
                     </div>
                 </div>
 
-                {{-- ── Facebook-style portfolio feed ── --}}
-                <div class="pf-card" style="margin-bottom:1.25rem;">
+                {{-- Portfolio Feed --}}
+                <div class="pf-card" style="margin-bottom:0;">
                     <div class="pf-card-header">
                         <div class="pf-card-header-l">
                             <div class="pf-card-icon">
@@ -555,7 +634,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="pf-card-body">
                         @if(isset($portfolios) && count($portfolios))
                             <div class="pf-portfolio-list">
@@ -572,10 +650,7 @@
                                     $allUrls  = array_map(fn($i) => asset('storage/'.$i), $imgs);
                                     $allJson  = json_encode($allUrls);
                                 @endphp
-
                                 <div class="pf-post">
-
-                                    {{-- Post header --}}
                                     <div class="pf-post-head">
                                         <div class="pf-post-head-l">
                                             <div class="pf-post-avatar">
@@ -593,21 +668,16 @@
                                         <form method="POST"
                                               action="{{ route('supplier.portfolio.destroy', $portfolio->id) }}"
                                               onsubmit="return confirm('Remove this portfolio item?')">
-                                            @csrf
-                                            @method('DELETE')
+                                            @csrf @method('DELETE')
                                             <button type="submit" class="pf-post-delete-btn">
                                                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3.5h10M5 3.5V2.5h4v1M4.5 3.5v7a1 1 0 001 1h3a1 1 0 001-1v-7"/></svg>
                                                 Delete
                                             </button>
                                         </form>
                                     </div>
-
-                                    {{-- Description --}}
                                     @if($portfolio->description)
                                     <div class="pf-post-desc">{{ $portfolio->description }}</div>
                                     @endif
-
-                                    {{-- Image mosaic --}}
                                     @if($imgCount > 0)
                                     <div class="pf-mosaic {{ $cls }}"
                                          onclick="fbLbOpen({{ $allJson }}, 0, '{{ addslashes($portfolio->title) }}')">
@@ -621,8 +691,6 @@
                                         @endfor
                                     </div>
                                     @endif
-
-                                    {{-- Video --}}
                                     @if($hasVideo)
                                     <div class="pf-post-video">
                                         <video width="100%" controls preload="metadata">
@@ -630,8 +698,6 @@
                                         </video>
                                     </div>
                                     @endif
-
-                                    {{-- Footer tags --}}
                                     <div class="pf-post-foot">
                                         @if($imgCount > 0)
                                             <span class="pf-post-tag">{{ $imgCount }} photo{{ $imgCount !== 1 ? 's' : '' }}</span>
@@ -640,7 +706,6 @@
                                             <span class="pf-post-tag">Video</span>
                                         @endif
                                     </div>
-
                                 </div>
                                 @endforeach
                             </div>
@@ -655,12 +720,10 @@
                     </div>
                 </div>
 
-            </div>{{-- end main-stack --}}
-
-        </div>{{-- end layout --}}
+            </div>{{-- /bv-main-stack --}}
+        </div>{{-- /bv-pi-layout --}}
 
         @else
-        {{-- Empty state: no profile yet --}}
         <div class="bv-sc">
             <div class="bv-sc-body bv-empty">
                 <div class="bv-empty-icon">
@@ -678,9 +741,7 @@
 
     </div>
 
-    {{-- ═══════════════════════════════════════
-         FACEBOOK-STYLE LIGHTBOX (added only)
-    ═══════════════════════════════════════ --}}
+    {{-- LIGHTBOX --}}
     <div id="fbLb" class="fb-lb" onclick="if(event.target===this)fbLbClose()">
         <div class="fb-lb-bar">
             <div class="fb-lb-bar-title">
@@ -693,7 +754,6 @@
                 </button>
             </div>
         </div>
-
         <div class="fb-lb-main">
             <button type="button" class="fb-lb-nav lb-prev" id="fbLbPrev" onclick="fbLbNav(-1)">
                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 2L4 7l5 5"/></svg>
@@ -706,102 +766,18 @@
                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 2l5 5-5 5"/></svg>
             </button>
         </div>
-
         <div class="fb-lb-bottom">
             <div class="fb-lb-strip" id="fbLbStrip"></div>
         </div>
     </div>
 
     <script>
-    var fbUrls  = [];
-    var fbIdx   = 0;
-    var fbTitle = '';
-
-    function fbLbOpen(urls, idx, title) {
-        fbUrls  = urls;
-        fbIdx   = idx;
-        fbTitle = title;
-
-        /* build thumbnail strip */
-        var strip = document.getElementById('fbLbStrip');
-        strip.innerHTML = '';
-        if (urls.length > 1) {
-            for (var i = 0; i < urls.length; i++) {
-                var th = document.createElement('img');
-                th.src       = urls[i];
-                th.className = 'fb-lb-thumb' + (i === idx ? ' lb-active' : '');
-                th.setAttribute('data-i', i);
-                th.onclick   = (function(ii){ return function(){ fbLbGo(ii); }; })(i);
-                strip.appendChild(th);
-            }
-        }
-
-        document.getElementById('fbLb').classList.add('open');
-        document.body.style.overflow = 'hidden';
-        fbLbGo(idx);
-    }
-
-    function fbLbGo(idx) {
-        fbIdx = idx;
-        var img    = document.getElementById('fbLbImg');
-        var vid    = document.getElementById('fbLbVideo');
-        var title  = document.getElementById('fbLbTitle');
-        var ctr    = document.getElementById('fbLbCounter');
-        var prev   = document.getElementById('fbLbPrev');
-        var next   = document.getElementById('fbLbNext');
-        var thumbs = document.querySelectorAll('.fb-lb-thumb');
-
-        title.textContent = fbTitle;
-        ctr.textContent   = fbUrls.length > 1 ? (idx + 1) + ' / ' + fbUrls.length : '';
-
-        img.style.display = 'none';
-        vid.style.display = 'none';
-        vid.pause();
-
-        var url   = fbUrls[idx];
-        var isVid = /\.(mp4|mov|webm|ogg|avi)(\?|$)/i.test(url);
-        if (isVid) {
-            vid.src           = url;
-            vid.style.display = 'block';
-        } else {
-            img.src           = url;
-            img.style.display = 'block';
-        }
-
-        /* arrow visibility */
-        prev.style.display = idx === 0 ? 'none' : '';
-        next.style.display = idx === fbUrls.length - 1 ? 'none' : '';
-
-        /* active thumb */
-        thumbs.forEach(function(t, i) {
-            t.classList.toggle('lb-active', i === idx);
-        });
-
-        /* scroll strip to active thumb */
-        if (thumbs[idx]) {
-            thumbs[idx].scrollIntoView({ block:'nearest', inline:'center', behavior:'smooth' });
-        }
-    }
-
-    function fbLbNav(dir) {
-        var n = fbIdx + dir;
-        if (n >= 0 && n < fbUrls.length) fbLbGo(n);
-    }
-
-    function fbLbClose() {
-        document.getElementById('fbLb').classList.remove('open');
-        document.body.style.overflow = '';
-        var vid = document.getElementById('fbLbVideo');
-        vid.pause();
-        vid.src = '';
-    }
-
-    document.addEventListener('keydown', function(e) {
-        if (!document.getElementById('fbLb').classList.contains('open')) return;
-        if (e.key === 'Escape')     fbLbClose();
-        if (e.key === 'ArrowLeft')  fbLbNav(-1);
-        if (e.key === 'ArrowRight') fbLbNav(1);
-    });
+    var fbUrls=[];var fbIdx=0;var fbTitle='';
+    function fbLbOpen(urls,idx,title){fbUrls=urls;fbIdx=idx;fbTitle=title;var strip=document.getElementById('fbLbStrip');strip.innerHTML='';if(urls.length>1){for(var i=0;i<urls.length;i++){var th=document.createElement('img');th.src=urls[i];th.className='fb-lb-thumb'+(i===idx?' lb-active':'');th.setAttribute('data-i',i);th.onclick=(function(ii){return function(){fbLbGo(ii);};})(i);strip.appendChild(th);}}document.getElementById('fbLb').classList.add('open');document.body.style.overflow='hidden';fbLbGo(idx);}
+    function fbLbGo(idx){fbIdx=idx;var img=document.getElementById('fbLbImg');var vid=document.getElementById('fbLbVideo');var title=document.getElementById('fbLbTitle');var ctr=document.getElementById('fbLbCounter');var prev=document.getElementById('fbLbPrev');var next=document.getElementById('fbLbNext');var thumbs=document.querySelectorAll('.fb-lb-thumb');title.textContent=fbTitle;ctr.textContent=fbUrls.length>1?(idx+1)+' / '+fbUrls.length:'';img.style.display='none';vid.style.display='none';vid.pause();var url=fbUrls[idx];var isVid=/\.(mp4|mov|webm|ogg|avi)(\?|$)/i.test(url);if(isVid){vid.src=url;vid.style.display='block';}else{img.src=url;img.style.display='block';}prev.style.display=idx===0?'none':'';next.style.display=idx===fbUrls.length-1?'none':'';thumbs.forEach(function(t,i){t.classList.toggle('lb-active',i===idx);});if(thumbs[idx]){thumbs[idx].scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});}}
+    function fbLbNav(dir){var n=fbIdx+dir;if(n>=0&&n<fbUrls.length)fbLbGo(n);}
+    function fbLbClose(){document.getElementById('fbLb').classList.remove('open');document.body.style.overflow='';var vid=document.getElementById('fbLbVideo');vid.pause();vid.src='';}
+    document.addEventListener('keydown',function(e){if(!document.getElementById('fbLb').classList.contains('open'))return;if(e.key==='Escape')fbLbClose();if(e.key==='ArrowLeft')fbLbNav(-1);if(e.key==='ArrowRight')fbLbNav(1);});
     </script>
 
 </x-supplier-layout>

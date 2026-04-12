@@ -18,19 +18,41 @@ class SupplierProfile extends Model
         'province',
         'bio',
         'experience',
-        'category',
         'description',
         'address',
-        'rating',
         'price',
+        'rating',
         'is_available',
     ];
+    
+    public function portfolios()
+    {
+        return $this->hasMany(SupplierPortfolio::class, 'supplier_id');
+    }
+    
+    public function packages()
+    {
+       return $this->hasMany(Package::class, 'supplier_id');
+    }
+
+    // 🔗 Many-to-Many with categories
+    public function categories()
+    {
+        return $this->belongsToMany(
+            Category::class,
+            'supplier_category',
+            'supplier_id',   // pivot column
+            'category_id'    // pivot column
+        );
+    }
 
     protected $casts = [
         'is_available' => 'boolean',
         'rating' => 'float',
         'price' => 'float',
     ];
+
+    
 
     public function ratings()
     {
@@ -42,18 +64,9 @@ class SupplierProfile extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function portfolios()
-    {
-        return $this->hasMany(SupplierPortfolio::class, 'supplier_id');
+    public function venues() {
+        return $this->belongsToMany(Venue::class, 'supplier_venue');
     }
 
-    public function events()
-    {
-        return $this->belongsToMany(Event::class, 'event_supplier_profile');
-    }
-
-    public function categories()
-    {
-        return $this->belongsToMany(Category::class, 'supplier_category');
-    }
+    
 }

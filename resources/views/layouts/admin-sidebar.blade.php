@@ -52,7 +52,7 @@
                     <span class="nav-badge">5</span>
                 </a>
 
-                <a href="#" class="nav-item {{ request()->is('packages*') ? 'active' : '' }}">
+                <a href="{{route('admin.package.list')}}" class="nav-item {{ request()->is('packages*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z" transform="scale(0.85) translate(1.5,1.5)"/>
                         <path d="M16 7V5a4 4 0 00-8 0v2"/>
@@ -119,7 +119,7 @@
                     <span class="nav-tooltip">Profile</span>
                 </a>
 
-                <a href="#" class="nav-item {{ request()->is('activity-logs*') ? 'active' : '' }}">
+                <a href="{{route('admin.logs.index')}}" class="nav-item {{ request()->is('activity-logs*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <path d="M4 6h12M4 10h8M4 14h10"/>
                         <circle cx="16" cy="14" r="3.5" fill="none"/>

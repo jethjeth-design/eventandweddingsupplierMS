@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Banner;
+use App\Models\Section;
+use App\Models\Category;
 use App\Models\SupplierPortfolio;
 use App\Models\SupplierProfile;
 class HomeController extends Controller
@@ -14,17 +16,16 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
-    {
+    {   
+        $section = Section::first();
         $banner = Banner::first();
-        return view('welcomepage.welcome', compact('banner'));
+        return view('welcomepage.welcome', compact('banner','section'));
     }
     
     public function showprofile(Request $request)
     {
-        // ✅ Base query (filtered suppliers)
-        $query = SupplierProfile::query();
+        $query = SupplierProfile::with('categories');
 
-        // SEARCH
         if ($request->filled('search')) {
             $search = $request->search;
 
@@ -33,40 +34,22 @@ class HomeController extends Controller
                 ->orWhere('first_name', 'like', "%{$search}%")
                 ->orWhere('last_name', 'like', "%{$search}%")
                 ->orWhere('city', 'like', "%{$search}%")
-                ->orWhere('category', 'like', "%{$search}%");
+                
+                // ✅ FIX FOR PIVOT
+                ->orWhereHas('categories', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%{$search}%");
+                });
             });
         }
 
-        // SORT
-        if ($request->filled('sort')) {
-            if ($request->sort === 'latest') {
-                $query->latest();
-            } elseif ($request->sort === 'oldest') {
-                $query->oldest();
-            }
-        }
-
-        // CITY
-        if ($request->has('city') && !empty($request->city)) {
-            $query->whereIn('city', $request->city);
-        }
-
-        // CATEGORY
-        if ($request->has('category') && !empty($request->category)) {
-            $query->whereIn('category', $request->category);
-        }
-
-        // ✅ Final filtered suppliers
         $suppliers = $query->get();
 
-        // ✅ IMPORTANT: use ALL suppliers for filter UI
-        $allSuppliers = SupplierProfile::all();
+        // Filters
+        $allSuppliers = SupplierProfile::with('categories')->get();
 
-        $cities = $allSuppliers->pluck('city')
-            ->filter()->unique()->sort()->values();
+        $cities = $allSuppliers->pluck('city')->filter()->unique()->values();
 
-        $categories = $allSuppliers->pluck('category')
-            ->filter()->unique()->sort()->values();
+        $categories = Category::all(); // ✅ best
 
         return view('welcomepage.supplier.profile', compact(
             'suppliers',
@@ -83,8 +66,33 @@ class HomeController extends Controller
     
     public function showgallery()
     {
-        $portfolio = SupplierPortfolio::with('supplier')->get();
+        $portfolios = SupplierPortfolio::with('supplier')
+        ->latest()
+        ->get();
 
-        return view('welcomepage.supplier.portfolio', compact('portfolio'));
+        return view('welcomepage.supplier.portfolio', compact('portfolios'));
+    }
+
+    public function package(Request $request)
+    {
+        $search = $request->search;
+        $eventType = $request->event_type;
+
+    $suppliers = SupplierProfile::with(['packages' => function ($query) use ($search, $eventType) {
+
+        if ($eventType) {
+            $query->where('event_type', $eventType);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+    }])->get();
+
+        return view('welcomepage.supplier.package', compact('suppliers', 'search', 'eventType'));
     }
 }               

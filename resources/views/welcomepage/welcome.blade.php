@@ -6,12 +6,10 @@
         <title>Bikol's Craft – Event & Wedding Supplier Management</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-        
+
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @endif
-
-@if($banner)
 
         <style>
             *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -61,14 +59,14 @@
                 text-transform: uppercase; color: var(--warm-grey);
                 text-decoration: none; transition: color 0.2s;
             }
-            .nav-links a:hover, .nav-links a.active { color: var(--gold-dark); }
+            .nav-links a:hover { color: var(--gold-dark); }
             .nav-cta {
                 background: var(--charcoal); color: var(--white) !important;
                 padding: 0.55rem 1.4rem; border-radius: 2px;
                 font-size: 0.8rem !important; letter-spacing: 0.06em !important;
                 transition: background 0.2s !important;
             }
-            .nav-cta:hover { background: var(--gold-dark) !important; }
+            .nav-cta:hover { background: var(--gold-dark) !important; color: var(--white) !important; }
 
             /* ── HERO BANNER ── */
             .hero {
@@ -86,15 +84,9 @@
                 content: ''; position: absolute; inset: 0;
                 background: linear-gradient(135deg,rgba(30,27,24,0.65) 0%,rgba(30,27,24,0.3) 50%,rgba(201,168,76,0.15) 100%);
             }
-            
-            @for ($i = 1; $i <= 5; $i++)
-                .slide-{{ $i }} {
-                    background-image: url("{{ isset($banner) && $banner->{'slide_'.$i} ? asset('storage/'.$banner->{'slide_'.$i}) : storage('images/default.jpg') }}");
-                }
-                
-            @endfor
-            
-            
+
+            /* ── SLIDE BACKGROUND IMAGES REMOVED FROM CSS — now inline style on each .slide ── */
+
             .hero-content {
                 position: relative; z-index: 2;
                 height: 120%; display: flex; flex-direction: column;
@@ -261,6 +253,9 @@
                 transition: opacity 0.3s, transform 0.4s;
             }
             .cat-card:hover .cat-bg { opacity: 0.7; transform: scale(1.06); }
+
+            /* ── CATEGORY BACKGROUND IMAGES REMOVED FROM CSS — now inline style on each .cat-bg ── */
+
             .cat-info {
                 position: relative; z-index: 1; padding: 1rem 0.8rem;
                 width: 100%;
@@ -268,12 +263,6 @@
             }
             .cat-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--white); line-height: 1.2; }
             .cat-count { font-size: 0.68rem; color: var(--gold-light); letter-spacing: 0.06em; margin-top: 0.15rem; }
-            .cat-venues   { background-image: url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&q=701'); }
-            .cat-catering { background-image: url('https://images.unsplash.com/photo-1555244162-803834f70033?w=400&q=70'); }
-            .cat-photo    { background-image: url('https://images.unsplash.com/photo-1500541374084-6b26a9d1e5c9?w=400&q=70'); }
-            .cat-flowers  { background-image: url('https://images.unsplash.com/photo-1487530811015-780a5b16f8c1?w=400&q=70'); }
-            .cat-music    { background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=70'); }
-            .cat-decor    { background-image: url('https://images.unsplash.com/photo-1478146059778-26028b07395a?w=400&q=70'); }
 
             /* ── HOW IT WORKS ── */
             .how-section {
@@ -311,14 +300,12 @@
                 border-top: 1px solid #F0EBE5;
                 border-bottom: 1px solid #F0EBE5;
             }
-            /* Gold accent bar at top of CTA */
             .cta-section::before {
                 content: '';
                 position: absolute;
                 top: 0; left: 8%; right: 8%; height: 1px;
                 background: linear-gradient(90deg, transparent, var(--gold), transparent);
             }
-            /* Gold radial glow */
             .cta-section::after {
                 content: '';
                 position: absolute; inset: 0;
@@ -337,8 +324,6 @@
                 position: relative; z-index: 1;
             }
             .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
-
-            /* CTA buttons on white background */
             .cta-section .btn-primary { background: var(--gold); color: var(--charcoal); }
             .cta-section .btn-primary:hover { background: var(--gold-dark); color: var(--white); }
             .cta-section .btn-ghost {
@@ -435,10 +420,8 @@
                 .mobile-menu { display: flex; }
             }
         </style>
-@endif
     </head>
     <body>
-        @if($banner)
 
         <!-- NAVBAR -->
         <nav class="main-nav">
@@ -447,7 +430,7 @@
                 <a href="{{ route('welcomepage.welcome') }} " class="active">Home</a>
                 <a href="{{ route('welcomepage.profile') }}">Suppliers</a>
                 <a href="#">Events</a>
-                <a href="#">Packages</a>
+                <a href="{{route('welcomepage.package')}}">Packages</a>
                 <a href="{{ route('welcomepage.gallery') }}">Gallery</a>
                 @if (Route::has('login'))
                     @auth
@@ -470,7 +453,7 @@
             <a href="{{ route('welcomepage.welcome') }}" onclick="closeMenu()">Home</a>
             <a href="{{ route('welcomepage.profile') }}" onclick="closeMenu()">Suppliers</a>
             <a href="#" onclick="closeMenu()">Events</a>
-            <a href="#" onclick="closeMenu()">Packages</a>
+            <a href="{{route('welcomepage.package')}}" onclick="closeMenu()">Packages</a>
             <a href="{{route('welcomepage.gallery')}}" onclick="closeMenu()">Gallery</a>
             @if (Route::has('login'))
                 @auth
@@ -486,17 +469,24 @@
 
         <!-- HERO BANNER -->
         <section class="hero">
+            {{-- ════════════════════════════════════════════════════════
+                 BANNER SLIDES — background images set via inline style
+                 Replace the URL values below to change slide photos.
+            ════════════════════════════════════════════════════════ --}}
             <div class="banner-slides">
-                <div class="slide slide-1 active"></div>
-                <div class="slide slide-2"></div>
-                <div class="slide slide-3"></div>
-                <div class="slide slide-4"></div>
-                <div class="slide slide-5"></div>
+                @for ($i = 1; $i <= 5; $i++)
+                    <div class="slide {{ $i == 1 ? 'active' : '' }}"
+                        style="background-image: url('{{ isset($banner) && $banner->{'slide_'.$i} 
+                            ? asset('storage/'.$banner->{'slide_'.$i}) 
+                            : asset('images/default.jpg') }}');">
+                    </div>
+                @endfor
             </div>
+
             <div class="hero-content">
-                <div class="hero-tag">{{ $banner->hero_tag }}</div>
-                <h1 class="hero-title">{{ $banner->hero_title_1 }}<br><em>{{ $banner->hero_title_2 }}</em></h1>
-                <p class="hero-subtitle">{{ $banner->hero_subtitle }}</p>
+                <div class="hero-tag">{{ $banner->hero_tag ?? 'Premium Supplier Platform' }}</div>
+                <h1 class="hero-title">{{ $banner->hero_title_1 ?? 'Your Perfect Event,' }}<br><em>{{ $banner->hero_title_2 ?? 'Beautifully Managed' }}</em></h1>
+                <p class="hero-subtitle">{{ $banner->hero_subtitle ?? 'Connect with the finest venues, caterers, photographers, and decorators. ' }}</p>
                 <div class="hero-actions">
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}" class="btn-primary">Start Planning Free</a>
@@ -537,7 +527,7 @@
         <section class="features-section" id="features">
             <div class="reveal">
                 <div class="section-eyebrow">Why Bikol's Craft</div>
-                <h2 class="section-title">Everything you need to create<br><em>unforgettable moments</em></h2>
+                <h2 class="section-title">{{ $section->section_title ?? 'Default' }}<br><em>{{ $section->section_subtitle ?? 'Default' }}</em></h2>
             </div>
             <div class="features-grid reveal">
                 <div class="feature-card">
@@ -546,8 +536,8 @@
                         <path d="M16 14V10M32 14V10M8 22h32"/>
                         <path d="M17 30l4 4 10-10"/>
                     </svg>
-                    <div class="feature-title">Smart Booking System</div>
-                    <p class="feature-desc">Manage all supplier bookings, contracts, and payment schedules from a single, intuitive dashboard.</p>
+                    <div class="feature-title">{{ $section->feature_title ?? 'Default' }}</div>
+                    <p class="feature-desc">{{ $section->feature_desc ?? 'Default' }}</p>
                 </div>
                 <div class="feature-card">
                     <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -555,16 +545,16 @@
                         <path d="M8 40c0-8.837 7.163-16 16-16s16 7.163 16 16"/>
                         <path d="M30 14l8-8M34 10l4 4"/>
                     </svg>
-                    <div class="feature-title">Supplier Profiles & Reviews</div>
-                    <p class="feature-desc">Explore detailed supplier portfolios, verified reviews, and real-time availability before committing.</p>
+                    <div class="feature-title">{{ $section->feature_title2 ?? 'Default' }}</div>
+                    <p class="feature-desc">{{ $section->feature_desc2 ?? 'Default' }}</p>
                 </div>
                 <div class="feature-card">
                     <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M6 24L24 6l18 18v18H30V30H18v12H6z"/>
                         <circle cx="24" cy="30" r="3"/>
                     </svg>
-                    <div class="feature-title">Venue Discovery</div>
-                    <p class="feature-desc">Filter by capacity, location, style, and budget across thousands of premium event venues nationwide.</p>
+                    <div class="feature-title">{{ $section->feature_title3 ?? 'Default' }}</div>
+                    <p class="feature-desc">{{ $section->feature_desc3 ?? 'Default' }}</p>
                 </div>
                 <div class="feature-card">
                     <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -572,8 +562,8 @@
                         <path d="M18 36v4M30 36v4M12 40h24"/>
                         <path d="M14 20h20M14 26h12"/>
                     </svg>
-                    <div class="feature-title">Budget Planner</div>
-                    <p class="feature-desc">Track spending across all categories, compare quotes, and stay within budget with real-time breakdowns.</p>
+                    <div class="feature-title">{{ $section->feature_title4 ?? 'Default' }}</div>
+                    <p class="feature-desc">{{ $section->feature_desc4 ?? 'Default' }}</p>
                 </div>
                 <div class="feature-card">
                     <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -581,16 +571,16 @@
                         <path d="M24 20v8M20 24h8"/>
                         <circle cx="24" cy="24" r="10"/>
                     </svg>
-                    <div class="feature-title">Collaboration Hub</div>
-                    <p class="feature-desc">Invite your planner, family, and wedding party to collaborate, comment, and approve selections together.</p>
+                    <div class="feature-title">{{ $section->feature_title5 ?? 'Default' }}</div>
+                    <p class="feature-desc">{{ $section->feature_desc5 ?? 'Default' }}</p>
                 </div>
                 <div class="feature-card">
                     <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M24 4l4.5 9 10 1.5-7.25 7 1.75 10L24 27l-9 4.5 1.75-10L9.5 14.5l10-1.5z"/>
                         <circle cx="24" cy="24" r="6"/>
                     </svg>
-                    <div class="feature-title">Premium Packages</div>
-                    <p class="feature-desc">Curated bundles from top-tier suppliers designed for different event styles, sizes, and budgets.</p>
+                    <div class="feature-title">{{ $section->feature_title6 ?? 'Default' }}</div>
+                    <p class="feature-desc">{{ $section->feature_desc6 ?? 'Default' }}</p>
                 </div>
             </div>
         </section>
@@ -601,13 +591,60 @@
                 <div class="section-eyebrow">Browse by Category</div>
                 <h2 class="section-title">Find every supplier<br><em>for your dream event</em></h2>
             </div>
+
+            {{-- ════════════════════════════════════════════════════════
+                 CATEGORY CARDS — background images set via inline style
+                 Replace the URL values below to change category photos.
+            ════════════════════════════════════════════════════════ --}}
             <div class="cats-grid reveal">
-                <div class="cat-card"><div class="cat-bg cat-venues"></div><div class="cat-info"><div class="cat-name">Venues</div><div class="cat-count">480 Listings</div></div></div>
-                <div class="cat-card"><div class="cat-bg cat-catering"></div><div class="cat-info"><div class="cat-name">Catering</div><div class="cat-count">324 Listings</div></div></div>
-                <div class="cat-card"><div class="cat-bg cat-photo"></div><div class="cat-info"><div class="cat-name">Photography</div><div class="cat-count">612 Listings</div></div></div>
-                <div class="cat-card"><div class="cat-bg cat-flowers"></div><div class="cat-info"><div class="cat-name">Florals</div><div class="cat-count">290 Listings</div></div></div>
-                <div class="cat-card"><div class="cat-bg cat-music"></div><div class="cat-info"><div class="cat-name">Music & DJ</div><div class="cat-count">218 Listings</div></div></div>
-                <div class="cat-card"><div class="cat-bg cat-decor"></div><div class="cat-info"><div class="cat-name">Décor</div><div class="cat-count">376 Listings</div></div></div>
+                <div class="cat-card">
+                    <div class="cat-bg"
+                         style="background-image: url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&q=70');"></div>
+                    <div class="cat-info">
+                        <div class="cat-name">Venues</div>
+                        <div class="cat-count">480 Listings</div>
+                    </div>
+                </div>
+                <div class="cat-card">
+                    <div class="cat-bg"
+                         style="background-image: url('https://images.unsplash.com/photo-1555244162-803834f70033?w=400&q=70');"></div>
+                    <div class="cat-info">
+                        <div class="cat-name">Catering</div>
+                        <div class="cat-count">324 Listings</div>
+                    </div>
+                </div>
+                <div class="cat-card">
+                    <div class="cat-bg"
+                         style="background-image: url('https://images.unsplash.com/photo-1500541374084-6b26a9d1e5c9?w=400&q=70');"></div>
+                    <div class="cat-info">
+                        <div class="cat-name">Photography</div>
+                        <div class="cat-count">612 Listings</div>
+                    </div>
+                </div>
+                <div class="cat-card">
+                    <div class="cat-bg"
+                         style="background-image: url('https://images.unsplash.com/photo-1487530811015-780a5b16f8c1?w=400&q=70');"></div>
+                    <div class="cat-info">
+                        <div class="cat-name">Florals</div>
+                        <div class="cat-count">290 Listings</div>
+                    </div>
+                </div>
+                <div class="cat-card">
+                    <div class="cat-bg"
+                         style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=70');"></div>
+                    <div class="cat-info">
+                        <div class="cat-name">Music & DJ</div>
+                        <div class="cat-count">218 Listings</div>
+                    </div>
+                </div>
+                <div class="cat-card">
+                    <div class="cat-bg"
+                         style="background-image: url('https://images.unsplash.com/photo-1478146059778-26028b07395a?w=400&q=70');"></div>
+                    <div class="cat-info">
+                        <div class="cat-name">Décor</div>
+                        <div class="cat-count">376 Listings</div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -664,7 +701,7 @@
             </div>
             <div class="footer-copy">© {{ date('Y') }} Bikol'sCraft. All rights reserved.</div>
         </footer>
-    @endif
+
         <script>
             (function () {
                 const slides = document.querySelectorAll('.slide');

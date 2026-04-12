@@ -4,484 +4,211 @@
             {{ __('Suppliers') }}
         </h2>
     </x-slot>
+
     <style>
-        /* ── Page-level variables (inherits from app layout) ── */
-        .bv-page-header {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .bv-page-title {
-            font-family: var(--font-display);
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--charcoal);
-            line-height: 1.1;
-        }
-        .bv-page-title em { font-style: italic; color: var(--gold-dark); }
-        .bv-page-sub {
-            font-size: 0.8rem;
-            color: var(--warm-grey);
-            margin-top: 0.3rem;
-            letter-spacing: 0.02em;
-        }
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap');
+    :root {
+        --gold:#C9A84C;--gold-dark:#8A6A1F;--gold-light:rgba(201,168,76,0.1);
+        --ivory:#FAF7F2;--charcoal:#1E1B18;--warm-grey:#706B65;
+        --border:#E5DDD5;--white:#FFFFFF;
+        --font-display:'Playfair Display',Georgia,serif;
+        --font-body:'DM Sans',sans-serif;
+    }
 
-        /* ── Add button ── */
-        .bv-btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--charcoal);
-            color: var(--white);
-            font-family: var(--font-body);
-            font-size: 0.82rem;
-            font-weight: 500;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            padding: 0.65rem 1.4rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-            text-decoration: none;
-        }
-        .bv-btn-primary:hover {
-            background: var(--gold-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(201,168,76,0.25);
-        }
-        .bv-btn-primary svg { width: 15px; height: 15px; }
+    /* ── Header ── */
+    .bv-page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:.75rem; }
+    .bv-page-title { font-family:var(--font-display); font-size:1.65rem; font-weight:700; color:var(--charcoal); line-height:1.15; }
+    .bv-page-title em { font-style:italic; color:var(--gold-dark); }
+    .bv-page-sub { font-size:.76rem; color:var(--warm-grey); margin-top:.2rem; }
+    .bv-badge { font-size:.65rem; font-weight:500; letter-spacing:.07em; text-transform:uppercase; color:var(--gold-dark); background:var(--gold-light); border:1px solid rgba(201,168,76,.3); padding:.28rem .75rem; border-radius:20px; white-space:nowrap; }
 
-        /* ── Table card ── */
-        .bv-card {
-            background: var(--white);
-            border-radius: 12px;
-            border: 1px solid #F0EBE5;
-            overflow: hidden;
-            box-shadow: 0 1px 4px rgba(30,27,24,0.05);
-        }
+    /* ── Card ── */
+    .bv-card { background:var(--white); border:1.5px solid var(--border); border-radius:14px; overflow:hidden; }
 
-        /* ── Table ── */
-        .bv-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-        .bv-table thead {
-            background: var(--ivory);
-            border-bottom: 1px solid #F0EBE5;
-        }
-        .bv-table thead th {
-            padding: 0.9rem 1.5rem;
-            text-align: left;
-            font-size: 0.68rem;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--warm-grey);
-            white-space: nowrap;
-        }
-        .bv-table thead th:last-child { text-align: right; }
-        .bv-table tbody tr {
-            border-bottom: 1px solid #F7F3EF;
-            transition: background 0.15s;
-        }
-        .bv-table tbody tr:last-child { border-bottom: none; }
-        .bv-table tbody tr:hover { background: rgba(250,247,242,0.7); }
-        .bv-table tbody td {
-            padding: 1rem 1.5rem;
-            color: var(--charcoal);
-            vertical-align: middle;
-        }
-        .bv-table tbody td:last-child { text-align: right; }
+    /* ── Scroll hint — mobile only ── */
+    .scroll-hint { display:none; align-items:center; gap:.4rem; font-size:.68rem; color:var(--warm-grey); padding:.55rem 1rem .1rem; font-family:var(--font-body); }
+    .scroll-hint svg { width:13px; height:13px; flex-shrink:0; }
+    @media(max-width:700px) { .scroll-hint { display:flex; } }
 
-        /* Row number badge */
-        .bv-row-num {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px; height: 24px;
-            background: var(--ivory);
-            border: 1px solid #E5DDD5;
-            border-radius: 50%;
-            font-size: 0.68rem;
-            font-weight: 600;
-            color: var(--warm-grey);
-        }
+    /* ── Scrollable wrapper ── */
+    .tbl-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; scrollbar-color:rgba(201,168,76,.4) transparent; }
+    .tbl-wrap::-webkit-scrollbar { height:4px; }
+    .tbl-wrap::-webkit-scrollbar-track { background:transparent; }
+    .tbl-wrap::-webkit-scrollbar-thumb { background:rgba(201,168,76,.45); border-radius:4px; }
 
-        /* Name cell */
-        .bv-location-name {
-            font-weight: 600;
-            color: var(--charcoal);
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-        }
-        .bv-location-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--gold);
-            flex-shrink: 0;
-        }
+    /* ── Table ── */
+    .bv-table { width:100%; min-width:780px; border-collapse:collapse; font-family:var(--font-body); }
+    .bv-table thead { background:var(--ivory); border-bottom:1.5px solid var(--border); }
+    .bv-table thead th { padding:.8rem 1rem; font-size:.6rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--warm-grey); text-align:left; white-space:nowrap; }
+    .bv-table thead th:first-child { border-left:3px solid var(--gold); }
+    .bv-table thead th:last-child { text-align:right; }
+    .bv-table tbody tr { border-bottom:1px solid #F0EBE5; transition:background .15s; }
+    .bv-table tbody tr:last-child { border-bottom:none; }
+    .bv-table tbody tr:hover { background:rgba(201,168,76,.03); }
+    .bv-table tbody td { padding:.85rem 1rem; font-size:.82rem; color:var(--charcoal); vertical-align:middle; }
+    .bv-table tbody td:first-child { border-left:3px solid transparent; }
+    .bv-table tbody tr:hover td:first-child { border-left-color:rgba(201,168,76,.45); }
+    .bv-table tbody td:last-child { text-align:right; }
 
-        /* Description cell */
-        .bv-location-desc {
-            color: var(--warm-grey);
-            font-size: 0.82rem;
-            max-width: 380px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    /* ── Cells ── */
+    .bv-row-num { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; background:var(--ivory); border:1px solid var(--border); border-radius:50%; font-size:.65rem; font-weight:700; color:var(--warm-grey); }
+    .bv-avatar { width:38px; height:38px; border-radius:8px; background:rgba(201,168,76,.12); border:1.5px solid rgba(201,168,76,.25); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:.78rem; font-weight:700; color:var(--gold-dark); flex-shrink:0; overflow:hidden; }
+    .bv-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+    .bv-cell-name { font-family:var(--font-display); font-weight:700; font-size:.88rem; color:var(--charcoal); white-space:nowrap; }
+    .bv-cell-sub { font-size:.72rem; color:var(--warm-grey); margin-top:.1rem; }
+    .bv-cell-muted { color:var(--warm-grey); font-size:.8rem; }
+    .bv-cell-addr { max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--warm-grey); font-size:.8rem; }
+    .bv-biz-badge { display:inline-flex; padding:.22rem .6rem; border-radius:20px; font-size:.67rem; font-weight:500; background:var(--gold-light); color:var(--gold-dark); border:1px solid rgba(201,168,76,.22); white-space:nowrap; }
+    .bv-cell-email { font-size:.78rem; color:var(--warm-grey); font-style:italic; }
 
-        /* Action buttons */
-        .bv-actions {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
-        .bv-btn-edit {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.9rem;
-            font-size: 0.76rem;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            border-radius: 6px;
-            border: 1.5px solid #E5DDD5;
-            background: var(--white);
-            color: var(--charcoal);
-            text-decoration: none;
-            cursor: pointer;
-            font-family: var(--font-body);
-            transition: border-color 0.2s, color 0.2s, background 0.2s;
-        }
-        .bv-btn-edit svg { width: 12px; height: 12px; }
-        .bv-btn-edit:hover {
-            border-color: var(--gold);
-            color: var(--gold-dark);
-            background: rgba(201,168,76,0.06);
-        }
-        .bv-btn-delete {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.9rem;
-            font-size: 0.76rem;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            border-radius: 6px;
-            border: 1.5px solid #FADBD8;
-            background: var(--white);
-            color: #C0392B;
-            cursor: pointer;
-            font-family: var(--font-body);
-            transition: border-color 0.2s, background 0.2s;
-        }
-        .bv-btn-delete svg { width: 12px; height: 12px; }
-        .bv-btn-delete:hover { border-color: #C0392B; background: #FFF5F5; }
+    /* ── Action buttons ── */
+    .bv-actions { display:inline-flex; align-items:center; gap:.45rem; justify-content:flex-end; }
+    .bv-btn-edit { display:inline-flex; align-items:center; gap:.35rem; padding:.35rem .8rem; font-size:.73rem; font-weight:500; border-radius:6px; border:1.5px solid var(--border); background:var(--white); color:var(--charcoal); text-decoration:none; cursor:pointer; font-family:var(--font-body); transition:border-color .18s,color .18s,background .18s; white-space:nowrap; }
+    .bv-btn-edit svg { width:11px; height:11px; }
+    .bv-btn-edit:hover { border-color:var(--gold); color:var(--gold-dark); background:rgba(201,168,76,.06); }
+    .bv-btn-delete { display:inline-flex; align-items:center; gap:.35rem; padding:.35rem .8rem; font-size:.73rem; font-weight:500; border-radius:6px; border:1.5px solid #FADBD8; background:var(--white); color:#C0392B; cursor:pointer; font-family:var(--font-body); transition:border-color .18s,background .18s; white-space:nowrap; }
+    .bv-btn-delete svg { width:11px; height:11px; }
+    .bv-btn-delete:hover { border-color:#C0392B; background:#FFF5F5; }
 
-        /* Empty state */
-        .bv-empty {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--warm-grey);
-        }
-        .bv-empty svg { width: 48px; height: 48px; color: #DDD4C8; margin: 0 auto 1rem; display: block; }
-        .bv-empty-title { font-family: var(--font-display); font-size: 1.1rem; color: var(--charcoal); margin-bottom: 0.4rem; }
-        .bv-empty-sub { font-size: 0.82rem; }
+    /* ── Empty state ── */
+    .bv-empty { text-align:center; padding:4rem 2rem; color:var(--warm-grey); }
+    .bv-empty svg { width:44px; height:44px; color:#DDD4C8; margin:0 auto .85rem; display:block; }
+    .bv-empty-title { font-family:var(--font-display); font-size:1.05rem; color:var(--charcoal); margin-bottom:.3rem; }
+    .bv-empty-sub { font-size:.8rem; }
 
-        /* ── MODAL ── */
-        .bv-modal-backdrop {
-            position: fixed; inset: 0;
-            background: rgba(30,27,24,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 500;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .bv-modal-backdrop.open {
-            display: flex;
-            animation: bvFadeIn 0.2s ease;
-        }
-        .bv-modal {
-            background: var(--white);
-            border-radius: 14px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 0 24px 64px rgba(30,27,24,0.2);
-            overflow: hidden;
-            animation: bvSlideUp 0.25s ease;
-        }
-        .bv-modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.4rem 1.6rem 1.2rem;
-            border-bottom: 1px solid #F0EBE5;
-        }
-        .bv-modal-title {
-            font-family: var(--font-display);
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--charcoal);
-        }
-        .bv-modal-title em { font-style: italic; color: var(--gold-dark); }
-        .bv-modal-close {
-            width: 30px; height: 30px;
-            border-radius: 6px;
-            border: 1px solid #E5DDD5;
-            background: var(--ivory);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            color: var(--warm-grey);
-            transition: background 0.2s, color 0.2s;
-            font-size: 1rem; line-height: 1;
-        }
-        .bv-modal-close:hover { background: #F0EBE5; color: var(--charcoal); }
-        .bv-modal-body { padding: 1.5rem 1.6rem; }
-        .bv-modal-footer {
-            padding: 1rem 1.6rem 1.4rem;
-            display: flex;
-            gap: 0.75rem;
-            justify-content: flex-end;
-        }
-
-        /* Form fields */
-        .bv-field { margin-bottom: 1.1rem; }
-        .bv-label {
-            display: block;
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--warm-grey);
-            margin-bottom: 0.45rem;
-        }
-        .bv-input,
-        .bv-textarea {
-            width: 100%;
-            padding: 0.65rem 0.9rem;
-            background: var(--ivory);
-            border: 1.5px solid #E5DDD5;
-            border-radius: 8px;
-            font-family: var(--font-body);
-            font-size: 0.85rem;
-            color: var(--charcoal);
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .bv-input:focus,
-        .bv-textarea:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
-            background: var(--white);
-        }
-        .bv-input::placeholder,
-        .bv-textarea::placeholder { color: #C0B8B0; }
-        .bv-textarea { resize: vertical; min-height: 90px; }
-
-        /* Cancel btn */
-        .bv-btn-cancel {
-            padding: 0.62rem 1.2rem;
-            border-radius: 6px;
-            border: 1.5px solid #E5DDD5;
-            background: var(--white);
-            font-family: var(--font-body);
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--warm-grey);
-            cursor: pointer;
-            transition: border-color 0.2s, color 0.2s;
-        }
-        .bv-btn-cancel:hover { border-color: var(--gold); color: var(--charcoal); }
-
-        /* Save btn */
-        .bv-btn-save {
-            padding: 0.62rem 1.5rem;
-            border-radius: 6px;
-            border: none;
-            background: var(--charcoal);
-            font-family: var(--font-body);
-            font-size: 0.82rem;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            color: var(--white);
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s;
-        }
-        .bv-btn-save:hover {
-            background: var(--gold-dark);
-            box-shadow: 0 4px 12px rgba(201,168,76,0.2);
-        }
-
-        @keyframes bvFadeIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-        @keyframes bvSlideUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Success alert */
-        .bv-alert-success {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            background: #F0FDF4;
-            border: 1px solid #A7F3D0;
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            font-size: 0.82rem;
-            color: #065F46;
-            margin-bottom: 1.5rem;
-        }
-        .bv-alert-success svg { width: 16px; height: 16px; color: #10B981; flex-shrink: 0; }
+    /* ── Alert ── */
+    .bv-alert { display:flex; align-items:center; gap:.6rem; background:#F0FDF4; border:1px solid #A7F3D0; border-radius:8px; padding:.7rem 1rem; font-size:.8rem; color:#065F46; margin-bottom:1.4rem; font-family:var(--font-body); }
+    .bv-alert svg { width:15px; height:15px; color:#10B981; flex-shrink:0; }
     </style>
 
-    {{-- Success message --}}
+    <div class="p-6">
+
         @if(session('success'))
-        <div class="bv-alert-success">
+        <div class="bv-alert">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 10l4 4 6-6"/>
-                <circle cx="10" cy="10" r="8"/>
+                <path d="M5 10l4 4 6-6"/><circle cx="10" cy="10" r="8"/>
             </svg>
             {{ session('success') }}
         </div>
         @endif
 
-    <div class="page-content">
-
-        {{-- Page header --}}
         <div class="bv-page-header">
             <div>
                 <h1 class="bv-page-title">Supplier <em>Management</em></h1>
-                
+                <p class="bv-page-sub">View and manage all registered suppliers</p>
             </div>
-        </div>
-
-        {{-- Table card --}}
-        <div class="bv-card">
-            @if(isset($supplierProfiles) && $supplierProfiles->count())
-            <table class="bv-table">
-                <thead>
-                    <tr>
-                        <th style="width:40px">#</th>
-                        <th style="width:40px">Profile</th>
-                        <th>Name</th>
-                        <th>Phone Number</th>
-                        <th>Address</th>
-                        <th>Business Name</th>
-                        <th>Email</th>
-                        
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($supplierProfiles as $i => $supplierProfiles)
-                    <tr>
-                        <td><span class="bv-row-num">{{ $i + 1 }}</span></td>
-
-                         <td class="border px-4 py-2">
-                            @if($supplierProfiles->photo)
-                                <img 
-                                    src="{{ asset('storage/' . $supplierProfiles->photo) }}" 
-                                    alt="Supplier Image"
-                                    class="w-16 h-16 object-cover rounded"
-                                >
-                            @else
-                                <span>No Image</span>
-                            @endif
-                        </td>
-                         
-                        <td>
-                            <div class="bv-supplierProfiles-name">
-                                <span class="bv-supplierProfiles-dot"></span>
-                                {{ $supplierProfiles->first_name }} {{ $supplierProfiles->last_name }}
-                            </div>
-                        </td>
-                         <td>
-                            <div class="bv-supplierProfiles-name">
-                                <span class="bv-supplierProfiles-dot"></span>
-                                {{ $supplierProfiles->phone }}
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="bv-supplierProfiles-name">
-                                <span class="bv-supplierProfiles-dot"></span>
-                                {{ $supplierProfiles->address }}
-                            </div>
-                        </td>
-
-                         <td>
-                            <div class="bv-supplierProfiles-name">
-                                <span class="bv-supplierProfiles-dot"></span>
-                                {{ $supplierProfiles->business_name }}
-                            </div>
-                        </td>
-                         <td>
-                            <div class="bv-supplierProfiles-name">
-                                <span class="bv-supplierProfiles-dot"></span>
-                                {{ $supplierProfiles->category }}
-                            </div>
-                        </td>
-                        
-                        <td>
-                            <div class="bv-actions">
-                                <a href="{{ route('admin.location.edit', $supplierProfiles->id) }}" class="bv-btn-edit">
-                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7">
-                                        <path d="M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z"/>
-                                    </svg>
-                                    Edit
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            @else
-            <div class="bv-empty">
-                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
-                    <rect x="8" y="12" width="32" height="28" rx="3"/>
-                    <path d="M16 22h16M16 28h10"/>
-                    <path d="M30 4l8 8M30 4h-6M30 4v6h8"/>
-                </svg>
-                <div class="bv-empty-title">No supplierProfiles yet</div>
-            </div>
+            @if(isset($supplierProfiles))
+            <span class="bv-badge">{{ $supplierProfiles->count() }} suppliers</span>
             @endif
         </div>
 
+        <div class="bv-card">
+
+            <div class="scroll-hint">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M4 10h12M10 4l6 6-6 6"/>
+                </svg>
+                Scroll sideways to see more
+            </div>
+
+            <div class="tbl-wrap">
+                @if(isset($supplierProfiles) && $supplierProfiles->count())
+                <table class="bv-table">
+                    <thead>
+                        <tr>
+                            <th style="width:36px">#</th>
+                            <th style="width:48px">Photo</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Business</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($supplierProfiles as $i => $supplier)
+                        <tr>
+                            <td><span class="bv-row-num">{{ $i + 1 }}</span></td>
+
+                            <td>
+                                <div class="bv-avatar">
+                                    @if($supplier->photo)
+                                        <img src="{{ asset('storage/' . $supplier->photo) }}"
+                                             alt="{{ $supplier->first_name }}">
+                                    @else
+                                        {{ strtoupper(substr($supplier->first_name, 0, 1) . substr($supplier->last_name, 0, 1)) }}
+                                    @endif
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="bv-cell-name">{{ $supplier->first_name }} {{ $supplier->last_name }}</div>
+                                @if($supplier->categories->count())
+                                <div class="bv-cell-sub">{{ $supplier->categories->pluck('name')->join(', ') }}</div>
+                                @endif
+                            </td>
+
+                            <td class="bv-cell-muted">{{ $supplier->phone ?? '—' }}</td>
+
+                            <td>
+                                <div class="bv-cell-addr" title="{{ $supplier->address }}">
+                                    {{ $supplier->address ?? '—' }}
+                                </div>
+                            </td>
+
+                            <td>
+                                @if($supplier->business_name)
+                                    <span class="bv-biz-badge">{{ $supplier->business_name }}</span>
+                                @else
+                                    <span class="bv-cell-muted">—</span>
+                                @endif
+                            </td>
+
+                            <td class="bv-cell-email">{{ $supplier->user->email ?? '—' }}</td>
+
+                            <td>
+                                {{--<div class="bv-actions">
+                                    <a href="{{ route('admin.supplier.edit', $supplier->id) }}"
+                                       class="bv-btn-edit">
+                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7">
+                                            <path d="M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z"/>
+                                        </svg>
+                                        Edit
+                                    </a>
+
+                                    <form action="{{ route('admin.supplier.destroy', $supplier->id) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Delete this supplier?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="bv-btn-delete">
+                                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7">
+                                                <path d="M3 4h10M5 4V3h6v1M6 7v5M10 7v5M4 4l1 9h6l1-9"/>
+                                            </svg>
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>--}}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+                @else
+                <div class="bv-empty">
+                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+                        <rect x="8" y="12" width="32" height="28" rx="3"/>
+                        <path d="M16 22h16M16 28h10"/>
+                        <circle cx="36" cy="12" r="6"/>
+                        <path d="M33 12h6M36 9v6"/>
+                    </svg>
+                    <div class="bv-empty-title">No suppliers yet</div>
+                    <div class="bv-empty-sub">Registered suppliers will appear here</div>
+                </div>
+                @endif
+            </div>
+        </div>
+
     </div>
-
-
-    <script>
-    function openModal() {
-        const m = document.getElementById('locationModal');
-        m.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        document.getElementById('locationName').focus();
-    }
-    function closeModal() {
-        document.getElementById('locationModal').classList.remove('open');
-        document.body.style.overflow = '';
-    }
-    // Close on backdrop click
-    document.getElementById('locationModal').addlocationListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-    // Close on Escape
-    document.addlocationListener('keydown', function(e) {
-        if (e.key === 'Escape') closeModal();
-    });
-    </script>
 </x-app-layout>

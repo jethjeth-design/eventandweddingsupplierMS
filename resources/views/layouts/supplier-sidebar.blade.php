@@ -55,7 +55,7 @@
                 <div class="sidebar-divider"></div>
                 <div class="nav-group-label">Business</div>
  
-                <a href="#" class="nav-item {{ request()->is('supplier/packages*') ? 'active' : '' }}">
+                <a href="{{route('supplier.package.index')}}" class="nav-item {{ request()->is('supplier/packages*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <path d="M10 2l2.4 4.9 5.4.8-3.9 3.8.9 5.3L10 14.3l-4.8 2.5.9-5.3L2.2 7.7l5.4-.8z"/>
                     </svg>
@@ -73,7 +73,7 @@
                     <span class="nav-tooltip">Availability</span>
                 </a>
  
-                <a href="#" class="nav-item {{ request()->is('supplier/gallery*') ? 'active' : '' }}">
+                <a href="{{route('supplier.portfolio.gallery')}}" class="nav-item {{ request()->is('supplier/gallery*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <rect x="2" y="4" width="16" height="12" rx="2"/>
                         <circle cx="7" cy="9" r="1.5"/>
