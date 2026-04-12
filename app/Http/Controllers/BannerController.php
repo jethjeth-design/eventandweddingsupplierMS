@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Banner;
+use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 class BannerController extends Controller
@@ -13,7 +14,9 @@ class BannerController extends Controller
     public function index()
     {
         $banner = Banner::latest()->first();
-        return view('admin.homepage.banner', compact('banner'));
+        // get section (since you only have 1)
+        $section = Section::first();
+        return view('admin.homepage.banner', compact('banner','section'));
     }
 
     /**
@@ -66,7 +69,35 @@ class BannerController extends Controller
 
     Banner::create($data);
          
+        $sections = Section::first() ?? new Section();
 
+        $sections->section_title = $request->section_title;
+        $sections->section_subtitle = $request->section_subtitle;
+
+        $sections->feature_title = $request->feature_title;
+        $sections->feature_desc = $request->feature_desc;
+
+        $sections->feature_title2 = $request->feature_title2;
+        $sections->feature_desc2 = $request->feature_desc2;
+
+        $sections->feature_title3 = $request->feature_title3;
+        $sections->feature_desc3 = $request->feature_desc3;
+
+        $sections->feature_title4 = $request->feature_title4;
+        $sections->feature_desc4 = $request->feature_desc4;
+
+        $sections->feature_title5 = $request->feature_title5;
+        $sections->feature_desc5 = $request->feature_desc5;
+
+        $sections->feature_title6 = $request->feature_title6;
+        $sections->feature_desc6 = $request->feature_desc6;
+
+        $sections->feature_title7 = $request->feature_title7;
+        $sections->feature_desc7 = $request->feature_desc7;
+
+        $sections->save();
+
+    
         return redirect()->route('admin.homepage.banners')->with('success', 'Banner created successfully.');
     }
 
@@ -134,10 +165,37 @@ class BannerController extends Controller
         }
     }
 
-    // ✅ SAVE IMAGE CHANGES
-    $banner->save();
+        // ✅ SAVE IMAGE CHANGES
+        $banner->save();
+        
+        $section = Section::first() ?? new Section();
 
-            return redirect()->route('admin.homepage.banners')->with('success', 'Banner updated successfully.');
+        $section->fill([
+            'section_title' => $request->section_title,
+            'section_subtitle' => $request->section_subtitle,
+
+            'feature_title' => $request->feature_title,
+            'feature_desc' => $request->feature_desc,
+
+            'feature_title2' => $request->feature_title2,
+            'feature_desc2' => $request->feature_desc2,
+
+            'feature_title3' => $request->feature_title3,
+            'feature_desc3' => $request->feature_desc3,
+
+            'feature_title4' => $request->feature_title4,
+            'feature_desc4' => $request->feature_desc4,
+
+            'feature_title5' => $request->feature_title5,
+            'feature_desc5' => $request->feature_desc5,
+
+            'feature_title6' => $request->feature_title6,
+            'feature_desc6' => $request->feature_desc6,
+        ]);
+
+        $section->save();
+
+        return redirect()->route('admin.homepage.banners')->with('success', 'Banner updated successfully.');
 
     }
 

@@ -316,6 +316,9 @@
             <h3>Select a message</h3>
             <p>Choose a conversation or inquiry from the list to view details here.</p>
         </div>
+        
+        {{--Client Details Panels--}}
+        
 
         {{-- Inquiry detail panels --}}
         @if(isset($inquiries) && $inquiries->count())
@@ -376,8 +379,8 @@
                         </div>
                     </div>
                     <div class="iq-foot">
-                        <form method="POST" action="#"
-                              onsubmit="return confirm('Delete this inquiry?')" style="display:contents;">
+                        <form method="POST" action="{{ route('inquiry.destroy', $inquiry->id) }}"
+                               style="display:contents;">
                             @csrf @method('DELETE')
                             <button type="submit" class="btn-danger">
                                 <svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3.5h10M5 3.5V2.5h4v1M4.5 3.5v7a1 1 0 001 1h3a1 1 0 001-1v-7"/></svg>

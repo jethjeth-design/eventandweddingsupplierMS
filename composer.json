@@ -30,6 +30,11 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
+        },
+        "autoload": {
+            "files": [
+                "app/Helpers/ActivityLogger.php"
+            ]
         }
     },
     "autoload-dev": {

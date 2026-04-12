@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('supplier_category', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-        });
-    }
+            $table->foreignId('supplier_id')
+            ->constrained('supplier_profiles')
+            ->cascadeOnDelete();
+
+            $table->foreignId('category_id')
+                ->constrained()
+                ->cascadeOnDelete();
+                    $table->timestamps();
+                });
+        }
 
     /**
      * Reverse the migrations.

@@ -1,12 +1,5 @@
 <x-client-layout>
 
-{{--
-    resources/views/client/browse.blade.php
-    Browse all suppliers — client dashboard view
-    Bikol's Craft gold / ivory / charcoal design system
-    Variables: $suppliers (paginated/collection), $cities, $categories
---}}
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap');
 
@@ -89,6 +82,8 @@
             padding: 0.85rem 2rem;
             display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
         }
+
+        /* ── LIVE SEARCH ── */
         .search-wrap {
             flex: 1; min-width: 200px;
             display: flex; align-items: center;
@@ -108,6 +103,28 @@
             color: var(--charcoal); outline: none;
         }
         .search-wrap input::placeholder { color: #B0A89E; }
+
+        /* Spinner inside search */
+        .search-spinner {
+            width: 14px; height: 14px; border-radius: 50%;
+            border: 2px solid var(--border-md);
+            border-top-color: var(--gold);
+            animation: spin .6s linear infinite;
+            margin-right: 0.7rem; display: none; flex-shrink: 0;
+        }
+        .search-spinner.active { display: block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Clear X button inside search */
+        .search-clear {
+            background: none; border: none; cursor: pointer;
+            color: var(--warm-grey); opacity: 0; padding: 0 0.6rem;
+            font-size: 1rem; line-height: 1; transition: opacity .15s;
+            display: flex; align-items: center;
+        }
+        .search-clear.visible { opacity: 0.5; }
+        .search-clear:hover { opacity: 1; color: var(--charcoal); }
+
         .search-btn {
             background: var(--gold); color: var(--charcoal);
             border: none; padding: 0.58rem 1.25rem;
@@ -116,6 +133,26 @@
             font-family: var(--font-body); transition: background 0.2s; white-space: nowrap;
         }
         .search-btn:hover { background: var(--gold-light); }
+
+        /* Mobile filter open button (toolbar) */
+        .filter-open-btn {
+            display: none;
+            align-items: center; gap: 0.4rem;
+            padding: 0.5rem 0.85rem;
+            background: var(--white); color: var(--charcoal);
+            border: 1px solid var(--border-md); border-radius: 3px;
+            font-size: 0.75rem; font-weight: 500; letter-spacing: 0.04em;
+            text-transform: uppercase; font-family: var(--font-body);
+            cursor: pointer; white-space: nowrap; flex-shrink: 0;
+            transition: border-color .18s, color .18s;
+        }
+        .filter-open-btn:hover { border-color: var(--gold); color: var(--gold-dark); }
+        .filter-open-btn .filter-count-badge {
+            background: var(--gold); color: var(--charcoal);
+            font-size: 0.62rem; font-weight: 700;
+            width: 17px; height: 17px; border-radius: 99px;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
 
         /* Sort tabs inline */
         .sort-tabs { display: flex; gap: 0.3rem; flex-wrap: wrap; flex-shrink: 0; }
@@ -142,19 +179,25 @@
         }
         @media (max-width: 860px) {
             .body-layout { grid-template-columns: 1fr; padding: 1.25rem 1rem 0; }
-            .sidebar { margin-right: 0; margin-bottom: 1.25rem; position: static; }
-        } 
-        
-        /* ── SIDEBAR ── */
+            .sidebar-col { display: none; } /* hidden — replaced by drawer on mobile */
+            .filter-open-btn { display: flex; }
+            .toolbar { padding: 0.75rem 1rem; }
+        }
+
+        /* ── SIDEBAR (desktop) ── */
+        .sidebar-col {
+            margin-right: 1.5rem;
+        }
+
+        /* White card wrapper — CHANGED from original bg */
         .bv-id-card {
             background: var(--white);
-                border: 1px solid var(--border);
-                border-radius: 4px;
-                padding: 1.5rem;
-                position: sticky; top: 80px;
-                margin-right: 1.5rem;
-            }
-    
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            position: sticky; top: 80px;
+        }
+
         .sb-head {
             padding: 0.85rem 1.1rem;
             border-bottom: 1px solid var(--border);
@@ -170,7 +213,7 @@
             display: flex; align-items: center; justify-content: center;
             color: var(--gold-dark); opacity: 0.7;
         }
-        .sb-section { padding: 1rem 1.1rem; border-bottom: 1px solid var(--border); }
+        .sb-section { padding: 1rem 1.1rem; border-bottom: 1px solid var(--border); background: var(--white); }
         .sb-section:last-child { border-bottom: none; }
         .sb-section-title {
             font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
@@ -245,9 +288,7 @@
         .avail-label { font-size: 0.8rem; color: var(--warm-grey); font-family: var(--font-body); }
 
         /* Reset */
-        .sb-reset {
-            padding: 0.85rem 1.1rem;
-        }
+        .sb-reset { padding: 0.85rem 1.1rem; background: var(--white); }
         .reset-btn {
             width: 100%; padding: 0.58rem;
             background: transparent; color: var(--warm-grey);
@@ -257,6 +298,84 @@
             text-decoration: none; display: block;
         }
         .reset-btn:hover { border-color: var(--gold); color: var(--gold-dark); }
+
+        /* ════════════════════════════════
+           MOBILE DRAWER FILTER
+        ════════════════════════════════ */
+        /* Overlay */
+        .drawer-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 1000;
+            background: rgba(30,27,24,0.5);
+            backdrop-filter: blur(2px);
+            animation: fadeOverlay .2s ease;
+        }
+        .drawer-overlay.open { display: block; }
+        @keyframes fadeOverlay { from { opacity:0; } to { opacity:1; } }
+
+        /* Drawer panel */
+        .filter-drawer {
+            position: fixed; top: 0; left: 0; bottom: 0;
+            width: min(300px, 88vw);
+            background: var(--white);
+            z-index: 1001;
+            display: flex; flex-direction: column;
+            transform: translateX(-100%);
+            transition: transform .28s cubic-bezier(.4,0,.2,1);
+            overflow: hidden;
+        }
+        .filter-drawer.open { transform: translateX(0); }
+
+        /* Drawer header */
+        .drawer-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem 1.1rem;
+            background: var(--charcoal);
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+            flex-shrink: 0;
+            position: relative;
+        }
+        .drawer-head::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        .drawer-head-title {
+            display: flex; align-items: center; gap: 0.5rem;
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.16em;
+            text-transform: uppercase; color: var(--gold); font-family: var(--font-body);
+        }
+        .drawer-head-title svg { opacity: .7; }
+        .drawer-close {
+            width: 30px; height: 30px; border-radius: 3px;
+            background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--gold); transition: background .18s;
+        }
+        .drawer-close:hover { background: rgba(201,168,76,0.22); }
+
+        /* Drawer scrollable body */
+        .drawer-body {
+            flex: 1; overflow-y: auto; background: var(--white);
+        }
+        .drawer-body::-webkit-scrollbar { width: 3px; }
+        .drawer-body::-webkit-scrollbar-thumb { background: var(--border-md); }
+
+        /* Drawer footer */
+        .drawer-footer {
+            border-top: 1px solid var(--border);
+            padding: 0.85rem 1.1rem;
+            background: var(--white); flex-shrink: 0;
+        }
+        .drawer-apply-btn {
+            width: 100%; padding: 0.65rem;
+            background: var(--gold); color: var(--charcoal);
+            border: none; border-radius: 3px;
+            font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em;
+            text-transform: uppercase; cursor: pointer; font-family: var(--font-body);
+            transition: background .18s;
+        }
+        .drawer-apply-btn:hover { background: var(--gold-light); }
 
         /* ── CONTENT AREA ── */
         .content-area { min-width: 0; }
@@ -268,6 +387,18 @@
         }
         .result-count { font-size: 0.8rem; color: var(--warm-grey); font-family: var(--font-body); }
         .result-count strong { color: var(--charcoal); font-weight: 600; }
+
+        /* Live search no-results inline */
+        .live-no-results {
+            display: none;
+            grid-column: 1 / -1;
+            text-align: center; padding: 3rem 2rem;
+            background: var(--white);
+            border: 1px solid var(--border); border-radius: 4px;
+        }
+        .live-no-results svg { margin: 0 auto 0.75rem; display: block; opacity: .3; color: var(--gold-dark); }
+        .live-no-results h3 { font-family: var(--font-display); font-size: 1.1rem; color: var(--charcoal); margin-bottom: .3rem; }
+        .live-no-results p { font-size: 0.83rem; color: var(--warm-grey); font-family: var(--font-body); }
 
         /* ── SUPPLIER GRID ── */
         .sup-grid {
@@ -291,7 +422,6 @@
             transform: translateY(-3px);
             border-color: rgba(201,168,76,0.35);
         }
-        /* Gold slide-in top bar */
         .sup-card::before {
             content: ''; position: absolute;
             top: 0; left: 0; right: 0; height: 2px; z-index: 1;
@@ -471,14 +601,117 @@
         /* ── REVEAL ── */
         .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
         .reveal.visible { opacity: 1; transform: none; }
+
+        /* Live-search hidden card */
+        .sup-card.ls-hidden { display: none !important; }
     </style>
 
+    {{-- ════════════════════════════════════════
+         MOBILE FILTER DRAWER
+    ════════════════════════════════════════ --}}
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
+    <div class="filter-drawer" id="filter-drawer">
+        <div class="drawer-head">
+            <div class="drawer-head-title">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+                </svg>
+                Filters
+            </div>
+            <button class="drawer-close" onclick="closeDrawer()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="drawer-body">
+            {{-- same form contents mirrored for mobile --}}
+            <form method="GET" action="{{ request()->url() }}" id="drawer-filter-form">
+                @if(request('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
+                @if(request('sort'))
+                    <input type="hidden" name="sort" value="{{ request('sort') }}">
+                @endif
+
+                @if(isset($cities) && $cities->count())
+                <div class="sb-section">
+                    <div class="sb-section-title">Location</div>
+                    @php
+                        $selCities = request()->input('city', []);
+                        if (!is_array($selCities)) $selCities = [$selCities];
+                    @endphp
+                    @foreach($cities->take(7) as $city)
+                    <label class="check-item">
+                        <input type="checkbox" name="city[]" value="{{ $city }}"
+                            {{ in_array($city, $selCities) ? 'checked' : '' }}>
+                        <span class="cb"></span>
+                        <span class="check-label">{{ $city }}</span>
+                    </label>
+                    @endforeach
+                </div>
+                @endif
+
+               @if(isset($categories) && $categories->count())
+                    <div class="sb-section">
+                        <div class="sb-section-title">Category</div>
+
+                        @php
+                            $selCats = request()->input('category', []);
+                            if (!is_array($selCats)) $selCats = [$selCats];
+                        @endphp
+
+                        @foreach($categories as $cat)
+                            <label class="check-item">
+                                <input type="checkbox" name="category[]" value="{{ $cat->slug }}"
+                                    {{ in_array($cat->slug, $selCats) ? 'checked' : '' }}>
+                                
+                                <span class="cb"></span>
+                                <span class="check-label">{{ $cat->name }}</span>
+                            </label>
+                        @endforeach
+
+                    </div>
+                @endif
+
+                <div class="sb-reset">
+                    <a href="{{ request()->url() }}" class="reset-btn">Reset Filters</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="drawer-footer">
+            <button class="drawer-apply-btn" onclick="document.getElementById('drawer-filter-form').submit()">
+                Apply Filters
+            </button>
+        </div>
+    </div>
+
+    {{-- ════════════════════════════════════════
+         MAIN PAGE
+    ════════════════════════════════════════ --}}
     <div class="browse-wrap">
+
         {{-- TOOLBAR --}}
         <div class="toolbar">
-            <form method="GET" action="{{ request()->url() }}"
-                style="display:contents;">
 
+            {{-- Mobile filter button --}}
+            <button class="filter-open-btn" id="filter-open-btn" onclick="openDrawer()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+                </svg>
+                Filters
+                @php
+                    $activeFilters = count((array) request('city', [])) + count((array) request('category', []));
+                @endphp
+                @if($activeFilters > 0)
+                    <span class="filter-count-badge">{{ $activeFilters }}</span>
+                @endif
+            </button>
+
+            <form method="GET" action="{{ request()->url() }}" id="search-form" style="display:contents;">
                 @if(request('city'))
                     @foreach((array) request('city') as $c)
                         <input type="hidden" name="city[]" value="{{ $c }}">
@@ -500,140 +733,148 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
                     </svg>
-                    <input type="text" name="search"
+                    <input type="text" name="search" id="live-search-input"
                         value="{{ request('search') }}"
-                        placeholder="Search by name, category, or location…">
+                        placeholder="Search by name, category, or location…"
+                        autocomplete="off">
+                    <div class="search-spinner" id="search-spinner"></div>
+                    <button type="button" class="search-clear" id="search-clear" onclick="clearSearch()" title="Clear search">✕</button>
                 </div>
-                <button type="submit" class="search-btn">Search1</button>
+                
             </form>
-
-            {{--<div class="sort-tabs">
-                @foreach(['popular' => 'Popular', 'rating' => 'Highest Rated', 'price' => 'Lowest Price', 'latest' => 'Latest'] as $key => $label)
-                    <a href="{{ request()->fullUrlWithQuery(['sort' => $key]) }}"
-                    class="sort-tab {{ request('sort', 'popular') === $key ? 'active' : '' }}">
-                        {{ $label }}
-                    </a>
-                @endforeach
-            </div>--}}
         </div>
 
-            {{-- BODY --}}
-            <div class="body-layout">
-            
-              {{-- LEFT: Identity card --}}
-                <div>
+        {{-- BODY --}}
+        <div class="body-layout">
+
+            {{-- LEFT: Sidebar (desktop only) --}}
+            <div class="sidebar-col">
+                <div class="bv-id-card">
                     <div class="sb-head">
-                    <div class="sb-icon">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
-                        </svg>
+                        <div class="sb-icon">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+                            </svg>
+                        </div>
+                        Filters
                     </div>
-                    Filters
+
+                    <form method="GET" action="{{ url()->current() }}" id="filter-form">
+                        @if(request('search'))
+                            <input type="hidden" name="search" value="{{ request('search') }}">
+                        @endif
+                        @if(request('sort'))
+                            <input type="hidden" name="sort" value="{{ request('sort') }}">
+                        @endif
+
+                        {{-- Location --}}
+                        @if(isset($cities) && $cities->count())
+                        <div class="sb-section">
+                            <div class="sb-section-title">Location</div>
+                            @php
+                                $selCities = request()->input('city', []);
+                                if (!is_array($selCities)) $selCities = [$selCities];
+                            @endphp
+                            @foreach($cities->take(7) as $city)
+                            <label class="check-item">
+                                <input type="checkbox" name="city[]" value="{{ $city }}"
+                                    onchange="this.form.submit()"
+                                    {{ in_array($city, $selCities) ? 'checked' : '' }}>
+                                <span class="cb"></span>
+                                <span class="check-label">{{ $city }}</span>
+                            </label>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        {{-- Category --}}
+                        @if(isset($categories) && $categories->count())
+                        <div class="sb-section">
+                            <div class="sb-section-title">Category</div>
+
+                            @php
+                                $selCats = request()->input('category', []);
+                                if (!is_array($selCats)) $selCats = [$selCats];
+                            @endphp
+
+                            @foreach($categories as $cat)
+                                <label class="check-item">
+                                    <input type="checkbox" name="category[]" value="{{ $cat->slug }}"
+                                        onchange="this.form.submit()"
+                                        {{ in_array($cat->slug, $selCats) ? 'checked' : '' }}>
+                                    
+                                    <span class="cb"></span>
+                                    <span class="check-label">{{ $cat->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        {{-- Rating 
+                        <div class="sb-section">
+                            <div class="sb-section-title">Rating</div>
+                            @foreach([5,4,3,2] as $r)
+                            <label class="rating-row">
+                                <input type="radio" name="rating" value="{{ $r }}"
+                                    onchange="this.form.submit()"
+                                    {{ request('rating') == $r ? 'checked' : '' }}>
+                                <span class="rdot"></span>
+                                <div class="star-row">
+                                    @for($s=1;$s<=5;$s++)
+                                        <span class="{{ $s<=$r ? 'sf' : 'se' }}">★</span>
+                                    @endfor
+                                </div>
+                                @if($r < 5)<span class="and-up">& Up</span>@endif
+                            </label>
+                            @endforeach
+                        </div>--}}
+
+                        {{-- Availability 
+                        <div class="sb-section">
+                            <div class="sb-section-title">Availability</div>
+                            <label class="avail-toggle">
+                                <input type="checkbox" name="available_only" value="1"
+                                    onchange="this.form.submit()"
+                                    {{ request('available_only') ? 'checked' : '' }}>
+                                <span class="toggle-track">
+                                    <span class="toggle-thumb"></span>
+                                </span>
+                                <span class="avail-label">Available only</span>
+                            </label>
+                        </div>--}}
+
+                        {{-- Reset 
+                        <div class="sb-reset">
+                            <a href="{{ request()->url() }}" class="reset-btn">Reset Filters</a>
+                        </div>--}}
+                    </form>
                 </div>
-
-                <form method="GET" action="{{ request()->url() }}" id="filter-form">
-                    @if(request('search'))
-                        <input type="hidden" name="search" value="{{ request('search') }}">
-                    @endif
-                    @if(request('sort'))
-                        <input type="hidden" name="sort" value="{{ request('sort') }}">
-                    @endif
-
-                    {{-- Location --}}
-                    @if(isset($cities) && $cities->count())
-                    <div class="sb-section">
-                        <div class="sb-section-title">Location</div>
-                        @php
-                            $selCities = request()->input('city', []);
-                            if (!is_array($selCities)) $selCities = [$selCities];
-                        @endphp
-                        @foreach($cities->take(7) as $city)
-                        <label class="check-item">
-                            <input type="checkbox" name="city[]" value="{{ $city }}"
-                                onchange="this.form.submit()"
-                                {{ in_array($city, $selCities) ? 'checked' : '' }}>
-                            <span class="cb"></span>
-                            <span class="check-label">{{ $city }}</span>
-                        </label>
-                        @endforeach
-                    </div>
-                    @endif
-
-                    {{-- Category --}}
-                    @if(isset($categories) && $categories->count())
-                    <div class="sb-section">
-                        <div class="sb-section-title">Category</div>
-                        @php
-                            $selCats = request()->input('category', []);
-                            if (!is_array($selCats)) $selCats = [$selCats];
-                        @endphp
-                        @foreach($categories as $cat)
-                        <label class="check-item">
-                            <input type="checkbox" name="category[]" value="{{ $cat }}"
-                                onchange="this.form.submit()"
-                                {{ in_array($cat, $selCats) ? 'checked' : '' }}>
-                            <span class="cb"></span>
-                            <span class="check-label">{{ $cat }}</span>
-                        </label>
-                        @endforeach
-                    </div>
-                    @endif
-
-                    {{-- Rating 
-                    <div class="sb-section">
-                        <div class="sb-section-title">Rating</div>
-                        @foreach([5,4,3,2] as $r)
-                        <label class="rating-row">
-                            <input type="radio" name="rating" value="{{ $r }}"
-                                onchange="this.form.submit()"
-                                {{ request('rating') == $r ? 'checked' : '' }}>
-                            <span class="rdot"></span>
-                            <div class="star-row">
-                                @for($s=1;$s<=5;$s++)
-                                    <span class="{{ $s<=$r ? 'sf' : 'se' }}">★</span>
-                                @endfor
-                            </div>
-                            @if($r < 5)<span class="and-up">& Up</span>@endif
-                        </label>
-                        @endforeach
-                    </div>--}}
-
-                    {{-- Availability 
-                    <div class="sb-section">
-                        <div class="sb-section-title">Availability</div>
-                        <label class="avail-toggle">
-                            <input type="checkbox" name="available_only" value="1"
-                                onchange="this.form.submit()"
-                                {{ request('available_only') ? 'checked' : '' }}>
-                            <span class="toggle-track">
-                                <span class="toggle-thumb"></span>
-                            </span>
-                            <span class="avail-label">Available only</span>
-                        </label>
-                    </div>--}}
-
-                    {{-- Reset 
-                    <div class="sb-reset">
-                        <a href="{{ request()->url() }}" class="reset-btn">Reset Filters</a>
-                    </div>--}}
-                </form>
             </div>
 
             {{-- GRID --}}
             <div class="content-area">
                 <div class="result-row">
-                    <div class="result-count">
+                    <div class="result-count" id="result-count">
                         Showing
-                        <strong>
-                            {{ $suppliers instanceof \Illuminate\Pagination\LengthAwarePaginator ? $suppliers->total() : $suppliers->count() }}
-                        </strong>
-                        supplier{{ ($suppliers instanceof \Illuminate\Pagination\LengthAwarePaginator ? $suppliers->total() : $suppliers->count()) !== 1 ? 's' : '' }}
+                        <strong id="result-count-num">{{ $suppliers instanceof \Illuminate\Pagination\LengthAwarePaginator ? $suppliers->total() : $suppliers->count() }}</strong>
+                        supplier<span id="result-count-plural">{{ ($suppliers instanceof \Illuminate\Pagination\LengthAwarePaginator ? $suppliers->total() : $suppliers->count()) !== 1 ? 's' : '' }}</span>
                     </div>
                 </div>
 
-                <div class="sup-grid">
+                <div class="sup-grid" id="sup-grid">
                     @forelse($suppliers as $supplier)
-                    <div class="sup-card reveal">
+                    <div class="sup-card reveal"
+                         data-search="{{ strtolower(implode(' ', array_filter([
+                             $supplier->business_name ?? '',
+                             $supplier->first_name ?? '',
+                             $supplier->last_name ?? '',
+                             $supplier->name ?? '',
+                             $supplier->category ?? '',
+                             $supplier->city ?? '',
+                             $supplier->province ?? '',
+                             $supplier->tagline ?? '',
+                             $supplier->bio ?? '',
+                         ]))) }}">
 
                         {{-- Top: avatar + info --}}
                         <div class="card-top">
@@ -685,7 +926,7 @@
 
                             <div class="c-tags">
                                 @if($supplier->category ?? null)
-                                    <span class="c-tag">{{ $supplier->category }}</span>
+                                    <span class="c-tag">{{ $supplier->category->name }}</span>
                                 @endif
                                 @if($supplier->is_available ?? false)
                                     <span class="c-avail yes">
@@ -716,11 +957,20 @@
                         <p>Try adjusting your filters or search terms.</p>
                     </div>
                     @endforelse
+
+                    {{-- Live-search no results (shown by JS) --}}
+                    <div class="live-no-results" id="live-no-results">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+                            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                        </svg>
+                        <h3>No results found</h3>
+                        <p>Try a different keyword or clear the search.</p>
+                    </div>
                 </div>
 
                 {{-- PAGINATION --}}
                 @if($suppliers instanceof \Illuminate\Pagination\LengthAwarePaginator && $suppliers->hasPages())
-                <div class="pagination">
+                <div class="pagination" id="pagination-wrap">
                     <a href="{{ $suppliers->previousPageUrl() ?? '#' }}"
                     class="page-btn {{ $suppliers->onFirstPage() ? 'disabled' : '' }}">‹</a>
                     @foreach($suppliers->getUrlRange(1, $suppliers->lastPage()) as $page => $url)
@@ -739,7 +989,82 @@
     </div>{{-- end browse-wrap --}}
 
     <script>
-        /* Scroll reveal */
+        /* ════════════════════════════════════════
+           MOBILE DRAWER
+        ════════════════════════════════════════ */
+        function openDrawer() {
+            document.getElementById('filter-drawer').classList.add('open');
+            document.getElementById('drawer-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeDrawer() {
+            document.getElementById('filter-drawer').classList.remove('open');
+            document.getElementById('drawer-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        /* ════════════════════════════════════════
+           LIVE SEARCH
+        ════════════════════════════════════════ */
+        const liveInput   = document.getElementById('live-search-input');
+        const clearBtn    = document.getElementById('search-clear');
+        const spinner     = document.getElementById('search-spinner');
+        const grid        = document.getElementById('sup-grid');
+        const noResults   = document.getElementById('live-no-results');
+        const countNum    = document.getElementById('result-count-num');
+        const countPlural = document.getElementById('result-count-plural');
+        const pagination  = document.getElementById('pagination-wrap');
+        let searchTimer   = null;
+
+        function updateClearBtn() {
+            clearBtn.classList.toggle('visible', liveInput.value.length > 0);
+        }
+
+        function clearSearch() {
+            liveInput.value = '';
+            updateClearBtn();
+            runLiveSearch('');
+            liveInput.focus();
+        }
+
+        function runLiveSearch(term) {
+            const cards = grid.querySelectorAll('.sup-card[data-search]');
+            const q = term.trim().toLowerCase();
+            let visible = 0;
+
+            cards.forEach(card => {
+                const haystack = card.dataset.search || '';
+                const match = !q || haystack.includes(q);
+                card.classList.toggle('ls-hidden', !match);
+                if (match) visible++;
+            });
+
+            /* No results message */
+            noResults.style.display = (visible === 0 && cards.length > 0) ? 'block' : 'none';
+
+            /* Update count */
+            countNum.textContent    = visible;
+            countPlural.textContent = visible !== 1 ? 's' : '';
+
+            /* Hide pagination during live search */
+            if (pagination) pagination.style.display = q ? 'none' : '';
+
+            spinner.classList.remove('active');
+        }
+
+        liveInput.addEventListener('input', function () {
+            updateClearBtn();
+            spinner.classList.add('active');
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => runLiveSearch(this.value), 220);
+        });
+
+        /* init clear button state */
+        updateClearBtn();
+
+        /* ════════════════════════════════════════
+           SCROLL REVEAL
+        ════════════════════════════════════════ */
         const io = new IntersectionObserver(entries => {
             entries.forEach((e, i) => {
                 if (e.isIntersecting) {

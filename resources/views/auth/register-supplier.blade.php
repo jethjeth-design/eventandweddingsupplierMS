@@ -18,168 +18,225 @@
     }
 
     /* ── Step progress ── */
-    .bv-steps {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1.8rem;
-    }
-    .bv-step-item {
-        display: flex;
-        align-items: center;
-        gap: 0.55rem;
-        flex: 1;
-    }
-    .bv-step-item:last-child { flex: none; }
+    .bv-steps { display:flex; align-items:center; margin-bottom:1.8rem; }
+    .bv-step-item { display:flex; align-items:center; gap:0.55rem; flex:1; }
+    .bv-step-item:last-child { flex:none; }
     .bv-step-circle {
-        width: 30px; height: 30px;
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-family: var(--font-display);
-        font-size: 0.78rem; font-weight: 700;
-        border: 2px solid var(--border);
-        background: var(--white);
-        color: #C0B8B0;
-        flex-shrink: 0;
-        transition: all 0.3s;
-        line-height: 1;
+        width:30px; height:30px; border-radius:50%;
+        display:flex; align-items:center; justify-content:center;
+        font-family:var(--font-display); font-size:0.78rem; font-weight:700;
+        border:2px solid var(--border); background:var(--white); color:#C0B8B0;
+        flex-shrink:0; transition:all 0.3s; line-height:1;
     }
-    .bv-step-circle.active  { border-color: var(--gold); background: var(--gold); color: var(--white); }
-    .bv-step-circle.done    { border-color: var(--gold-dark); background: var(--gold-dark); color: var(--white); }
-    .bv-step-label {
-        font-size: 0.7rem; font-weight: 500;
-        letter-spacing: 0.03em; color: #C0B8B0;
-        font-family: var(--font-body); white-space: nowrap;
-    }
-    .bv-step-label.active { color: var(--gold-dark); }
-    .bv-step-connector {
-        flex: 1; height: 1px; background: var(--border); margin: 0 0.4rem;
-    }
-    .bv-step-connector.done { background: var(--gold-dark); }
+    .bv-step-circle.active { border-color:var(--gold); background:var(--gold); color:var(--white); }
+    .bv-step-circle.done   { border-color:var(--gold-dark); background:var(--gold-dark); color:var(--white); }
+    .bv-step-label { font-size:0.7rem; font-weight:500; letter-spacing:0.03em; color:#C0B8B0; font-family:var(--font-body); white-space:nowrap; }
+    .bv-step-label.active { color:var(--gold-dark); }
+    .bv-step-connector { flex:1; height:1px; background:var(--border); margin:0 0.4rem; }
+    .bv-step-connector.done { background:var(--gold-dark); }
 
     /* ── Heading ── */
-    .reg-heading { margin-bottom: 1.5rem; }
-    .reg-heading h2 {
-        font-family: var(--font-display);
-        font-size: 1.75rem; font-weight: 700;
-        color: var(--charcoal); line-height: 1.2; margin-bottom: 0.3rem;
-    }
-    .reg-heading h2 em { font-style: italic; color: var(--gold-dark); }
-    .reg-heading p { font-size: 0.83rem; color: var(--warm-grey); font-family: var(--font-body); line-height: 1.5; }
+    .reg-heading { margin-bottom:1.5rem; }
+    .reg-heading h2 { font-family:var(--font-display); font-size:1.75rem; font-weight:700; color:var(--charcoal); line-height:1.2; margin-bottom:0.3rem; }
+    .reg-heading h2 em { font-style:italic; color:var(--gold-dark); }
+    .reg-heading p { font-size:0.83rem; color:var(--warm-grey); font-family:var(--font-body); line-height:1.5; }
 
     /* ── Step panels ── */
-    .bv-step-panel { display: none; }
-    .bv-step-panel.active { display: block; animation: bvIn 0.28s ease; }
-    @keyframes bvIn { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } }
+    .bv-step-panel { display:none; }
+    .bv-step-panel.active { display:block; animation:bvIn 0.28s ease; }
+    @keyframes bvIn { from{opacity:0;transform:translateX(10px);}to{opacity:1;transform:translateX(0);} }
 
     /* ── Section label ── */
     .bv-section-label {
-        font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
-        text-transform: uppercase; color: #C0B8B0;
-        padding-bottom: 0.65rem;
-        border-bottom: 1px solid #F0EBE5;
-        margin-bottom: 1rem;
-        display: flex; align-items: center; gap: 0.45rem;
+        font-size:0.62rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+        color:#C0B8B0; padding-bottom:0.65rem; border-bottom:1px solid #F0EBE5;
+        margin-bottom:1rem; display:flex; align-items:center; gap:0.45rem;
     }
-    .bv-section-label svg { width: 11px; height: 11px; color: var(--gold-dark); }
+    .bv-section-label svg { width:11px; height:11px; color:var(--gold-dark); }
 
     /* ── Fields ── */
-    .bv-field { margin-bottom: 1rem; }
-    .bv-field:last-child { margin-bottom: 0; }
-    .bv-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+    .bv-field { margin-bottom:1rem; }
+    .bv-field:last-child { margin-bottom:0; }
+    .bv-field-row { display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; }
 
     .bv-label {
-        display: flex; align-items: center; justify-content: space-between;
-        font-family: var(--font-body);
-        font-size: 0.68rem; font-weight: 600;
-        letter-spacing: 0.08em; text-transform: uppercase;
-        color: var(--warm-grey); margin-bottom: 0.4rem;
+        display:flex; align-items:center; justify-content:space-between;
+        font-family:var(--font-body); font-size:0.68rem; font-weight:600;
+        letter-spacing:0.08em; text-transform:uppercase; color:var(--warm-grey); margin-bottom:0.4rem;
     }
-    .bv-label-req { font-size: 0.58rem; color: #C0392B; font-weight: 500; text-transform: none; letter-spacing: 0; }
-    .bv-label-opt { font-size: 0.58rem; color: #C0B8B0; font-weight: 400; text-transform: none; letter-spacing: 0; }
+    .bv-label-req { font-size:0.58rem; color:#C0392B; font-weight:500; text-transform:none; letter-spacing:0; }
+    .bv-label-opt { font-size:0.58rem; color:#C0B8B0; font-weight:400; text-transform:none; letter-spacing:0; }
 
-    .bv-input-wrap { position: relative; }
+    .bv-input-wrap { position:relative; }
     .bv-input-icon {
-        position: absolute; left: 0.8rem; top: 50%;
-        transform: translateY(-50%);
-        width: 14px; height: 14px; color: #C0B8B0;
-        pointer-events: none; transition: color 0.2s;
+        position:absolute; left:0.8rem; top:50%; transform:translateY(-50%);
+        width:14px; height:14px; color:#C0B8B0; pointer-events:none; transition:color 0.2s;
     }
-    .bv-input-wrap:focus-within .bv-input-icon { color: var(--gold-dark); }
-
+    .bv-input-wrap:focus-within .bv-input-icon { color:var(--gold-dark); }
     .bv-input {
-        width: 100%;
-        padding: 0.72rem 0.92rem 0.72rem 2.5rem;
-        border: 1.5px solid var(--border);
-        border-radius: 8px;
-        font-family: var(--font-body);
-        font-size: 0.84rem;
-        color: var(--charcoal);
-        background: var(--ivory);
-        outline: none;
-        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-        display: block;
+        width:100%; padding:0.72rem 0.92rem 0.72rem 2.5rem;
+        border:1.5px solid var(--border); border-radius:8px;
+        font-family:var(--font-body); font-size:0.84rem; color:var(--charcoal);
+        background:var(--ivory); outline:none;
+        transition:border-color 0.2s, box-shadow 0.2s, background 0.2s; display:block;
     }
-    .bv-input.no-icon { padding-left: 0.92rem; }
-    .bv-input:focus {
-        border-color: var(--gold);
-        background: var(--white);
-        box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+    .bv-input.no-icon { padding-left:0.92rem; }
+    .bv-input:focus { border-color:var(--gold); background:var(--white); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
+    .bv-input::placeholder { color:#C0B8B0; }
+    /* Password eye toggle */
+    .pw-eye {
+        position:absolute; right:0.75rem; top:50%; transform:translateY(-50%);
+        background:none; border:none; cursor:pointer; color:#C0B8B0;
+        display:flex; align-items:center; padding:2px; transition:color 0.18s;
     }
-    .bv-input::placeholder { color: #C0B8B0; }
+    .pw-eye:hover { color:var(--gold-dark); }
 
     .bv-textarea {
-        width: 100%; padding: 0.72rem 0.92rem;
-        background: var(--ivory); border: 1.5px solid var(--border);
-        border-radius: 8px; font-family: var(--font-body);
-        font-size: 0.84rem; color: var(--charcoal);
-        outline: none; resize: vertical; min-height: 88px;
-        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        width:100%; padding:0.72rem 0.92rem;
+        background:var(--ivory); border:1.5px solid var(--border); border-radius:8px;
+        font-family:var(--font-body); font-size:0.84rem; color:var(--charcoal);
+        outline:none; resize:vertical; min-height:88px;
+        transition:border-color 0.2s, box-shadow 0.2s, background 0.2s;
     }
-    .bv-textarea:focus {
-        border-color: var(--gold);
-        box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
-        background: var(--white);
-    }
-    .bv-textarea::placeholder { color: #C0B8B0; }
+    .bv-textarea:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); background:var(--white); }
+    .bv-textarea::placeholder { color:#C0B8B0; }
 
     .bv-select {
-        width: 100%; padding: 0.72rem 2.2rem 0.72rem 0.92rem;
-        background: var(--ivory); border: 1.5px solid var(--border);
-        border-radius: 8px; font-family: var(--font-body);
-        font-size: 0.84rem; color: var(--charcoal);
-        outline: none; appearance: none;
-        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        width:100%; padding:0.72rem 2.2rem 0.72rem 0.92rem;
+        background:var(--ivory); border:1.5px solid var(--border); border-radius:8px;
+        font-family:var(--font-body); font-size:0.84rem; color:var(--charcoal);
+        outline:none; appearance:none;
+        transition:border-color 0.2s, box-shadow 0.2s, background 0.2s;
     }
-    .bv-select:focus {
-        border-color: var(--gold);
-        box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
-        background: var(--white);
+    .bv-select:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); background:var(--white); }
+    .bv-select-wrap { position:relative; }
+    .bv-select-wrap::after { content:''; position:absolute; right:0.85rem; top:50%; transform:translateY(-50%); width:0; height:0; border-left:4px solid transparent; border-right:4px solid transparent; border-top:5px solid #C0B8B0; pointer-events:none; }
+
+    .bv-error { font-size:0.68rem; color:#C0392B; margin-top:0.28rem; }
+    .bv-hint  { font-size:0.68rem; color:#C0B8B0; margin-top:0.28rem; }
+    .bv-textarea-footer { display:flex; justify-content:flex-end; margin-top:0.25rem; }
+    .bv-char-count { font-size:0.65rem; color:#C0B8B0; }
+
+    /* ══════════════════════════
+       PASSWORD STRENGTH METER
+    ══════════════════════════ */
+    .pw-strength-wrap { margin-top:0.55rem; }
+    .pw-bars {
+        display:grid; grid-template-columns:repeat(4,1fr); gap:3px; margin-bottom:0.35rem;
     }
-    .bv-select-wrap { position: relative; }
-    .bv-select-wrap::after {
-        content: ''; position: absolute; right: 0.85rem; top: 50%;
-        transform: translateY(-50%); width: 0; height: 0;
-        border-left: 4px solid transparent; border-right: 4px solid transparent;
-        border-top: 5px solid #C0B8B0; pointer-events: none;
+    .pw-bar {
+        height:4px; border-radius:99px; background:#E5DDD5;
+        transition:background 0.25s, transform 0.2s;
+    }
+    .pw-bar.fill-weak     { background:#E74C3C; }
+    .pw-bar.fill-fair     { background:#F39C12; }
+    .pw-bar.fill-good     { background:#F1C40F; }
+    .pw-bar.fill-strong   { background:#27AE60; }
+    .pw-bar.fill-vstrong  { background:#16A085; }
+
+    .pw-feedback {
+        display:flex; align-items:center; justify-content:space-between;
+        font-size:0.65rem; font-family:var(--font-body);
+    }
+    .pw-label-text { font-weight:600; color:#C0B8B0; transition:color 0.2s; }
+    .pw-label-text.weak    { color:#E74C3C; }
+    .pw-label-text.fair    { color:#E67E22; }
+    .pw-label-text.good    { color:#D4AC0D; }
+    .pw-label-text.strong  { color:#27AE60; }
+    .pw-label-text.vstrong { color:#16A085; }
+
+    .pw-rules { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.3rem; }
+    .pw-rule {
+        display:inline-flex; align-items:center; gap:3px;
+        font-size:0.62rem; font-family:var(--font-body); color:#C0B8B0;
+        transition:color 0.2s;
+    }
+    .pw-rule.met { color:#27AE60; }
+    .pw-rule .rule-dot {
+        width:5px; height:5px; border-radius:50%; background:#C0B8B0;
+        flex-shrink:0; transition:background 0.2s;
+    }
+    .pw-rule.met .rule-dot { background:#27AE60; }
+
+    /* ══════════════════════════
+       CLICKABLE CATEGORY GRID
+    ══════════════════════════ */
+    .cat-grid {
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:0.55rem;
+        margin-top:0.25rem;
+    }
+    @media(max-width:480px) { .cat-grid { grid-template-columns:repeat(2,1fr); } }
+
+    .cat-chip {
+        position:relative;
+        display:flex; align-items:center; gap:0.45rem;
+        padding:0.52rem 0.75rem;
+        border:1.5px solid var(--border);
+        border-radius:8px;
+        background:var(--ivory);
+        cursor:pointer;
+        user-select:none;
+        transition:border-color 0.18s, background 0.18s, box-shadow 0.18s;
+        overflow:hidden;
+    }
+    .cat-chip:hover { border-color:rgba(201,168,76,0.5); background:rgba(201,168,76,0.04); }
+    .cat-chip input[type="checkbox"] { display:none; }
+
+    .cat-chip-icon {
+        width:26px; height:26px; border-radius:6px; flex-shrink:0;
+        background:rgba(201,168,76,0.1);
+        display:flex; align-items:center; justify-content:center;
+        transition:background 0.18s;
+    }
+    .cat-chip-icon svg { width:13px; height:13px; color:var(--gold-dark); }
+
+    .cat-chip-name {
+        font-size:0.75rem; font-weight:500; color:var(--charcoal);
+        font-family:var(--font-body); line-height:1.2; flex:1; min-width:0;
     }
 
-    .bv-error { font-size: 0.68rem; color: #C0392B; margin-top: 0.28rem; }
-    .bv-hint  { font-size: 0.68rem; color: #C0B8B0; margin-top: 0.28rem; }
+    /* Checkmark top-right */
+    .cat-chip-check {
+        position:absolute; top:5px; right:6px;
+        width:14px; height:14px; border-radius:50%;
+        border:1.5px solid var(--border); background:var(--white);
+        display:flex; align-items:center; justify-content:center;
+        transition:all 0.18s;
+        flex-shrink:0;
+    }
+    .cat-chip-check svg { width:7px; height:7px; color:var(--white); opacity:0; transition:opacity 0.15s; }
 
-    .bv-textarea-footer { display: flex; justify-content: flex-end; margin-top: 0.25rem; }
-    .bv-char-count { font-size: 0.65rem; color: #C0B8B0; }
+    /* Selected state */
+    .cat-chip.selected {
+        border-color:var(--gold);
+        background:rgba(201,168,76,0.08);
+        box-shadow:0 0 0 3px rgba(201,168,76,0.12);
+    }
+    .cat-chip.selected .cat-chip-icon { background:rgba(201,168,76,0.2); }
+    .cat-chip.selected .cat-chip-check { background:var(--gold); border-color:var(--gold); }
+    .cat-chip.selected .cat-chip-check svg { opacity:1; }
+    .cat-chip.selected .cat-chip-name { color:var(--gold-dark); font-weight:600; }
+
+    /* Selected count badge */
+    .cat-selected-count {
+        font-size:0.62rem; color:var(--gold-dark); font-family:var(--font-body);
+        margin-top:0.4rem; display:none;
+    }
+    .cat-selected-count.show { display:block; }
 
     /* ── Photo upload ── */
-    .bv-photo-zone { display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap; }
+    .bv-photo-zone { display:flex; align-items:center; gap:1.1rem; flex-wrap:wrap; }
     .bv-photo-circle {
-        width: 72px; height: 72px; border-radius: 50%;
-        background: linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.05));
-        border: 2px dashed rgba(201,168,76,0.4);
-        display: flex; align-items: center; justify-content: center;
-        overflow: hidden; flex-shrink: 0; cursor: pointer;
-        transition: border-color 0.2s, background 0.2s; position: relative;
+        width:72px; height:72px; border-radius:50%;
+        background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.05));
+        border:2px dashed rgba(201,168,76,0.4);
+        display:flex; align-items:center; justify-content:center;
+        overflow:hidden; flex-shrink:0; cursor:pointer;
+        transition:border-color 0.2s, background 0.2s; position:relative;
     }
-    .bv-photo-circle:hover { border-color: var(--gold); background: rgba(201,168,76,0.09); }
+    .bv-photo-circle:hover { border-color:var(--gold); background:rgba(201,168,76,0.09); }
     .bv-photo-circle img { width:100%;height:100%;object-fit:cover;display:none; }
     .bv-photo-circle-icon { display:flex;flex-direction:column;align-items:center;gap:0.2rem;color:var(--gold-dark);pointer-events:none; }
     .bv-photo-circle-icon svg { width:20px;height:20px; }
@@ -188,45 +245,23 @@
     .bv-photo-circle.has-photo img { display:block; }
     .bv-photo-info { flex:1;min-width:130px; }
     .bv-photo-info p { font-size:0.7rem;color:var(--warm-grey);line-height:1.5;margin-bottom:0.55rem; }
-    .bv-btn-upload {
-        display:inline-flex;align-items:center;gap:0.35rem;
-        padding:0.42rem 0.9rem;border-radius:6px;
-        border:1.5px solid var(--border);background:var(--white);
-        font-family:var(--font-body);font-size:0.74rem;font-weight:500;
-        color:var(--charcoal);cursor:pointer;
-        transition:border-color 0.2s,color 0.2s,background 0.2s;
-    }
+    .bv-btn-upload { display:inline-flex;align-items:center;gap:0.35rem;padding:0.42rem 0.9rem;border-radius:6px;border:1.5px solid var(--border);background:var(--white);font-family:var(--font-body);font-size:0.74rem;font-weight:500;color:var(--charcoal);cursor:pointer;transition:border-color 0.2s,color 0.2s,background 0.2s; }
     .bv-btn-upload svg { width:11px;height:11px; }
     .bv-btn-upload:hover { border-color:var(--gold);color:var(--gold-dark);background:rgba(201,168,76,0.05); }
 
     /* ── Buttons ── */
     .bv-btn-row { display:flex;gap:0.65rem;align-items:center;margin-top:1.35rem; }
-    .bv-btn-back {
-        display:inline-flex;align-items:center;gap:0.35rem;
-        padding:0.7rem 1.1rem;border-radius:8px;
-        border:1.5px solid var(--border);background:var(--white);
-        font-family:var(--font-body);font-size:0.8rem;font-weight:500;
-        color:var(--warm-grey);cursor:pointer;transition:border-color 0.2s,color 0.2s;
-        flex-shrink:0;
-    }
+    .bv-btn-back { display:inline-flex;align-items:center;gap:0.35rem;padding:0.7rem 1.1rem;border-radius:8px;border:1.5px solid var(--border);background:var(--white);font-family:var(--font-body);font-size:0.8rem;font-weight:500;color:var(--warm-grey);cursor:pointer;transition:border-color 0.2s,color 0.2s;flex-shrink:0; }
     .bv-btn-back svg { width:12px;height:12px; }
     .bv-btn-back:hover { border-color:var(--gold);color:var(--charcoal); }
-    .bv-btn-next {
-        flex:1;padding:0.72rem 1.4rem;border-radius:8px;
-        border:none;background:var(--charcoal);
-        font-family:var(--font-body);font-size:0.84rem;font-weight:500;
-        color:var(--white);cursor:pointer;letter-spacing:0.03em;
-        display:inline-flex;align-items:center;justify-content:center;gap:0.45rem;
-        position:relative;overflow:hidden;
-        transition:transform 0.15s,box-shadow 0.2s;
-    }
+    .bv-btn-next { flex:1;padding:0.72rem 1.4rem;border-radius:8px;border:none;background:var(--charcoal);font-family:var(--font-body);font-size:0.84rem;font-weight:500;color:var(--white);cursor:pointer;letter-spacing:0.03em;display:inline-flex;align-items:center;justify-content:center;gap:0.45rem;position:relative;overflow:hidden;transition:transform 0.15s,box-shadow 0.2s; }
     .bv-btn-next::after { content:'';position:absolute;inset:0;background:linear-gradient(135deg,#8A6A1F,#C9A84C);opacity:0;transition:opacity 0.3s; }
     .bv-btn-next:hover::after { opacity:1; }
     .bv-btn-next:hover { transform:translateY(-1px);box-shadow:0 6px 20px rgba(138,106,31,0.22); }
     .bv-btn-next span,.bv-btn-next svg { position:relative;z-index:1; }
     .bv-btn-next svg { width:13px;height:13px; }
 
-    /* ── Divider / login link ── */
+    /* ── Divider ── */
     .bv-divider { display:flex;align-items:center;gap:0.65rem;margin:0.9rem 0; }
     .bv-divider::before,.bv-divider::after { content:'';flex:1;height:1px;background:var(--border); }
     .bv-divider span { font-size:0.68rem;color:#C0B8B0;letter-spacing:0.06em;font-family:var(--font-body); }
@@ -265,9 +300,9 @@
       enctype="multipart/form-data">
     @csrf
 
-    {{-- ═══════════════════════
-         STEP 1 — Account Info
-    ═══════════════════════ --}}
+    {{-- ════════════════════
+         STEP 1 — Account
+    ════════════════════ --}}
     <div class="bv-step-panel active" id="step1">
 
         <div class="bv-section-label">
@@ -275,7 +310,7 @@
             Account Credentials
         </div>
 
-        {{-- Full Name --}}
+        {{-- Username --}}
         <div class="bv-field">
             <label class="bv-label" for="name">Username <span class="bv-label-req">Required</span></label>
             <div class="bv-input-wrap">
@@ -301,16 +336,56 @@
                 <label class="bv-label" for="password">Password <span class="bv-label-req">Required</span></label>
                 <div class="bv-input-wrap">
                     <svg class="bv-input-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="9" width="12" height="9" rx="2"/><path d="M7 9V7a3 3 0 116 0v2"/></svg>
-                    <input id="password" name="password" type="password" class="bv-input" placeholder="Min. 8 characters" required autocomplete="new-password">
+                    <input id="password" name="password" type="password" class="bv-input"
+                           placeholder="Min. 8 characters"
+                           required autocomplete="new-password"
+                           oninput="checkPasswordStrength(this.value)">
+                    <button type="button" class="pw-eye" onclick="togglePw('password','eyeIcon1')">
+                        <svg id="eyeIcon1" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
                 </div>
+
+                {{-- Password strength meter --}}
+                <div class="pw-strength-wrap" id="pw-strength-wrap" style="display:none;">
+                    <div class="pw-bars">
+                        <div class="pw-bar" id="bar1"></div>
+                        <div class="pw-bar" id="bar2"></div>
+                        <div class="pw-bar" id="bar3"></div>
+                        <div class="pw-bar" id="bar4"></div>
+                    </div>
+                    <div class="pw-feedback">
+                        <span class="pw-label-text" id="pw-label">Too short</span>
+                    </div>
+                    <div class="pw-rules">
+                        <span class="pw-rule" id="rule-len"><span class="rule-dot"></span>8+ chars</span>
+                        <span class="pw-rule" id="rule-upper"><span class="rule-dot"></span>Uppercase</span>
+                        <span class="pw-rule" id="rule-num"><span class="rule-dot"></span>Number</span>
+                        <span class="pw-rule" id="rule-sym"><span class="rule-dot"></span>Symbol</span>
+                    </div>
+                </div>
+
                 @error('password')<div class="bv-error">{{ $message }}</div>@enderror
             </div>
+
             <div class="bv-field">
                 <label class="bv-label" for="password_confirmation">Confirm Password <span class="bv-label-req">Required</span></label>
                 <div class="bv-input-wrap">
                     <svg class="bv-input-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="9" width="12" height="9" rx="2"/><path d="M7 9V7a3 3 0 116 0v2"/><path d="M8 14l2 2 4-4"/></svg>
-                    <input id="password_confirmation" name="password_confirmation" type="password" class="bv-input" placeholder="Repeat password" required autocomplete="new-password">
+                    <input id="password_confirmation" name="password_confirmation" type="password"
+                           class="bv-input" placeholder="Repeat password"
+                           required autocomplete="new-password"
+                           oninput="checkConfirm(this.value)">
+                    <button type="button" class="pw-eye" onclick="togglePw('password_confirmation','eyeIcon2')">
+                        <svg id="eyeIcon2" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
                 </div>
+                <div class="bv-hint" id="confirm-hint" style="display:none;"></div>
                 @error('password_confirmation')<div class="bv-error">{{ $message }}</div>@enderror
             </div>
         </div>
@@ -324,19 +399,18 @@
 
         <div class="bv-divider" style="margin-top:1rem;"><span>already have an account?</span></div>
         <div class="bv-login-link"><a href="{{ route('login') }}">Sign in instead</a></div>
-
     </div>
 
-    {{-- ═══════════════════════
-         STEP 2 — Personal Info
-    ═══════════════════════ --}}
+    {{-- ════════════════════
+         STEP 2 — Personal
+    ════════════════════ --}}
     <div class="bv-step-panel" id="step2">
 
         <div class="bv-section-label">
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="5" r="3"/><path d="M1 13c0-3 2.7-5 6-5s6 2 6 5"/></svg>
             Personal Information
         </div>
-        
+
         {{-- Profile Photo --}}
         <div class="bv-field">
             <label class="bv-label" for="photo">Profile Photo <span class="bv-label-opt">Optional</span></label>
@@ -391,8 +465,6 @@
             @error('phone')<div class="bv-error">{{ $message }}</div>@enderror
         </div>
 
-        
-
         <div class="bv-btn-row">
             <button type="button" class="bv-btn-back" onclick="goTo(1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
@@ -403,12 +475,11 @@
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
             </button>
         </div>
-
     </div>
 
-    {{-- ═══════════════════════
-         STEP 3 — Business Info
-    ═══════════════════════ --}}
+    {{-- ════════════════════
+         STEP 3 — Business
+    ════════════════════ --}}
     <div class="bv-step-panel" id="step3">
 
         <div class="bv-section-label">
@@ -456,8 +527,8 @@
                 @error('province')<div class="bv-error">{{ $message }}</div>@enderror
             </div>
         </div>
-        
-        {{-- Full Address --}}
+
+        {{-- Address --}}
         <div class="bv-field">
             <label class="bv-label" for="address">Full Address <span class="bv-label-opt">Optional</span></label>
             <div class="bv-input-wrap">
@@ -466,44 +537,88 @@
             </div>
             @error('address')<div class="bv-error">{{ $message }}</div>@enderror
         </div>
-    
+
         {{-- Price --}}
         <div class="bv-field">
-            <label class="bv-label" for="price">Price<span class="bv-label-opt">Optional</span></label>
+            <label class="bv-label" for="price">Starting Price <span class="bv-label-opt">Optional</span></label>
             <div class="bv-input-wrap">
-                <svg class="bv-input-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 2a4 4 0 00-4 4v3a4 4 0 008 0V6a4 4 0 00-4-4z"/><path d="M8.5 10h3M8.5 14h3"/></svg>
-                <input id="price" name="price" type="text" class="bv-input" placeholder="e.g. ₱20,000 - ₱50,000" value="{{ old('price') }}">
+                <svg class="bv-input-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><line x1="10" y1="2" x2="10" y2="18"/><path d="M14 6H8a2 2 0 000 4h4a2 2 0 010 4H6"/></svg>
+                <input id="price" name="price" type="text" class="bv-input" placeholder="e.g. ₱20,000" value="{{ old('price') }}">
             </div>
             @error('price')<div class="bv-error">{{ $message }}</div>@enderror
-
-        {{-- Category --}}
-        <div class="bv-field">
-            <label class="bv-label" for="category">Category <span class="bv-label-req">Required</span></label>
-            <div class="bv-select-wrap">
-                <select id="category" name="category" class="bv-select" required>
-                    <option value="" disabled {{ old('category') ? '' : 'selected' }}>Select a category...</option>
-                    @foreach($categories as $categories)
-                        <option value="{{ $categories->name }}"
-                            {{ old('category') == $categories->name? 'selected' : '' }}>
-                            {{ $categories->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <p class="bv-hint">Determines where your profile appears in search results.</p>
-            @error('category')<div class="bv-error">{{ $message }}</div>@enderror
         </div>
-        
+
+        {{-- ══ CLICKABLE MULTI-CATEGORY ══ --}}
+        <div class="bv-field">
+            <label class="bv-label">
+                Category
+                <span class="bv-label-req">Required</span>
+            </label>
+            <p class="bv-hint" style="margin-bottom:0.65rem;">Select all that apply to your services.</p>
+
+            <div class="cat-grid" id="cat-grid">
+                @php
+                    $oldCats = (array) old('category_id', []);
+                    // Icon map — fallback to a generic grid icon
+                    $catIcons = [
+                        'venue'         => '<path d="M2 12L12 3l10 9v9a1 1 0 01-1 1H3a1 1 0 01-1-1v-9z"/>',
+                        'catering'      => '<path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>',
+                        'photographer'  => '<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/>',
+                        'videographer'  => '<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>',
+                        'dj'            => '<circle cx="12" cy="12" r="2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 4.93l-1.41 1.41"/><circle cx="12" cy="12" r="7"/><line x1="12" y1="1" x2="12" y2="3"/>',
+                        'florist'       => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+                        'emcee'         => '<path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>',
+                        'makeup'        => '<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>',
+                        'gown'          => '<path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>',
+                        'band'          => '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+                        'photobooth'    => '<rect x="2" y="2" width="20" height="20" rx="2"/><path d="M2 9h20"/><circle cx="12" cy="15" r="3"/>',
+                        'lights'        => '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>',
+                        'stylist'       => '<path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>',
+                        'default'       => '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+                    ];
+                    function getCatIcon($slug, $icons) {
+                        foreach ($icons as $key => $path) {
+                            if (str_contains(strtolower($slug), $key)) return $path;
+                        }
+                        return $icons['default'];
+                    }
+                @endphp
+
+                @foreach($categories as $category)
+                @php
+                    $isOld = in_array($category->id, $oldCats);
+                    $icon  = getCatIcon(strtolower($category->slug ?? $category->name), $catIcons);
+                @endphp
+                <label class="cat-chip{{ $isOld ? 'selected' : '' }}"
+       onclick="toggleCat(this, event)">
+                    <input type="checkbox"
+                           name="category_id[]"
+                           value="{{ $category->id }}"
+                           {{ $isOld ? 'checked' : '' }}>
+                    <div class="cat-chip-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">{!! $icon !!}</svg>
+                    </div>
+                    <span class="cat-chip-name">{{ $category->name }}</span>
+                    <span class="cat-chip-check">
+                        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2 6 5 9 10 3"/></svg>
+                    </span>
+                </label>
+                @endforeach
+            </div>
+
+            <div class="cat-selected-count" id="cat-count"></div>
+            @error('category_id')<div class="bv-error" style="margin-top:0.4rem;">{{ $message }}</div>@enderror
+        </div>
+
         {{-- Experience --}}
         <div class="bv-field">
-            <label class="bv-label" for="experience">Experience <span class="bv-label-opt">Optional</span></label>
+            <label class="bv-label" for="experience">Years of Experience <span class="bv-label-req">Required</span></label>
             <div class="bv-select-wrap">
-                <select id="fi_exp" name="experience" class="bv-sel" required onchange="updatePreview()">
-                    <option value="" disabled selected>Select experience level...</option>
-                    <option value="" disabled {{ !old('experience')?'selected':'' }}>Select level...</option>
-                        @foreach(['less_than_1'=>'Less than 1 year','1_2'=>'1–2 years','3_5'=>'3–5 years','6_10'=>'6–10 years','10_plus'=>'10+ years'] as $val=>$lbl)
-                            <option value="{{ $val }}" {{ old('experience')==$val?'selected':'' }}>{{ $lbl }}</option>
-                        @endforeach
+                <select id="experience" name="experience" class="bv-select" required>
+                    <option value="" disabled {{ old('experience') ? '' : 'selected' }}>Select experience level…</option>
+                    @foreach(['less_than_1'=>'Less than 1 year','1_2'=>'1–2 years','3_5'=>'3–5 years','6_10'=>'6–10 years','10_plus'=>'10+ years'] as $val=>$lbl)
+                        <option value="{{ $val }}" {{ old('experience')==$val ? 'selected' : '' }}>{{ $lbl }}</option>
+                    @endforeach
                 </select>
             </div>
             @error('experience')<div class="bv-error">{{ $message }}</div>@enderror
@@ -515,9 +630,7 @@
             <textarea id="bio" name="bio" class="bv-textarea"
                       placeholder="Tell clients about your style and passion..."
                       maxlength="500" oninput="updateCount('bioCount', this, 500)">{{ old('bio') }}</textarea>
-            <div class="bv-textarea-footer">
-                <span class="bv-char-count" id="bioCount">0 / 500</span>
-            </div>
+            <div class="bv-textarea-footer"><span class="bv-char-count" id="bioCount">0 / 500</span></div>
             @error('bio')<div class="bv-error">{{ $message }}</div>@enderror
         </div>
 
@@ -528,9 +641,7 @@
                       placeholder="Describe the services you offer, pricing range, packages, availability..."
                       maxlength="1000" oninput="updateCount('descCount', this, 1000)"
                       required>{{ old('description') }}</textarea>
-            <div class="bv-textarea-footer">
-                <span class="bv-char-count" id="descCount">0 / 1000</span>
-            </div>
+            <div class="bv-textarea-footer"><span class="bv-char-count" id="descCount">0 / 1000</span></div>
             @error('description')<div class="bv-error">{{ $message }}</div>@enderror
         </div>
 
@@ -544,57 +655,160 @@
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l4 4 6-6"/></svg>
             </button>
         </div>
-
     </div>
 
 </form>
 
 <script>
-    /* ── Step navigation ── */
-    function goTo(n) {
-        document.querySelectorAll('.bv-step-panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('step' + n).classList.add('active');
-        for (let i = 1; i <= 3; i++) {
-            const c = document.getElementById('sc' + i);
-            const l = document.getElementById('sl' + i);
-            c.classList.remove('active', 'done');
-            l.classList.remove('active');
-            if (i < n)       { c.classList.add('done'); c.textContent = '✓'; }
-            else if (i === n) { c.classList.add('active'); c.textContent = i; l.classList.add('active'); }
-            else              { c.textContent = i; }
-        }
-        for (let i = 1; i <= 2; i++) {
-            document.getElementById('sconn' + i).classList.toggle('done', i < n);
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+/* ── STEP NAV ── */
+function goTo(n) {
+    document.querySelectorAll('.bv-step-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('step' + n).classList.add('active');
+    for (let i = 1; i <= 3; i++) {
+        const c = document.getElementById('sc' + i);
+        const l = document.getElementById('sl' + i);
+        c.classList.remove('active', 'done');
+        l.classList.remove('active');
+        if (i < n)       { c.classList.add('done'); c.textContent = '✓'; }
+        else if (i === n){ c.classList.add('active'); c.textContent = i; l.classList.add('active'); }
+        else             { c.textContent = i; }
     }
-
-    /* ── Photo upload preview ── */
-    function handlePhotoUpload(input) {
-        const file = input.files[0];
-        if (!file) return;
-        document.getElementById('photoFilename').textContent = file.name;
-        const reader = new FileReader();
-        reader.onload = e => {
-            document.getElementById('photoImg').src = e.target.result;
-            document.getElementById('photoPreview').classList.add('has-photo');
-        };
-        reader.readAsDataURL(file);
+    for (let i = 1; i <= 2; i++) {
+        document.getElementById('sconn' + i).classList.toggle('done', i < n);
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    /* ── Char counter ── */
-    function updateCount(id, el, max) {
-        document.getElementById(id).textContent = el.value.length + ' / ' + max;
+/* ── PHOTO UPLOAD ── */
+function handlePhotoUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    document.getElementById('photoFilename').textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+        document.getElementById('photoImg').src = e.target.result;
+        document.getElementById('photoPreview').classList.add('has-photo');
+    };
+    reader.readAsDataURL(file);
+}
+
+/* ── CHAR COUNTER ── */
+function updateCount(id, el, max) {
+    document.getElementById(id).textContent = el.value.length + ' / ' + max;
+}
+
+/* ── SHOW/HIDE PASSWORD ── */
+function togglePw(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon  = document.getElementById(iconId);
+    const isText = input.type === 'text';
+    input.type = isText ? 'password' : 'text';
+    // Swap icon
+    if (!isText) {
+        icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+        icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
     }
+}
 
-    /* ── Auto-jump on validation error ── */
-    @if($errors->has('name')||$errors->has('email')||$errors->has('password')||$errors->has('password_confirmation'))
-        goTo(1);
-    @elseif($errors->has('first_name')||$errors->has('last_name')||$errors->has('phone')||$errors->has('photo'))
-        goTo(2);
-    @elseif($errors->has('business_name')||$errors->has('tagline')||$errors->has('city')||$errors->has('province')||$errors->has('category')||$errors->has('bio')||$errors->has('experience')||$errors->has('description')||$errors->has('address'))
-        goTo(3);
-    @endif
+/* ── PASSWORD STRENGTH ── */
+function checkPasswordStrength(val) {
+    const wrap = document.getElementById('pw-strength-wrap');
+    const label = document.getElementById('pw-label');
+    const bars  = [document.getElementById('bar1'), document.getElementById('bar2'),
+                   document.getElementById('bar3'), document.getElementById('bar4')];
+    const ruleLen   = document.getElementById('rule-len');
+    const ruleUpper = document.getElementById('rule-upper');
+    const ruleNum   = document.getElementById('rule-num');
+    const ruleSym   = document.getElementById('rule-sym');
+
+    if (!val) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+
+    const hasLen   = val.length >= 8;
+    const hasUpper = /[A-Z]/.test(val);
+    const hasNum   = /[0-9]/.test(val);
+    const hasSym   = /[^A-Za-z0-9]/.test(val);
+    const hasLower = /[a-z]/.test(val);
+
+    ruleLen  .classList.toggle('met', hasLen);
+    ruleUpper.classList.toggle('met', hasUpper);
+    ruleNum  .classList.toggle('met', hasNum);
+    ruleSym  .classList.toggle('met', hasSym);
+
+    let score = 0;
+    if (hasLen)   score++;
+    if (hasUpper && hasLower) score++;
+    if (hasNum)   score++;
+    if (hasSym)   score++;
+    if (val.length >= 12) score = Math.min(score + 0.5, 4);
+
+    const levels = [
+        { bars: 1, cls: 'fill-weak',   label: 'Weak',        labelCls: 'weak' },
+        { bars: 2, cls: 'fill-fair',   label: 'Fair',        labelCls: 'fair' },
+        { bars: 3, cls: 'fill-good',   label: 'Good',        labelCls: 'good' },
+        { bars: 4, cls: 'fill-strong', label: 'Strong',      labelCls: 'strong' },
+        { bars: 4, cls: 'fill-vstrong',label: 'Very Strong', labelCls: 'vstrong' },
+    ];
+
+    const idx = val.length < 4 ? 0 : Math.min(Math.floor(score), 4);
+    const lv  = levels[idx];
+
+    bars.forEach((b, i) => {
+        b.className = 'pw-bar';
+        if (i < lv.bars) b.classList.add(lv.cls);
+    });
+
+    label.className = 'pw-label-text ' + lv.labelCls;
+    label.textContent = lv.label;
+}
+
+/* ── CONFIRM PASSWORD MATCH ── */
+function checkConfirm(val) {
+    const hint = document.getElementById('confirm-hint');
+    const pw   = document.getElementById('password').value;
+    if (!val) { hint.style.display = 'none'; return; }
+    hint.style.display = 'block';
+    if (val === pw) {
+        hint.style.color = '#27AE60';
+        hint.textContent = '✓ Passwords match';
+    } else {
+        hint.style.color = '#C0392B';
+        hint.textContent = '✗ Passwords do not match';
+    }
+}
+
+/* ── CATEGORY MULTI-SELECT ── */
+/* ── CATEGORY MULTI-SELECT ── */
+function toggleCat(label, event) {
+    event.preventDefault(); // prevent label from double-firing checkbox
+    label.classList.toggle('selected');
+    const cb = label.querySelector('input[type="checkbox"]');
+    cb.checked = label.classList.contains('selected');
+    updateCatCount();
+}
+
+function updateCatCount() {
+    const selected = document.querySelectorAll('.cat-chip.selected').length;
+    const el = document.getElementById('cat-count');
+    if (selected === 0) {
+        el.classList.remove('show');
+    } else {
+        el.classList.add('show');
+        el.textContent = selected + ' categor' + (selected === 1 ? 'y' : 'ies') + ' selected';
+    }
+}
+/* Init count on load (for old values) */
+updateCatCount();
+
+/* ── AUTO-JUMP ON VALIDATION ERROR ── */
+@if($errors->has('name')||$errors->has('email')||$errors->has('password')||$errors->has('password_confirmation'))
+    goTo(1);
+@elseif($errors->has('first_name')||$errors->has('last_name')||$errors->has('phone')||$errors->has('photo'))
+    goTo(2);
+@elseif($errors->has('business_name')||$errors->has('tagline')||$errors->has('city')||$errors->has('province')||$errors->has('category_id')||$errors->has('bio')||$errors->has('experience')||$errors->has('description')||$errors->has('address'))
+    goTo(3);
+@endif
 </script>
 
 </x-guest-layout>

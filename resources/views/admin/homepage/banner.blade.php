@@ -19,6 +19,7 @@
     </x-slot>
 
     <style>
+        /* ── Base ── */
         .bm-card {
             background: #fff;
             border: 0.5px solid #e5e7eb;
@@ -107,7 +108,6 @@
             border-radius: 99px;
             pointer-events: none;
         }
-        /* "Unsaved" amber pill – shown when a new file is picked but not yet saved */
         .slide-pending-badge {
             position: absolute;
             top: 6px; right: 8px;
@@ -161,11 +161,7 @@
             text-decoration: none; display: inline-block;
         }
 
-        /* ── Modal ──
-           Key fix: backdrop is flex but also overflow-y:auto so it can scroll on
-           very small viewports. The box itself uses flex-column so only modal-body
-           scrolls; header and footer are flex-shrink:0 and never move.
-        ── */
+        /* ── Modal ── */
         .modal-backdrop {
             position: fixed; inset: 0;
             background: rgba(30,27,24,0.5);
@@ -174,8 +170,8 @@
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 1rem;    
-            }
+            padding: 1rem;
+        }
         .modal-box {
             background: #fff;
             border-radius: 16px;
@@ -184,11 +180,11 @@
             max-height: 92vh;
             display: flex;
             flex-direction: column;
-            margin: auto;             /* vertically centre inside scrollable backdrop */
+            margin: auto;
             flex-shrink: 0;
         }
         .modal-header {
-            flex-shrink: 0;           /* pinned – never scrolls */
+            flex-shrink: 0;
             display: flex; align-items: center; justify-content: space-between;
             padding: 1.25rem 1.5rem;
             border-bottom: 0.5px solid #e5e7eb;
@@ -203,12 +199,12 @@
         }
         .modal-body {
             padding: 1.5rem;
-            overflow-y: auto;         /* ONLY this region scrolls */
+            overflow-y: auto;
             flex: 1;
-            min-height: 0;            /* lets flex child shrink below natural height */
+            min-height: 0;
         }
         .modal-footer {
-            flex-shrink: 0;           /* pinned – never scrolls */
+            flex-shrink: 0;
             padding: 1rem 1.5rem;
             border-top: 0.5px solid #e5e7eb;
             display: flex; gap: 10px; justify-content: flex-end;
@@ -231,6 +227,91 @@
             padding-top: 1.25rem;
             border-top: 0.5px solid #e5e7eb;
             margin-top: 1.5rem;
+        }
+        .feat-section-divider {
+            border: none;
+            border-top: 0.5px solid #e5e7eb;
+            margin: 1.25rem 0;
+        }
+        .feat-heading {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.75rem;
+        }
+
+        /* ══════════════════════════════════════════
+           FEATURE STEPPER
+        ══════════════════════════════════════════ */
+        .feat-stepper-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.1rem;
+        }
+        .feat-step-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #111827;
+        }
+        .feat-step-label span {
+            font-size: 11px;
+            font-weight: 400;
+            color: #9ca3af;
+            margin-left: 6px;
+        }
+        .feat-step-nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .feat-step-btn {
+            width: 30px; height: 30px;
+            border: 0.5px solid #d1d5db;
+            border-radius: 7px;
+            background: #fff;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: #374151;
+            font-size: 15px;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .feat-step-btn:hover { background: #f3f4f6; border-color: #9ca3af; }
+        .feat-step-btn:disabled { opacity: 0.35; cursor: default; }
+        .feat-step-dots {
+            display: flex; gap: 5px; align-items: center;
+        }
+        .feat-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.15s;
+        }
+        .feat-dot.active {
+            background: #111827;
+            transform: scale(1.25);
+        }
+
+        /* Each feature "page" */
+        .feat-page { display: none; }
+        .feat-page.active { display: block; }
+
+        /* Progress bar */
+        .feat-progress-bar {
+            height: 2px;
+            background: #e5e7eb;
+            border-radius: 1px;
+            margin-bottom: 1.25rem;
+            overflow: hidden;
+        }
+        .feat-progress-fill {
+            height: 100%;
+            background: #111827;
+            border-radius: 1px;
+            transition: width 0.25s ease;
         }
     </style>
 
@@ -264,6 +345,7 @@
                     @csrf
                     @method('PUT')
 
+                    {{-- ── Hero Text ── --}}
                     <p class="bm-section-label">Text content</p>
                     <div class="bm-card">
                         <div class="form-grid-2" style="margin-bottom:1rem;">
@@ -284,7 +366,8 @@
                                 @error('hero_subtitle')<p class="error-msg">{{ $message }}</p>@enderror
                             </div>
                         </div>
-                        <div class="form-grid-2">
+
+                        <div class="form-grid-2" style="margin-bottom:1rem;">
                             <div class="form-field" style="margin-bottom:0;">
                                 <label class="bm-label" for="hero_title_1">Hero title 1</label>
                                 <input class="bm-input @error('hero_title_1') border-red-400 @enderror"
@@ -302,25 +385,103 @@
                                 @error('hero_title_2')<p class="error-msg">{{ $message }}</p>@enderror
                             </div>
                         </div>
+
+                        <hr class="feat-section-divider">
+
+                        {{-- ── Section Title / Subtitle ── --}}
+                        <div class="form-grid-2">
+                            <div class="form-field" style="margin-bottom:0;">
+                                <label class="bm-label" for="section_title">Section title</label>
+                                <input class="bm-input @error('section_title') border-red-400 @enderror"
+                                       type="text" name="section_title" id="section_title"
+                                       value="{{ old('section_title', $section->section_title ?? '') }}"
+                                       placeholder="e.g. Why choose us">
+                                @error('section_title')<p class="error-msg">{{ $message }}</p>@enderror
+                            </div>
+                            <div class="form-field" style="margin-bottom:0;">
+                                <label class="bm-label" for="section_subtitle">Section subtitle</label>
+                                <input class="bm-input @error('section_subtitle') border-red-400 @enderror"
+                                       type="text" name="section_subtitle" id="section_subtitle"
+                                       value="{{ old('section_subtitle', $section->section_subtitle ?? '' ) }}"
+                                       placeholder="Short tagline">
+                                @error('section_subtitle')<p class="error-msg">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
                     </div>
 
+                    {{-- ── Features stepper (edit form) ── --}}
+                    <p class="bm-section-label">Features</p>
+                    <div class="bm-card">
+
+                        {{-- Stepper header --}}
+                        <div class="feat-stepper-header">
+                            <div>
+                                <span class="feat-step-label" id="e-step-label">Feature 1</span>
+                                <span id="e-step-sub" style="font-size:11px;color:#9ca3af;margin-left:6px;"></span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div class="feat-step-dots" id="e-dots"></div>
+                                <div class="feat-step-nav">
+                                    <button type="button" class="feat-step-btn" id="e-prev-btn" onclick="eStepper(-1)" disabled>&#8249;</button>
+                                    <button type="button" class="feat-step-btn" id="e-next-btn" onclick="eStepper(1)">&#8250;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Progress bar --}}
+                        <div class="feat-progress-bar">
+                            <div class="feat-progress-fill" id="e-progress" style="width:14.28%;"></div>
+                        </div>
+
+                        {{-- Feature pages --}}
+                        @for ($f = 1; $f <= 7; $f++)
+                            @php
+                                $titleKey = $f === 1 ? 'feature_title'  : 'feature_title'.$f;
+                                $descKey  = $f === 1 ? 'feature_desc'   : 'feature_desc'.$f;
+                            @endphp
+                            <div class="feat-page {{ $f === 1 ? 'active' : '' }}" id="e-feat-{{ $f }}">
+                                <div class="form-grid-2">
+                                    <div class="form-field" style="margin-bottom:0;">
+                                        <label class="bm-label">Title</label>
+                                        <input class="bm-input @error($titleKey) border-red-400 @enderror"
+                                               type="text" name="{{ $titleKey }}"
+                                               value="{{ old($titleKey, $section->$titleKey ?? '') }}"
+                                               placeholder="Feature {{ $f }} title">
+                                        @error($titleKey)<p class="error-msg">{{ $message }}</p>@enderror
+                                    </div>
+                                    <div class="form-field" style="margin-bottom:0;">
+                                        <label class="bm-label">Description</label>
+                                        <textarea class="bm-input @error($descKey) border-red-400 @enderror"
+                                                  name="{{ $descKey }}"
+                                                  placeholder="Short description">{{ old($descKey, $section->$descKey ?? '') }}</textarea>
+                                        @error($descKey)<p class="error-msg">{{ $message }}</p>@enderror
+                                    </div>
+                                </div>
+                            </div>
+                        @endfor
+
+                        {{-- Bottom nav buttons --}}
+                        <div style="display:flex;justify-content:space-between;margin-top:1.1rem;padding-top:1rem;border-top:0.5px solid #e5e7eb;">
+                            <button type="button" class="btn-outline" id="e-prev-bot" onclick="eStepper(-1)" disabled>&#8249; Previous</button>
+                            <button type="button" class="btn-outline" id="e-next-bot" onclick="eStepper(1)">Next &#8250;</button>
+                        </div>
+                    </div>
+
+                    {{-- ── Slide Images ── --}}
                     <p class="bm-section-label">Slide images</p>
                     <div class="bm-card">
                         <div class="slide-grid">
                             @for ($i = 1; $i <= 5; $i++)
                                 <div>
-                                    {{-- Clickable slot (div, not label, to avoid double-trigger) --}}
                                     <div id="slot_{{ $i }}"
                                          class="slide-slot {{ $banner['slide_'.$i] ? 'has-img' : '' }}"
                                          onclick="document.getElementById('file_{{ $i }}').click()">
 
-                                        {{-- Current / preview image --}}
                                         <img id="preview_{{ $i }}"
                                              src="{{ $banner['slide_'.$i] ? asset('storage/'.$banner['slide_'.$i]) : '' }}"
                                              alt="Slide {{ $i }}"
                                              style="{{ $banner['slide_'.$i] ? '' : 'display:none;' }}">
 
-                                        {{-- Placeholder shown when no image --}}
                                         <svg id="ph_icon_{{ $i }}" class="slide-placeholder-icon"
                                              width="28" height="28" viewBox="0 0 24 24"
                                              fill="none" stroke="currentColor" stroke-width="1.5"
@@ -334,7 +495,6 @@
                                             Slide {{ $i }}
                                         </span>
 
-                                        {{-- Hover overlay --}}
                                         <div class="slide-overlay">
                                             <svg width="16" height="16" viewBox="0 0 24 24"
                                                  fill="none" stroke="#fff" stroke-width="2.5">
@@ -351,7 +511,6 @@
                                         <span class="slide-pending-badge">Unsaved</span>
                                     </div>
 
-                                    {{-- Hidden file input --}}
                                     <input type="file" id="file_{{ $i }}" name="slide_{{ $i }}"
                                            accept="image/*" class="hidden"
                                            onchange="previewSlide(this, {{ $i }})">
@@ -402,18 +561,15 @@
     <div id="create-modal" class="modal-backdrop" style="display:none;">
         <div class="modal-box">
 
-            {{-- Fixed header --}}
             <div class="modal-header">
                 <span class="modal-title">Create banner</span>
                 <button type="button" class="modal-close" onclick="closeCreateModal()">&#215;</button>
             </div>
 
-            {{-- form wraps body + footer so submit works; display:contents keeps flex layout intact --}}
             <form action="{{ route('banners.store') }}" method="POST" enctype="multipart/form-data"
                   style="display:contents;">
                 @csrf
 
-                {{-- Scrollable body --}}
                 <div class="modal-body">
                     @if($errors->any())
                         <div style="background:#fef2f2; border:0.5px solid #fca5a5; border-radius:8px;
@@ -422,9 +578,11 @@
                         </div>
                     @endif
 
+                    {{-- ── Hero Fields ── --}}
                     <div class="form-field">
                         <label class="bm-label" for="m_hero_tag">Hero tag</label>
-                        <input class="bm-input" type="text" name="hero_tag" id="m_hero_tag"
+                        <input class="bm-input @error('hero_tag') border-red-400 @enderror"
+                               type="text" name="hero_tag" id="m_hero_tag"
                                value="{{ old('hero_tag') }}" placeholder="e.g. New collection">
                         @error('hero_tag')<p class="error-msg">{{ $message }}</p>@enderror
                     </div>
@@ -432,13 +590,15 @@
                     <div class="form-grid-2">
                         <div class="form-field">
                             <label class="bm-label" for="m_hero_title_1">Hero title 1</label>
-                            <input class="bm-input" type="text" name="hero_title_1" id="m_hero_title_1"
+                            <input class="bm-input @error('hero_title_1') border-red-400 @enderror"
+                                   type="text" name="hero_title_1" id="m_hero_title_1"
                                    value="{{ old('hero_title_1') }}" placeholder="e.g. Style">
                             @error('hero_title_1')<p class="error-msg">{{ $message }}</p>@enderror
                         </div>
                         <div class="form-field">
                             <label class="bm-label" for="m_hero_title_2">Hero title 2</label>
-                            <input class="bm-input" type="text" name="hero_title_2" id="m_hero_title_2"
+                            <input class="bm-input @error('hero_title_2') border-red-400 @enderror"
+                                   type="text" name="hero_title_2" id="m_hero_title_2"
                                    value="{{ old('hero_title_2') }}" placeholder="e.g. Redefined">
                             @error('hero_title_2')<p class="error-msg">{{ $message }}</p>@enderror
                         </div>
@@ -446,12 +606,14 @@
 
                     <div class="form-field">
                         <label class="bm-label" for="m_hero_subtitle">Hero subtitle</label>
-                        <input class="bm-input" type="text" name="hero_subtitle" id="m_hero_subtitle"
+                        <input class="bm-input @error('hero_subtitle') border-red-400 @enderror"
+                               type="text" name="hero_subtitle" id="m_hero_subtitle"
                                value="{{ old('hero_subtitle') }}" placeholder="Short description below the title">
                         @error('hero_subtitle')<p class="error-msg">{{ $message }}</p>@enderror
                     </div>
 
-                    <div class="form-field" style="margin-bottom:0;">
+                    {{-- ── Slide Images ── --}}
+                    <div class="form-field">
                         <label class="bm-label">
                             Slide images
                             <span style="font-weight:400; color:#9ca3af;">(optional, up to 5)</span>
@@ -493,9 +655,82 @@
                             Click a slot to pick an image. You can also add them after creation.
                         </p>
                     </div>
+
+                    <hr class="feat-section-divider">
+
+                    {{-- ── Section Title / Subtitle ── --}}
+                    <div class="form-grid-2">
+                        <div class="form-field">
+                            <label class="bm-label" for="m_section_title">Section title</label>
+                            <input class="bm-input @error('section_title') border-red-400 @enderror"
+                                   type="text" name="section_title" id="m_section_title"
+                                   value="{{ old('section_title') }}" placeholder="e.g. Why choose us">
+                            @error('section_title')<p class="error-msg">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="form-field">
+                            <label class="bm-label" for="m_section_subtitle">Section subtitle</label>
+                            <input class="bm-input @error('section_subtitle') border-red-400 @enderror"
+                                   type="text" name="section_subtitle" id="m_section_subtitle"
+                                   value="{{ old('section_subtitle') }}" placeholder="Short tagline">
+                            @error('section_subtitle')<p class="error-msg">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+
+                    <hr class="feat-section-divider">
+
+                    {{-- ── Features stepper (modal) ── --}}
+                    <div style="margin-bottom:0.5rem;">
+                        <div class="feat-stepper-header">
+                            <div>
+                                <span class="feat-step-label" id="m-step-label">Feature 1</span>
+                                <span id="m-step-sub" style="font-size:11px;color:#9ca3af;margin-left:6px;"></span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div class="feat-step-dots" id="m-dots"></div>
+                                <div class="feat-step-nav">
+                                    <button type="button" class="feat-step-btn" id="m-prev-btn" onclick="mStepper(-1)" disabled>&#8249;</button>
+                                    <button type="button" class="feat-step-btn" id="m-next-btn" onclick="mStepper(1)">&#8250;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="feat-progress-bar">
+                            <div class="feat-progress-fill" id="m-progress" style="width:14.28%;"></div>
+                        </div>
+
+                        @for ($f = 1; $f <= 7; $f++)
+                            @php
+                                $titleKey = $f === 1 ? 'feature_title'  : 'feature_title'.$f;
+                                $descKey  = $f === 1 ? 'feature_desc'   : 'feature_desc'.$f;
+                            @endphp
+                            <div class="feat-page {{ $f === 1 ? 'active' : '' }}" id="m-feat-{{ $f }}">
+                                <div class="form-grid-2">
+                                    <div class="form-field" style="margin-bottom:0;">
+                                        <label class="bm-label">Title</label>
+                                        <input class="bm-input @error($titleKey) border-red-400 @enderror"
+                                               type="text" name="{{ $titleKey }}"
+                                               value="{{ old($titleKey) }}"
+                                               placeholder="Feature {{ $f }} title">
+                                        @error($titleKey)<p class="error-msg">{{ $message }}</p>@enderror
+                                    </div>
+                                    <div class="form-field" style="margin-bottom:0;">
+                                        <label class="bm-label">Description</label>
+                                        <textarea class="bm-input @error($descKey) border-red-400 @enderror"
+                                                  name="{{ $descKey }}"
+                                                  placeholder="Short description">{{ old($descKey) }}</textarea>
+                                        @error($descKey)<p class="error-msg">{{ $message }}</p>@enderror
+                                    </div>
+                                </div>
+                            </div>
+                        @endfor
+
+                        <div style="display:flex;justify-content:space-between;margin-top:1rem;padding-top:1rem;border-top:0.5px solid #e5e7eb;">
+                            <button type="button" class="btn-outline" id="m-prev-bot" onclick="mStepper(-1)" disabled>&#8249; Previous</button>
+                            <button type="button" class="btn-outline" id="m-next-bot" onclick="mStepper(1)">Next &#8250;</button>
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Fixed footer --}}
                 <div class="modal-footer">
                     <button type="button" class="btn-outline" onclick="closeCreateModal()">Cancel</button>
                     <button type="submit" class="btn-primary">Create banner</button>
@@ -514,11 +749,9 @@
             document.getElementById('create-modal').style.display = 'none';
             document.body.style.overflow = '';
         }
-        /* Close on backdrop click */
         document.getElementById('create-modal').addEventListener('click', function (e) {
             if (e.target === this) closeCreateModal();
         });
-        /* Re-open automatically when validation fails */
         @if($errors->any())
             openCreateModal();
         @endif
@@ -532,7 +765,7 @@
                 const preview = document.getElementById('m_preview_' + i);
                 const icon    = document.getElementById('m_icon_'    + i);
                 const lbl     = document.getElementById('m_label_'   + i);
-                preview.src          = e.target.result;
+                preview.src           = e.target.result;
                 preview.style.display = '';
                 icon.style.display    = 'none';
                 lbl.style.display     = 'none';
@@ -540,10 +773,44 @@
             };
             reader.readAsDataURL(input.files[0]);
         }
+
+        /* ── Modal feature stepper ── */
+        const TOTAL = 7;
+        var mStep = 1;
+
+        function buildDots(containerId, step, stepperFn) {
+            const c = document.getElementById(containerId);
+            c.innerHTML = '';
+            for (let i = 1; i <= TOTAL; i++) {
+                const d = document.createElement('div');
+                d.className = 'feat-dot' + (i === step ? ' active' : '');
+                d.title = 'Feature ' + i;
+                d.onclick = (function(n){ return function(){ stepperFn(null, n); }; })(i);
+                c.appendChild(d);
+            }
+        }
+
+        function mStepper(dir, jumpTo) {
+            const next = jumpTo !== undefined ? jumpTo : mStep + dir;
+            if (next < 1 || next > TOTAL) return;
+            document.getElementById('m-feat-' + mStep).classList.remove('active');
+            mStep = next;
+            document.getElementById('m-feat-' + mStep).classList.add('active');
+            document.getElementById('m-step-label').textContent = 'Feature ' + mStep;
+            document.getElementById('m-step-sub').textContent   = mStep + ' of ' + TOTAL;
+            document.getElementById('m-progress').style.width   = (mStep / TOTAL * 100).toFixed(2) + '%';
+            document.getElementById('m-prev-btn').disabled      = mStep === 1;
+            document.getElementById('m-next-btn').disabled      = mStep === TOTAL;
+            document.getElementById('m-prev-bot').disabled      = mStep === 1;
+            document.getElementById('m-next-bot').disabled      = mStep === TOTAL;
+            buildDots('m-dots', mStep, mStepper);
+        }
+        buildDots('m-dots', 1, mStepper);
+        document.getElementById('m-step-sub').textContent = '1 of ' + TOTAL;
     </script>
     @endif
 
-    {{-- ── Edit-form slide preview ── --}}
+    {{-- ── Edit-form slide preview + stepper ── --}}
     @if($banner)
     <script>
         function previewSlide(input, i) {
@@ -554,16 +821,48 @@
                 const preview = document.getElementById('preview_'  + i);
                 const icon    = document.getElementById('ph_icon_'  + i);
                 const lbl     = document.getElementById('ph_label_' + i);
-
                 preview.src           = e.target.result;
                 preview.style.display = '';
                 if (icon) icon.style.display = 'none';
                 if (lbl)  lbl.style.display  = 'none';
-
                 slot.classList.add('has-img', 'pending');
             };
             reader.readAsDataURL(input.files[0]);
         }
+
+        /* ── Edit feature stepper ── */
+        const ETOTAL = 7;
+        var eStep = 1;
+
+        function buildEDots(step) {
+            const c = document.getElementById('e-dots');
+            c.innerHTML = '';
+            for (let i = 1; i <= ETOTAL; i++) {
+                const d = document.createElement('div');
+                d.className = 'feat-dot' + (i === step ? ' active' : '');
+                d.title = 'Feature ' + i;
+                d.onclick = (function(n){ return function(){ eStepper(null, n); }; })(i);
+                c.appendChild(d);
+            }
+        }
+
+        function eStepper(dir, jumpTo) {
+            const next = jumpTo !== undefined ? jumpTo : eStep + dir;
+            if (next < 1 || next > ETOTAL) return;
+            document.getElementById('e-feat-' + eStep).classList.remove('active');
+            eStep = next;
+            document.getElementById('e-feat-' + eStep).classList.add('active');
+            document.getElementById('e-step-label').textContent = 'Feature ' + eStep;
+            document.getElementById('e-step-sub').textContent   = eStep + ' of ' + ETOTAL;
+            document.getElementById('e-progress').style.width   = (eStep / ETOTAL * 100).toFixed(2) + '%';
+            document.getElementById('e-prev-btn').disabled      = eStep === 1;
+            document.getElementById('e-next-btn').disabled      = eStep === ETOTAL;
+            document.getElementById('e-prev-bot').disabled      = eStep === 1;
+            document.getElementById('e-next-bot').disabled      = eStep === ETOTAL;
+            buildEDots(eStep);
+        }
+        buildEDots(1);
+        document.getElementById('e-step-sub').textContent = '1 of ' + ETOTAL;
     </script>
     @endif
 

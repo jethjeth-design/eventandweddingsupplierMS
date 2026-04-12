@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('hero_title_1');
             $table->string('hero_title_2');
             $table->string('hero_subtitle');
-            $table->string('slide_1');
-            $table->string('slide_2');
-            $table->string('slide_3');
-            $table->string('slide_4');
-            $table->string('slide_5');
+            $table->string('slide_1')->nullable();
+            $table->string('slide_2')->nullable();
+            $table->string('slide_3')->nullable();
+            $table->string('slide_4')->nullable();
+            $table->string('slide_5')->nullable();
             $table->timestamps();
         });
     }

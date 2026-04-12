@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SupplierProfile;
 use App\Models\SupplierPortfolio;
+use App\Models\User;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +17,9 @@ class SupplierProfileController extends Controller
     public function index()
     {   
         $portfolios = SupplierPortfolio::where('supplier_id', auth()->id())->get();
-        $supplierProfile = SupplierProfile::where('user_id', auth()->id())->first();
+        $supplierProfile = SupplierProfile::with('categories')
+        ->where('user_id', auth()->id())
+        ->first();
         return view('supplier.supplierprofile', compact('supplierProfile', 'portfolios'));
     }
 
@@ -49,7 +52,8 @@ class SupplierProfileController extends Controller
             'province' => 'required|string|max:255',
             'bio' => 'nullable|string',
             'experience' => 'nullable|string',
-            'category' => 'required|string|max:255',
+            'category_id' => 'required|array',
+            'category_id.*' => 'exists:categories,id',
             'description' => 'nullable|string',
             'address' => 'nullable|string',
             'price' => 'required|numeric|min:0',
@@ -59,8 +63,8 @@ class SupplierProfileController extends Controller
             if ($request->hasFile('photo')) {
                 $photoPath = $request->file('photo')->store('supplier_photos', 'public');
             }
-        Rating::create([
-            'user_id' => $user->id,
+        $supplier = SupplierProfile::create([
+            'user_id' => auth()->id(),
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'photo' => $photoPath,
@@ -71,12 +75,15 @@ class SupplierProfileController extends Controller
             'province' => $request->province,
             'bio' => $request->bio,
             'experience' => $request->experience,
-            'category' => $request->category,
             'description' => $request->description,
             'address' => $request->address,
             // ✅ ADD THIS (FIX)
             'price' => $request->price,
         ]);
+
+        // ✅ FIXED
+        $supplier->categories()->sync($request->category_id);
+        
           return redirect()->route('supplier.supplierprofile')->with('success', 'Profile created successfully.');
     }
 
@@ -124,7 +131,8 @@ class SupplierProfileController extends Controller
             'province' => 'required|string|max:255',
             'bio' => 'nullable|string',
             'experience' => 'nullable|string',
-            'category' => 'required|string|max:255',
+            'category_id' => 'required|array',
+            'category_id.*' => 'exists:categories,id',
             'description' => 'nullable|string',
             'address' => 'nullable|string',
         ]);
@@ -146,7 +154,8 @@ class SupplierProfileController extends Controller
 
         // ✅ Update everything in one go
         $supplierProfile->update($data);
-             
+          // ✅ IMPORTANT FIX
+        $supplierProfile->categories()->sync($request->category_id);    
         return redirect()->route('supplier.supplierprofile')->with('success', 'Profile updated successfully.');
 
     }
@@ -164,7 +173,8 @@ class SupplierProfileController extends Controller
             'business_name' => 'required|string|max:255',
             'tagline' => 'nullable|string|max:255',
             'experience' => 'nullable|string',
-            'category' => 'required|string|max:255',
+            'category_id' => 'required|array',
+            'category_id.*' => 'exists:categories,id',
         ]);
 
         // ✅ Prepare data for update
@@ -184,6 +194,9 @@ class SupplierProfileController extends Controller
 
         // ✅ Update everything in one go
         $supplierProfile->update($data);
+
+        // ✅ IMPORTANT FIX
+    $supplierProfile->categories()->sync($request->category_id);
              
         return redirect()->route('supplier.supplierprofile')->with('success', 'Profile updated successfully.');
 
@@ -193,16 +206,16 @@ class SupplierProfileController extends Controller
      */
     public function destroy(SupplierProfile $supplierProfile)
     {
-            $supplier = SupplierProfile::findOrFail($id);
+        $supplier = SupplierProfile::findOrFail($id);
 
-        // DELETE PHOTO FILE
-        if ($supplier->photo && Storage::exists('public/' . $supplier->photo)) {
-            Storage::delete('public/' . $supplier->photo);
+        if ($supplierProfile->photo && Storage::disk('public')->exists($supplierProfile->photo)) {
+            Storage::disk('public')->delete($supplierProfile->photo);
         }
 
-        // DELETE DATABASE RECORD
-        $supplier->delete();
-        return redirect()->route('supplier.supplierprofile')->with('success', 'Supplier profile deleted successfully.');
+        $supplierProfile->delete();
+
+        return redirect()->route('supplier.supplierprofile')
+            ->with('success', 'Supplier profile deleted successfully.');
     }
 
 

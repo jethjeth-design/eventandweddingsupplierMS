@@ -72,8 +72,18 @@ class User extends Authenticatable
         ];
     }
 
-    public function supplierProfile()
-{
-    return $this->hasOne(supplierProfile::class);
-}
+    public function supplier()
+    {
+        return $this->hasOne(supplierProfile::class);
+    }
+
+    public function events()
+    {
+        return $this->hasMany(Event::class, 'client_id');
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'supplier_id');
+    }
 }

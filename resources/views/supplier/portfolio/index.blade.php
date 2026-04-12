@@ -353,130 +353,11 @@
 
                 </form>
             </div>
-            {{-- ── Facebook-style portfolio feed ── --}}
-            <div class="pf-card" style="margin-bottom:1.25rem;">
-                <div class="pf-card-header">
-                    <div class="pf-card-header-l">
-                        <div class="pf-card-icon">
-                            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="13" rx="2"/><circle cx="7" cy="9" r="1.5"/><path d="M2 14l4-4 3 3 3-3 6 5"/></svg>
-                        </div>
-                        <div>
-                            <div class="pf-card-title">My Gallery</div>
-                            <div class="pf-card-desc">
-                                @php $totalItems = isset($portfolios) ? count($portfolios) : 0; @endphp
-                                {{ $totalItems }} {{ $totalItems === 1 ? 'item' : 'items' }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pf-card-body">
-                    @if(isset($portfolios) && count($portfolios))
-                        <div class="pf-portfolio-list">
-                            @foreach($portfolios as $portfolio)
-                            @php
-                                $imgs     = $portfolio->images ?? [];
-                                $imgCount = count($imgs);
-                                $hasVideo = !empty($portfolio->video);
-                            @endphp
-
-                            <div class="pf-post">
-
-                                {{-- Post header --}}
-                                <div class="pf-post-head">
-                                    <div class="pf-post-head-l">
-                                        <div class="pf-post-avatar">
-                                            @if($portfolio->supplierProfile->photo ?? false)
-                                                <img src="{{ asset('storage/'.$portfolio->supplierProfile->photo) }}" alt="">
-                                            @else
-                                                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                                            @endif
-                                        </div>
-                                        <div class="pf-post-meta">
-                                            <div class="pf-post-title">{{ $portfolio->title }}</div>
-                                            <div class="pf-post-date">
-                                                {{ $portfolio->created_at ? $portfolio->created_at->diffForHumans() : '' }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <form method="POST"
-                                          action="{{ route('supplier.portfolio.destroy', $portfolio->id) }}"
-                                          onsubmit="return confirm('Remove this portfolio item?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="pf-post-delete-btn">
-                                            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3.5h10M5 3.5V2.5h4v1M4.5 3.5v7a1 1 0 001 1h3a1 1 0 001-1v-7"/></svg>
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
-
-                                {{-- Description --}}
-                                @if($portfolio->description)
-                                <div class="pf-post-desc">{{ $portfolio->description }}</div>
-                                @endif
-
-                                {{-- Facebook-style image mosaic --}}
-                                @if($imgCount > 0)
-                                @php
-                                    $cls = $imgCount === 1 ? 'count-1'
-                                         : ($imgCount === 2 ? 'count-2'
-                                         : ($imgCount === 3 ? 'count-3'
-                                         : ($imgCount === 4 ? 'count-4' : 'count-5plus')));
-                                    $shown = min($imgCount, $imgCount >= 5 ? 4 : $imgCount);
-                                    $allUrls = array_map(function($i){ return asset('storage/'.$i); }, $imgs);
-                                    $allJson = json_encode($allUrls);
-                                @endphp
-                                <div class="pf-mosaic {{ $cls }}"
-                                     onclick="fbLbOpen({{ $allJson }}, 0, '{{ addslashes($portfolio->title) }}')">
-                                    @for($ci = 0; $ci < $shown; $ci++)
-                                    <div class="pf-mos-cell">
-                                        <img src="{{ asset('storage/'.$imgs[$ci]) }}" alt="" loading="lazy">
-                                        @if($ci === $shown - 1 && $imgCount > $shown)
-                                            <div class="pf-mos-more">+{{ $imgCount - $shown }}</div>
-                                        @endif
-                                    </div>
-                                    @endfor
-                                </div>
-                                @endif
-
-                                {{-- Video --}}
-                                @if($hasVideo)
-                                <div class="pf-post-video">
-                                    <video width="100%" controls preload="metadata">
-                                        <source src="{{ asset('storage/' . $portfolio->video) }}">
-                                    </video>
-                                </div>
-                                @endif
-
-                                {{-- Post footer tags --}}
-                                <div class="pf-post-foot">
-                                    @if($imgCount > 0)
-                                        <span class="pf-post-tag">{{ $imgCount }} photo{{ $imgCount !== 1 ? 's' : '' }}</span>
-                                    @endif
-                                    @if($hasVideo)
-                                        <span class="pf-post-tag">Video</span>
-                                    @endif
-                                </div>
-
-                            </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="pf-gallery-empty">
-                            <div class="pf-gallery-empty-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                            </div>
-                            <p>No portfolio items yet.<br>Upload your first photos or video below.</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
         </div>{{-- end left --}}
         
         {{-- ════ SIDEBAR ════ --}}
         <div>
-            <div class="pf-tip-card">
+            {{--<div class="pf-tip-card">
                 <div class="pf-tip-header">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="1" y="8" width="3" height="7"/><rect x="6" y="4" width="3" height="11"/><rect x="11" y="1" width="3" height="14"/></svg>
                     Gallery Stats
@@ -494,7 +375,7 @@
                         </span>
                     </div>
                 </div>
-            </div>
+            </div>--}}
 
             <div class="pf-tip-card">
                 <div class="pf-tip-header">

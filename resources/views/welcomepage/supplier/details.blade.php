@@ -15,35 +15,35 @@
    
 </head>
 <body>
-
-{{-- NAVBAR --}}
-<nav class="main-nav">
-    <a href="{{ route('welcomepage.welcome') }}" class="nav-logo">Bikol's<span>Craft</span></a>
-    <div class="nav-links">
-        <a href="{{ route('welcomepage.welcome') }}">Home</a>
-        <a href="{{ route('welcomepage.profile') }}">Suppliers</a>
-        <a href="#">Events</a>
-        <a href="#">Packages</a>
-        <a href="{{ route('welcomepage.gallery') }}">Gallery</a>
-        @if (Route::has('login'))
-            @auth
-                <a href="{{ url('/dashboard') }}" class="nav-cta">Dashboard</a>
-            @else
-                <a href="{{ route('login') }}">Sign In</a>
-                @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="nav-cta">Get Started</a>
-                @endif
-            @endauth
-        @endif
-    </div>
-    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
-</nav>
+    
+    {{-- NAVBAR --}}
+    <nav class="main-nav">
+        <a href="{{ route('welcomepage.welcome') }}" class="nav-logo">Bikol's<span>Craft</span></a>
+        <div class="nav-links">
+            <a href="{{ route('welcomepage.welcome') }}">Home</a>
+            <a href="{{ route('welcomepage.profile') }}">Suppliers</a>
+            <a href="#">Events</a>
+            <a href="{{route('welcomepage.package')}}">Packages</a>
+            <a href="{{ route('welcomepage.gallery') }}">Gallery</a>
+            @if (Route::has('login'))
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="nav-cta">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}">Sign In</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="nav-cta">Get Started</a>
+                    @endif
+                @endauth
+            @endif
+        </div>
+        <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </nav>
 
 <div class="mobile-menu" id="mobileMenu">
     <a href="{{ route('welcomepage.welcome') }}" onclick="closeMenu()">Home</a>
     <a href="{{ route('welcomepage.profile') }}" onclick="closeMenu()">Suppliers</a>
     <a href="#" onclick="closeMenu()">Events</a>
-    <a href="#" onclick="closeMenu()">Packages</a>
+    <a href="{{route('welcomepage.package')}}" onclick="closeMenu()">Packages</a>
     <a href="{{ route('welcomepage.gallery') }}" onclick="closeMenu()">Gallery</a>
     @if (Route::has('login'))
         @auth
@@ -95,7 +95,16 @@
                     </div>
                 @endif
             </div>
-
+            {{-- Success message --}}
+    @if(session('success'))
+    <div class="bv-alert-success">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 10l4 4 6-6"/>
+            <circle cx="10" cy="10" r="8"/>
+        </svg>
+        {{ session('success') }}
+    </div>
+    @endif
             <div class="profile-aside">
                 @if($supplier->rating)
                     <div class="pill-star">
@@ -135,7 +144,7 @@
             @endif
         </div>
     </div>
-
+    
     {{-- STATS STRIP --}}
     <div class="stats-strip reveal">
         <div class="stat-cell">

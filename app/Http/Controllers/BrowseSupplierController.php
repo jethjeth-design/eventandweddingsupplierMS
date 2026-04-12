@@ -21,7 +21,7 @@ class BrowseSupplierController extends Controller
                 ->orWhere('first_name', 'like', "%{$search}%")
                 ->orWhere('last_name', 'like', "%{$search}%")
                 ->orWhere('city', 'like', "%{$search}%")
-                ->orWhere('category', 'like', "%{$search}%");
+                ->orWhere('category_id', 'like', "%{$search}%");
             });
         }
 
@@ -40,9 +40,13 @@ class BrowseSupplierController extends Controller
         }
 
         // CATEGORY
-        if ($request->has('category') && !empty($request->category)) {
-            $query->whereIn('category', $request->category);
+        if ($request->has('category_id') && !empty($request->category)) {
+            $query->whereHas('category_id', function ($q) use ($request) {
+                $q->whereIn('slug', $request->category);
+            });
         }
+
+        
 
         // ✅ Final filtered suppliers
         $suppliers = $query->get();
@@ -53,7 +57,7 @@ class BrowseSupplierController extends Controller
         $cities = $allSuppliers->pluck('city')
             ->filter()->unique()->sort()->values();
 
-        $categories = $allSuppliers->pluck('category')
+        $categories = $allSuppliers->pluck('category_id')
             ->filter()->unique()->sort()->values();
 
         return view('client.browse.supplier', compact(

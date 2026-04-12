@@ -7,9 +7,28 @@ use App\Models\Message;
 use App\Models\User;
 
 class MessageController extends Controller
-{
-     public function inbox()
+{ 
+    
+    //Show the Client Inbox
+    public function inbox(Request $request)
     {
+        $userId = $request->user_id;
+        $supplierId = $request->supplier_id;
+        $authId = auth()->id();
+     
+        $messages = Message::where(function ($q) use ($userId, $supplierId) {
+            $q->where('sender_id', auth()->id())
+              ->where('receiver_id', $userId)
+              ->where('supplier_id', $supplierId);
+        })
+        ->orWhere(function ($q) use ($userId, $supplierId) {
+            $q->where('sender_id', $userId)
+              ->where('receiver_id', auth()->id())
+              ->where('supplier_id', $supplierId);
+        })
+        ->orderBy('created_at', 'asc')
+        ->get();
+ 
         $conversations = Message::where('receiver_id', auth()->id())
         ->orWhere('sender_id', auth()->id())
         ->with('sender', 'receiver')
@@ -21,8 +40,9 @@ class MessageController extends Controller
                 : $msg->sender_id;
         });
 
-    return view('client.inbox.list', compact('conversations'));
+    return view('client.inbox.list', compact('conversations', 'messages'));
     }
+
     // ✅ Open Chat (Client or Supplier)
     public function chat($userId, $supplierId)
     {   

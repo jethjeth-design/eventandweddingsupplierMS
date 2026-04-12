@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\SupplierProfile;
 use App\Models\Category;
+use App\Helpers\ActivityLogger;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -40,8 +41,11 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'role' => 'client',
             'password' => Hash::make($request->password),
         ]);
+        
+        ActivityLogger::log('register', $user);
 
         event(new Registered($user));
 
@@ -80,7 +84,8 @@ class RegisteredUserController extends Controller
         'province' => 'required|string|max:255',
         'bio' => 'nullable|string',
         'experience' => 'nullable|string',
-        'category' => 'required|string|max:255',
+        'category_id' => 'required|array',
+        'category_id.*' => 'exists:categories,id',
         'description' => 'nullable|string',
         'address' => 'nullable|string',
         'price' => 'required|numeric|min:0',
@@ -92,6 +97,8 @@ class RegisteredUserController extends Controller
             'role' => 'supplier', // set role
             'password' => Hash::make($request->password),
         ]);
+
+        ActivityLogger::log('register', $user);
         
         // ✅ HANDLE PHOTO UPLOAD
     $photoPath = null;
@@ -100,7 +107,7 @@ class RegisteredUserController extends Controller
     }
 
     // ✅ CREATE SUPPLIER PROFILE (CONNECTED TO USER)
-    SupplierProfile::create([
+    $supplier = SupplierProfile::create([
         'user_id' => $user->id,
 
         'first_name' => $request->first_name,
@@ -113,18 +120,19 @@ class RegisteredUserController extends Controller
         'province' => $request->province,
         'bio' => $request->bio,
         'experience' => $request->experience,
-        'category' => $request->category,
         'description' => $request->description,
         'address' => $request->address,
         // ✅ ADD THIS (FIX)
         'price' => $request->price,
     ]);
 
-
+    
         event(new Registered($user));
 
         auth()->login($user);
-
+        
+        // ✅ FIXED
+        $supplier->categories()->sync($request->category_id);
         // redirect to supplier landing page
         return redirect(route('supplier.dashboard', absolute: false));
     }

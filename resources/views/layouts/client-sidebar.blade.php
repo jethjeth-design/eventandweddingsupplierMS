@@ -63,6 +63,15 @@
                     <span>Browse Suppliers</span>
                     <span class="nav-tooltip">Browse Suppliers</span>
                 </a>
+
+                <a href="#" class="nav-item {{ request()->is('client/shows*') ? 'active' : '' }}">
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                        <circle cx="9" cy="8" r="4"/>
+                        <path d="M2 17c0-3.3 3.1-6 7-6M17 14l-3-3-3 3M14 11v6"/>
+                    </svg>
+                    <span>AI Recommendations</span>
+                    <span class="nav-tooltip">AI Recommendations</span>
+                </a>
  
                 <a href="#" class="nav-item {{ request()->is('client/shortlist*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
