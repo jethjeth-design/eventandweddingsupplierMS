@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BannerController;
@@ -20,6 +21,11 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SupplierAvailabilityController;
+use App\Http\Controllers\AdminAvailabilityController;
+
 use Illuminate\Support\Facades\Route;
 
 //Welcome Pages
@@ -244,6 +250,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/supplier/packages/{package}/edit', [PackageController::class, 'edit'])->name('supplier.package.edit');
     Route::put('/supplier/packages/{package}', [PackageController::class, 'update'])->name('supplier.package.update');
     Route::delete('/supplier/packages/{package}', [PackageController::class, 'destroy'])->name('supplier.package.destroy');
+    Route::post('/package/{id}/assign-teams', [PackageController::class, 'assignTeams'])
+    ->name('supplier.package.assignTeams');
+    Route::get('/supplier/package/{id}/assign-teams', [PackageController::class, 'showAssignTeams'])
+    ->name('supplier.package.assignTeamsForm');
     //Admin
     Route::get('/admin/index', [PackageController::class, 'list'])->name('admin.package.list');
 });
@@ -259,10 +269,89 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/client/events/{event}/edit', [EventController::class, 'edit'])->name('client.events.edit');
     Route::put('/client/events/{event}', [EventController::class, 'update'])->name('client.events.update');
     Route::delete('/client/events/{event}', [EventController::class, 'destroy'])->name('client.events.destroy');
-    //Client Bookings
-    Route::post('/book-package', [BookingController::class, 'store'])
-    ->name('book.package')
-    ->middleware('auth');
+});
+//Client Booking routes
+Route::middleware(['auth'])->group(function () {
+
+    // ==========================
+    // CLIENT BOOKING
+    // ==========================
+    Route::get('/my-bookings', [BookingController::class, 'clientIndex'])
+    ->name('client.bookings.index');
+    // Timeline view for clients
+    Route::get('/my-orders', [BookingController::class, 'timeline'])
+    ->name('client.timeline');
+    // ADMIN TIMELINE
+    Route::get('/admin/timeline', [BookingController::class, 'adminTimeline'])
+    ->name('admin.timeline');
+    Route::post('/bookings/store', [BookingController::class, 'store'])
+        ->name('bookings.store');
+    
+    // ==========================
+    // SUPPLIER DASHBOARD
+    // ==========================
+    Route::get('/supplier/bookings', [BookingController::class, 'supplierIndex'])
+        ->name('supplier.bookings');
+
+    // ==========================
+    // Admin DASHBOARD
+    // ==========================
+    Route::get('/admin/bookings', [BookingController::class, 'adminIndex'])
+        ->name('admin.bookings');
+
+    // ==========================
+    // SUPPLIER ACTIONS
+    // ==========================
+    Route::post('/supplier/bookings/{id}/approve', [BookingController::class, 'approve'])
+        ->name('supplier.bookings.approve');
+
+    Route::post('/supplier/bookings/{id}/cancel', [BookingController::class, 'cancel'])
+        ->name('supplier.bookings.cancel');
+});
+//Supplier Teams
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+    Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
+    Route::post('/teams/store', [TeamController::class, 'store'])->name('teams.store');
+
+    Route::get('/teams/edit/{id}', [TeamController::class, 'edit'])->name('teams.edit');
+    Route::put('/teams/update/{id}', [TeamController::class, 'update'])->name('teams.update');
+
+    Route::delete('/teams/delete/{id}', [TeamController::class, 'destroy'])->name('teams.destroy');
 });
 
+//Role Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
+    Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::get('/roles/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+    Route::put('/roles/{id}', [RoleController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{id}', [RoleController::class, 'destroy'])->name('roles.destroy');
+});
+
+// Supplier Availability Routes
+Route::middleware(['auth'])->group(function () {
+     // calendar page
+    Route::get('/availability', [SupplierAvailabilityController::class, 'index'])
+        ->name('supplier.availability.index');
+
+    // load events (FullCalendar)
+    Route::get('/availability/events', [SupplierAvailabilityController::class, 'events'])
+        ->name('supplier.availability.events');
+
+    // save availability
+    Route::post('/availability/store', [SupplierAvailabilityController::class, 'store'])
+        ->name('supplier.availability.store');
+});
+
+// Admin Calendar Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/calendar', [AdminAvailabilityController::class, 'index'])
+    ->name('admin.calendar.index');
+
+    Route::get('/admin/calendar/events', [AdminAvailabilityController::class, 'events'])
+        ->name('admin.calendar.events');
+});
 require __DIR__.'/auth.php';

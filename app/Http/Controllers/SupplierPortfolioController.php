@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SupplierPortfolio;
+use App\Models\SupplierProfile;
 use Illuminate\Http\Request;
 
 class SupplierPortfolioController extends Controller
@@ -12,8 +13,10 @@ class SupplierPortfolioController extends Controller
      */
     public function index()
     {
-        $portfolios = SupplierPortfolio::where('supplier_id', auth()->id())->get();
-        return view('supplier.portfolio.index', compact('portfolios'));
+    $portfolios = SupplierPortfolio::where('supplier_id', $user->id)->get();
+    $supplierProfile = SupplierProfile::where('user_id', $user->id)->first();
+ 
+    return view('supplier.portfolio.index', compact('portfolios','supplierProfile'));
     }
 
     /**

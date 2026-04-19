@@ -164,7 +164,11 @@
         .tab-bar, .inbox-header { padding-left: 1rem; padding-right: 1rem; }
     }
 </style>
-
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Inquiries') }}
+        </h2>
+    </x-slot>
 {{-- HEADER --}}
 <div class="inbox-header">
     <div class="ih-inner">

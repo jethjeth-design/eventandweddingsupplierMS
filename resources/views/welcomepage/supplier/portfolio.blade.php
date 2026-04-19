@@ -577,7 +577,7 @@
                 $cls = 'count-6plus'; $maxShow = 4; // last cell shows +N
             }
 
-            $supplier = $portfolio->supplier;
+            $supplierProfile = $portfolio->supplierProfile;
         @endphp
 
         <div class="post-card reveal"
@@ -587,10 +587,10 @@
             <div class="post-head">
                 <div class="post-head-l">
                     <div class="post-avatar">
-                        @if($supplier && $supplier->photo)
-                            <img src="{{ asset('storage/'.$supplier->photo) }}" alt="Supplier Photo">
+                        @if(!empty($supplierProfile->photo))
+                            <img src="{{ asset('storage/'.$supplierProfile->photo) }}" alt="Supplier Photo">
                         @else
-                            {{ strtoupper(substr($supplier->business_name ?? 'BC', 0, 2)) }}
+                            {{ strtoupper(substr($supplierProfile->business_name ?? 'BC', 0, 2)) }}
                         @endif
                     </div>
                     <div>

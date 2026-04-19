@@ -155,7 +155,11 @@
         .bv-id-right{min-width:unset;width:100%;padding-top:0;}
     }
 </style>
-
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Edit') }}
+        </h2>
+    </x-slot>
 <div class="page-content">
 
     <div class="bv-page-header">
@@ -261,7 +265,11 @@
                         <div class="bv-id-tip-item">Suppliers with photos get 3× more bookings.</div>
                     </div>
                 </div>
-
+            <form method="POST"
+                  action="{{ route('supplier.update', $supplierProfile->id) }}"
+                  enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
                 {{-- Right: photo upload zone --}}
                 <div class="bv-id-right">
                     <div class="bv-id-right-label">Profile Photo</div>
@@ -294,11 +302,7 @@
 
         {{-- ══ FORM SECTION CARDS ══ --}}
         <div class="bv-main-stack">
-            <form method="POST"
-                  action="{{ route('supplier.update', $supplierProfile->id) }}"
-                  enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+            
 
                 {{-- ── Section 1: Personal Identity ── --}}
                 <div class="bv-sc" style="margin-bottom:1.25rem;">
@@ -362,18 +366,6 @@
                                 @error('tagline')<div class="bv-err">{{ $message }}</div>@enderror
                             </div>
 
-                            <div class="bv-f">
-                                <label class="bv-lbl" for="fi_exp">Experience Level <span class="bv-req">Required</span></label>
-                                <div class="bv-sw">
-                                    <select id="fi_exp" name="experience" class="bv-sel" required>
-                                        <option value="" disabled {{ !old('experience', $supplierProfile->experience) ? 'selected' : '' }}>Select level...</option>
-                                        @foreach(['less_than_1'=>'Less than 1 year','1_2'=>'1–2 years','3_5'=>'3–5 years','6_10'=>'6–10 years','10_plus'=>'10+ years'] as $val=>$lbl)
-                                            <option value="{{ $val }}" {{ old('experience', $supplierProfile->experience) == $val ? 'selected' : '' }}>{{ $lbl }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @error('experience')<div class="bv-err">{{ $message }}</div>@enderror
-                            </div>
 
                         </div>{{-- /bv-fg --}}
 

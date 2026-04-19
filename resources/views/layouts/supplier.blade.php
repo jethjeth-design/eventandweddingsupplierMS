@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'BloomVenue') }} — @isset($title){{ $title }}@else Dashboard @endisset</title>
+        <title>{{ config('app.name', 'Bikols Craft') }} — @isset($title){{ $title }}@else Dashboard @endisset</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -540,6 +540,7 @@
             ::-webkit-scrollbar-track { background: transparent; }
             ::-webkit-scrollbar-thumb { background: #DDD4C8; border-radius: 3px; }
             ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+            
         </style>
     </head>
     <body>
