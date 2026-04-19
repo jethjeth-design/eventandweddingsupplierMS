@@ -8,9 +8,11 @@ class Booking extends Model
 {
     protected $fillable = [
         'user_id',
-        'package_id',
         'event_id',
-         'total_price',
+        'package_id',
+        'supplier_id', // 🔥 ADD THIS
+        'event_date',
+        'total_price',
         'status',
     ];
 

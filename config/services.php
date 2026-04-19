@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    // ✅ FIXED POSITION (OUTSIDE SLACK)
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+    ],
+
 ];

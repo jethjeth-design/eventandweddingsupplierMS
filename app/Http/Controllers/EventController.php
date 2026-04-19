@@ -36,14 +36,14 @@ class EventController extends Controller
      * Display the specified resource.
      */
     public function show($id)
-{
-    $event = Event::findOrFail($id);
+    {
+        $event = Event::findOrFail($id);
 
-    $recommendations = app(AIRecommendationService::class)
-        ->getRecommendedPackages($event);
+        $recommendations = app(\App\Services\AIRecommendationService::class)
+            ->getRecommendedPackages($event);
 
-    return view('client.events.show', compact('event', 'recommendations'));
-}
+        return view('client.events.show', compact('event', 'recommendations'));
+    }
 
     /**
      * Show the form for editing the specified resource.

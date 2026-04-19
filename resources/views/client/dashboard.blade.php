@@ -637,7 +637,7 @@
                 <textarea class="cd-input" id="ev_notes" name="description"
                           placeholder="Any details, themes, or special requests…"></textarea>
             </div>
-
+            
         </form>
 
         <div class="cd-modal-footer">

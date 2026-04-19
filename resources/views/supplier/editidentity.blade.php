@@ -187,7 +187,11 @@
             .bv-id-tips-strip{padding:0.85rem 1.25rem;}
         }
     </style>
-
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Edit') }}
+        </h2>
+    </x-slot>
     <div class="page-content">
 
         <div class="bv-page-header">
@@ -381,20 +385,6 @@
                                            placeholder="e.g. Crafting unforgettable moments">
                                 </div>
                                 @error('tagline')<div class="bv-err">{{ $message }}</div>@enderror
-                            </div>
-
-                            {{-- Experience --}}
-                            <div class="bv-f bv-fg-full">
-                                <label class="bv-lbl" for="fi_exp">Experience Level <span class="bv-opt">Optional</span></label>
-                                <div class="bv-sw">
-                                    <select id="fi_exp" name="experience" class="bv-sel">
-                                        <option value="" disabled {{ !old('experience', $supplierProfile->experience) ? 'selected' : '' }}>Select level...</option>
-                                        @foreach(['less_than_1'=>'Less than 1 year','1_2'=>'1–2 years','3_5'=>'3–5 years','6_10'=>'6–10 years','10_plus'=>'10+ years'] as $val=>$lbl)
-                                            <option value="{{ $val }}" {{ old('experience', $supplierProfile->experience) == $val ? 'selected' : '' }}>{{ $lbl }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @error('experience')<div class="bv-err">{{ $message }}</div>@enderror
                             </div>
                         </div>
 

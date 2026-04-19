@@ -432,7 +432,11 @@
         .bv-step-tab .bv-step-num { font-size: 0.65rem; margin: 0 auto; }
     }
 </style>
-
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Registration') }}
+        </h2>
+    </x-slot>
 {{-- ── PAGE HEADER ── --}}
 <div class="bv-page-header">
     <div class="bv-ph-inner">
@@ -622,15 +626,6 @@
                     @error('address')<div class="bv-error">{{ $message }}</div>@enderror
                 </div>
 
-                <div class="bv-field">
-                    <label class="bv-label" for="price">Starting Price <span class="bv-label-opt">Optional</span></label>
-                    <div class="bv-input-wrap">
-                        <svg class="bv-input-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><line x1="10" y1="2" x2="10" y2="18"/><path d="M14 6H8.5a2.5 2.5 0 000 5h3a2.5 2.5 0 010 5H6"/></svg>
-                        <input id="price" name="price" type="text" class="bv-input" placeholder="e.g. ₱20,000 – ₱50,000" value="{{ old('price') }}">
-                    </div>
-                    @error('price')<div class="bv-error">{{ $message }}</div>@enderror
-                </div>
-
                 <hr class="bv-divider">
 
                 {{-- ══ CATEGORY — clickable chip pills ══ --}}
@@ -663,20 +658,6 @@
 
                     <p class="bv-hint">Determines where your profile appears in search results.</p>
                     @error('category_id')<div class="bv-error">{{ $message }}</div>@enderror
-                </div>
-
-                {{-- Experience --}}
-                <div class="bv-field">
-                    <label class="bv-label" for="experience">Years of Experience <span class="bv-label-req">Required</span></label>
-                    <div class="bv-select-wrap">
-                        <select id="experience" name="experience" class="bv-select" required>
-                            <option value="" disabled {{ old('experience') ? '' : 'selected' }}>Select experience…</option>
-                            @foreach(['less_than_1' => 'Less than 1 year', '1_2' => '1–2 years', '3_5' => '3–5 years', '6_10' => '6–10 years', '10_plus' => '10+ years'] as $val => $lbl)
-                                <option value="{{ $val }}" {{ old('experience') == $val ? 'selected' : '' }}>{{ $lbl }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('experience')<div class="bv-error">{{ $message }}</div>@enderror
                 </div>
 
                 {{-- Availability toggle --}}
@@ -796,14 +777,6 @@
                             <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--warm-grey);font-family:var(--font-body);margin-bottom:2px;">Province</div>
                             <div style="font-size:0.82rem;color:var(--charcoal);font-family:var(--font-body);" id="r-province">—</div>
                         </div>
-                        <div>
-                            <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--warm-grey);font-family:var(--font-body);margin-bottom:2px;">Experience</div>
-                            <div style="font-size:0.82rem;color:var(--charcoal);font-family:var(--font-body);" id="r-experience">—</div>
-                        </div>
-                        <div>
-                            <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--warm-grey);font-family:var(--font-body);margin-bottom:2px;">Starting Price</div>
-                            <div style="font-size:0.82rem;color:var(--charcoal);font-family:var(--font-body);" id="r-price">—</div>
-                        </div>
                         <div style="grid-column:1/-1;">
                             <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--warm-grey);font-family:var(--font-body);margin-bottom:2px;">Tagline</div>
                             <div style="font-size:0.82rem;color:var(--charcoal);font-family:var(--font-body);font-style:italic;" id="r-tagline">—</div>
@@ -876,9 +849,7 @@
             }
             grid.classList.remove('error');
 
-            const exp  = document.getElementById('experience');
             const desc = document.getElementById('description');
-            if (!exp.value)         { exp.focus();  exp.style.borderColor  = 'var(--danger)'; return false; }
             if (!desc.value.trim()) { desc.focus(); desc.style.borderColor = 'var(--danger)'; return false; }
         }
         return true;
@@ -900,10 +871,6 @@
     /* ── REVIEW SUMMARY ── */
     function populateReview() {
         const get = id => (document.getElementById(id)?.value || '').trim() || '—';
-        const sel = id => {
-            const el = document.getElementById(id);
-            return el?.options[el.selectedIndex]?.text || '—';
-        };
 
         document.getElementById('r-first_name').textContent    = get('first_name');
         document.getElementById('r-last_name').textContent     = get('last_name');
@@ -912,8 +879,6 @@
         document.getElementById('r-tagline').textContent       = get('tagline') || '—';
         document.getElementById('r-city').textContent          = get('city') || '—';
         document.getElementById('r-province').textContent      = get('province') || '—';
-        document.getElementById('r-price').textContent         = get('price') || '—';
-        document.getElementById('r-experience').textContent    = sel('experience');
 
         /* Collect checked category names */
         const checkedCats = [...document.querySelectorAll('input[name="category_id[]"]:checked')]
@@ -966,7 +931,7 @@
     @if($errors->any())
         @php
             $step2Fields = ['first_name', 'last_name', 'phone', 'photo'];
-            $step3Fields = ['business_name', 'tagline', 'city', 'province', 'address', 'price', 'category_id', 'experience', 'bio', 'description'];
+            $step3Fields = ['business_name', 'tagline', 'city', 'province', 'address', 'category_id', 'bio', 'description'];
             $targetStep  = 4;
             foreach ($step2Fields as $f) { if ($errors->has($f)) { $targetStep = 2; break; } }
             if ($targetStep === 4) foreach ($step3Fields as $f) { if ($errors->has($f)) { $targetStep = 3; break; } }

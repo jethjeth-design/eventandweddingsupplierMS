@@ -21,13 +21,11 @@ return new class extends Migration
             $table->string('business_name')->nullable();
             $table->string('tagline')->nullable();
             $table->string('phone')->nullable();
-            $table->string('city')->nullable();;
-            $table->string('province')->nullable();;
-            $table->text('bio')->nullable();;
-            $table->string('experience')->nullable();; 
+            $table->string('city')->nullable();
+            $table->string('province')->nullable();
+            $table->text('bio')->nullable(); 
             $table->text('description')->nullable();
             $table->string('address')->nullable();
-            $table->decimal('price', 10, 2)->default(0.00);
             $table->decimal('rating', 3, 2)->default(0.00);
             $table->boolean('is_available')->default(true);
             $table->timestamps();

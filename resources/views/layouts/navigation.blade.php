@@ -26,9 +26,9 @@
                 <!-- User pill + dropdown -->
                 <div class="user-pill" tabindex="0">
                     <div class="user-avatar">
-                        {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
+                        {{ strtoupper(substr(Auth::user()->role ?? 'U', 0, 2)) }}
                     </div>
-                    <span class="user-name">{{ Auth::user()->name ?? 'Guest' }}</span>
+                    <span class="user-role">{{ Auth::user()->role ?? 'Guest' }}</span>
                     <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 4l4 4 4-4"/>
                     </svg>
@@ -88,9 +88,9 @@
                 <!-- User pill + dropdown -->
                 <div class="user-pill" tabindex="0">
                     <div class="user-avatar">
-                        {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
+                        {{ strtoupper(substr(Auth::user()->role ?? 'U', 0, 2)) }}
                     </div>
-                    <span class="user-name">{{ Auth::user()->name ?? 'Guest' }}</span>
+                    <span class="user-role">{{ Auth::user()->role ?? 'Guest' }}</span>
                     <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 4l4 4 4-4"/>
                     </svg>
@@ -150,9 +150,9 @@
                 <!-- User pill + dropdown -->
                 <div class="user-pill" tabindex="0">
                     <div class="user-avatar">
-                        {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
+                        {{ strtoupper(substr(Auth::user()->role ?? 'U', 0, 2)) }}
                     </div>
-                    <span class="user-name">{{ Auth::user()->name ?? 'Guest' }}</span>
+                    <span class="user-role">{{ Auth::user()->role ?? 'Guest' }}</span>
                     <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 4l4 4 4-4"/>
                     </svg>

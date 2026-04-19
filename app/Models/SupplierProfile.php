@@ -17,10 +17,8 @@ class SupplierProfile extends Model
         'city',
         'province',
         'bio',
-        'experience',
         'description',
         'address',
-        'price',
         'rating',
         'is_available',
     ];
@@ -68,5 +66,8 @@ class SupplierProfile extends Model
         return $this->belongsToMany(Venue::class, 'supplier_venue');
     }
 
-    
+    public function teams()
+    {
+        return $this->hasMany(Team::class);
+    }
 }

@@ -33,7 +33,7 @@
                     <span class="nav-badge">2</span>
                 </a>
  
-                <a href="#" class="nav-item {{ request()->is('client/bookings*') ? 'active' : '' }}">
+                <a href="{{ route('client.bookings.index') }}" class="nav-item {{ request()->is('client/bookings*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <path d="M9 12l2 2 4-4M7 3H5a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/>
                         <rect x="7" y="1" width="6" height="4" rx="1"/>
@@ -91,7 +91,7 @@
                     <span class="nav-tooltip">Budget Tracker</span>
                 </a>
  
-                <a href="#" class="nav-item {{ request()->is('client/timeline*') ? 'active' : '' }}">
+                <a href="{{ route('client.timeline') }}" class="nav-item {{ request()->is('client/timeline*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <circle cx="10" cy="10" r="8"/>
                         <path d="M10 6v4l3 3"/>

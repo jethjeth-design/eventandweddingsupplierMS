@@ -6,6 +6,8 @@ use App\Models\SupplierProfile;
 use App\Models\SupplierPortfolio;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Role;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,11 +18,25 @@ class SupplierProfileController extends Controller
      */
     public function index()
     {   
-        $portfolios = SupplierPortfolio::where('supplier_id', auth()->id())->get();
-        $supplierProfile = SupplierProfile::with('categories')
-        ->where('user_id', auth()->id())
+    $user = auth()->user();
+
+    $supplier = $user->supplier;
+
+    $portfolios = SupplierPortfolio::where('supplier_id', $user->id)->get();
+
+    $roles = $supplier
+        ? Role::where('supplier_id', $supplier->id)->latest()->get()
+        : collect();
+
+    $teams = $supplier
+        ? Team::where('supplier_id', $supplier->id)->get()
+        : collect();
+
+    $supplierProfile = SupplierProfile::with('categories')
+        ->where('user_id', $user->id)
         ->first();
-        return view('supplier.supplierprofile', compact('supplierProfile', 'portfolios'));
+
+        return view('supplier.supplierprofile', compact('supplierProfile', 'portfolios','teams', 'roles'));
     }
 
     /**
@@ -51,12 +67,10 @@ class SupplierProfileController extends Controller
             'city' => 'required|string|max:255',
             'province' => 'required|string|max:255',
             'bio' => 'nullable|string',
-            'experience' => 'nullable|string',
             'category_id' => 'required|array',
             'category_id.*' => 'exists:categories,id',
             'description' => 'nullable|string',
             'address' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
             
         ]);
             $photoPath = null;
@@ -74,11 +88,9 @@ class SupplierProfileController extends Controller
             'city' => $request->city,
             'province' => $request->province,
             'bio' => $request->bio,
-            'experience' => $request->experience,
             'description' => $request->description,
             'address' => $request->address,
-            // ✅ ADD THIS (FIX)
-            'price' => $request->price,
+            
         ]);
 
         // ✅ FIXED

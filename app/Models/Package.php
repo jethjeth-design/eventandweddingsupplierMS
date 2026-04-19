@@ -14,7 +14,10 @@ class Package extends Model
         'guest_capacity',
         'event_type',
     ];
-
+     
+    protected $casts = [
+        'inclusion' => 'array',
+    ];
 
     public function supplier()
     {
@@ -27,5 +30,16 @@ class Package extends Model
         return $this->hasMany(Booking::class);
     }
     
+    public function inclusions()
+    {
+        return $this->hasMany(PackageInclusion::class);
+    }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'package_team')
+            ->withPivot('role_in_package')
+            ->withTimestamps();
+    }
 }
 

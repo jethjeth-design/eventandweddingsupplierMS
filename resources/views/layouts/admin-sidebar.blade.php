@@ -42,7 +42,7 @@
                     <span class="nav-tooltip">Suppliers</span>
                 </a>
 
-                <a href="#" class="nav-item {{ request()->is('bookings*') ? 'active' : '' }}">
+                <a href="{{ route('admin.bookings') }}" class="nav-item {{ request()->is('bookings*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <path d="M9 12l2 2 4-4M7 3H5a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2h-2"/>
                         <rect x="7" y="1" width="6" height="4" rx="1"/>
@@ -63,8 +63,17 @@
 
                 <div class="sidebar-divider"></div>
                 <div class="nav-group-label">Planning</div>
+                    
+                <a href="{{ route('admin.calendar.index') }}" class="nav-item {{ request()->is('calendar*') ? 'active' : '' }}">
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                        <rect x="3" y="4" width="14" height="13" rx="2"/>
+                        <path d="M7 2v4M13 2v4M3 9h14"/>
+                    </svg>
+                    <span>Calendar</span>
+                    <span class="nav-tooltip">Calendar</span>
+                </a>
 
-                <a href="#" class="nav-item {{ request()->is('timeline*') ? 'active' : '' }}">
+                <a href="{{ route('admin.timeline') }}" class="nav-item {{ request()->is('timeline*') ? 'active' : '' }}">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <circle cx="10" cy="10" r="8"/>
                         <path d="M10 6v4l3 3"/>
@@ -87,24 +96,6 @@
                     </svg>
                     <span>Guest List</span>
                     <span class="nav-tooltip">Guest List</span>
-                </a>
-
-                <a href="{{ route('admin.themes.list') }}" class="nav-item {{ request()->routeIs('admin.themes.*') ? 'active' : '' }}">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
-                        <path d="M3 5h14M3 9h10M3 13h7"/>
-                        <circle cx="15" cy="13" r="3"/>
-                    </svg>
-                    <span>Theme</span>
-                    <span class="nav-tooltip">Themes</span>
-                </a>
-
-                <a href="{{ route('admin.location.list') }}" class="nav-item {{ request()->routeIs('admin.location.*') ? 'active' : '' }}">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
-                        <path d="M3 5h14M3 9h10M3 13h7"/>
-                        <circle cx="15" cy="13" r="3"/>
-                    </svg>
-                    <span>Locations</span>
-                    <span class="nav-tooltip">Location</span>
                 </a>
 
                 <div class="sidebar-divider"></div>
@@ -203,7 +194,22 @@
                            Venue's
                         </a>
 
-                        
+                        <a href="{{ route('admin.themes.list') }}" class="nav-subitem {{ request()->is('admin.themes.list*') ? 'active' : '' }}">
+                            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                                <path d="M3 5h14M3 9h10M3 13h7"/>
+                                <circle cx="15" cy="13" r="3"/>
+                            </svg>
+                           Themes
+                        </a>
+
+                        <a href="{{ route('admin.location.list') }}" class="nav-subitem {{ request()->is('admin.location.list*') ? 'active' : '' }}">
+                            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                                <path d="M3 5h14M3 9h10M3 13h7"/>
+                                <circle cx="15" cy="13" r="3"/>
+                            </svg>
+                           Locations
+                        </a>
+
                     </div>
                 </div>
 
