@@ -78,12 +78,12 @@
                     <span class="notif-badge"></span>
                 </a>
 
-                <!-- Messages 
+                <!-- Messages -->
                 <a href="#" class="icon-btn" aria-label="Messages">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                         <path d="M4 4h12a2 2 0 012 2v7a2 2 0 01-2 2H6l-4 3V6a2 2 0 012-2z"/>
                     </svg>
-                </a>-->
+                </a>
 
                 <!-- User pill + dropdown -->
                 <div class="user-pill" tabindex="0">

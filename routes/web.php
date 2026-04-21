@@ -260,9 +260,11 @@ Route::middleware(['auth'])->group(function () {
 
 //Event for Client
 Route::middleware(['auth'])->group(function () {
-
+    //Admin view of events
+    Route::get('/admin/events', [EventController::class, 'adminIndex'])
+    ->name('admin.events.index');
      // CLIENT
-    Route::get('/client/index', [EventController::class, 'index'])->name('client.index');
+    Route::get('/client/index', [EventController::class, 'clientIndex'])->name('client.index');
     Route::get('/client/events', [EventController::class, 'create'])->name('client.events');
     Route::get('/client/events/{id}', [EventController::class, 'show'])->name('client.show');
     Route::post('/client/events', [EventController::class, 'store'])->name('client.events.store');
@@ -344,6 +346,12 @@ Route::middleware(['auth'])->group(function () {
     // save availability
     Route::post('/availability/store', [SupplierAvailabilityController::class, 'store'])
         ->name('supplier.availability.store');
+
+    Route::post('/supplier/availability/update', [SupplierAvailabilityController::class, 'update'])
+    ->name('supplier.availability.update');
+
+    Route::delete('/supplier/availability/{id}', [SupplierAvailabilityController::class, 'destroy'])
+    ->name('supplier.availability.delete');
 });
 
 // Admin Calendar Routes
@@ -354,4 +362,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/calendar/events', [AdminAvailabilityController::class, 'events'])
         ->name('admin.calendar.events');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/notifications/read/{id}', function ($id) {
+        auth()->user()->notifications()->findOrFail($id)->markAsRead();
+        return back();
+    })->name('notifications.read');
+
+    Route::post('/notifications/read-all', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back();
+    })->name('notifications.readAll');
+});
+
 require __DIR__.'/auth.php';
