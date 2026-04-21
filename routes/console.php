@@ -6,3 +6,19 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+use Illuminate\Support\Facades\Schedule;
+use Carbon\Carbon;
+use App\Models\SupplierAvailability;
+
+Schedule::call(function () {
+
+    $today = Carbon::today();
+
+    SupplierAvailability::where('date', '<', $today)
+        ->where('status', 'booked')
+        ->update([
+            'status' => 'available'
+        ]);
+
+})->daily();

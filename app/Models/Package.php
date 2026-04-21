@@ -41,5 +41,10 @@ class Package extends Model
             ->withPivot('role_in_package')
             ->withTimestamps();
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'supplier_id');
+    }
 }
 

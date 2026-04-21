@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('event_name');
             $table->string('event_type'); // birthday, wedding, etc.
+            $table->date('event_date');
             $table->integer('budget');
             $table->text('description')->nullable();
             $table->integer('guest_count')->nullable();

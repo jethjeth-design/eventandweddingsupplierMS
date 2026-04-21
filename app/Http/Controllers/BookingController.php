@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use Carbon\Carbon;
 use App\Models\Event;
 use App\Models\Package;
 use App\Models\SupplierAvailability;
@@ -37,7 +38,8 @@ class BookingController extends Controller
 
     // Timeline view for admin
     public function adminTimeline()
-    {
+    {   
+        
         $bookings = Booking::with([
             'event',
             'package.supplier'
@@ -67,25 +69,58 @@ class BookingController extends Controller
     // =========================
     public function adminIndex(Request $request)
     {
-        $query = Booking::with(['event', 'package.supplier']);
+        $search    = $request->input('search');
+        $status    = $request->input('status');
+        $eventType = $request->input('event_type');
+        $dateFrom  = $request->input('date_from');
+        $dateTo    = $request->input('date_to');
+    
+        // ── Base query ──
+        $query = Booking::query()
+            ->with([
+                'event',
+                'user',
+                'package',
+                'package.supplier',
+            ])
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q2) use ($search) {
+                    $q2->whereHas('event', fn($e) =>
+                            $e->where('event_name', 'like', "%{$search}%")
+                            ->orWhere('event_type', 'like', "%{$search}%")
+                        )
+                        ->orWhereHas('user', fn($u) =>
+                            $u->where('name', 'like', "%{$search}%")
+                        )
+                        ->orWhereHas('package', fn($p) =>
+                            $p->where('name', 'like', "%{$search}%")
+                        )
+                        ->orWhereHas('package.supplier', fn($s) =>
+                            $s->where('business_name', 'like', "%{$search}%")
+                            ->orWhere('first_name',   'like', "%{$search}%")
+                            ->orWhere('last_name',    'like', "%{$search}%")
+                        );
+                });
+            })
+            ->when($status, fn($q) => $q->where('status', $status))
+            ->when($eventType, fn($q) =>
+                $q->whereHas('event', fn($e) => $e->where('event_type', $eventType))
+            )
+            ->when($dateFrom, fn($q) => $q->whereDate('event_date', '>=', $dateFrom))
+            ->when($dateTo,   fn($q) => $q->whereDate('event_date', '<=', $dateTo))
+            ->latest();
+    
+        $bookings = $query->paginate(20)->withQueryString();
+    
+        // ── Stats (always from full dataset, no filters) ──
+        $allStats = [
+            'pending'   => \App\Models\Booking::where('status', 'pending')->count(),
+            'confirmed' => \App\Models\Booking::where('status', 'confirmed')->count(),
+            'cancelled' => \App\Models\Booking::where('status', 'cancelled')->count(),
+            'revenue'   => \App\Models\Booking::where('status', 'confirmed')->sum('total_price'),
+        ];
 
-        // 🔍 SEARCH
-        if ($request->search) {
-            $query->whereHas('event', function ($q) use ($request) {
-                $q->where('event_name', 'like', '%' . $request->search . '%');
-            })->orWhereHas('package.supplier', function ($q) use ($request) {
-                $q->where('business_name', 'like', '%' . $request->search . '%');
-            });
-        }
-
-        // 🔽 FILTER STATUS
-        if ($request->status) {
-            $query->where('status', $request->status);
-        }
-
-        $bookings = $query->latest()->get();
-
-        return view('admin.booking.index', compact('bookings'));
+        return view('admin.booking.index', compact('bookings', 'allStats'));
     }
     // =========================
     // CLIENT: CREATE BOOKING
@@ -109,8 +144,8 @@ class BookingController extends Controller
             return back()->with('error', 'Already booked this package.');
         }
 
-        // create booking (PENDING)
-        Booking::create([
+        // ✅ CREATE BOOKING
+        $booking = Booking::create([
             'user_id' => auth()->id(),
             'event_id' => $event->id,
             'package_id' => $package->id,
@@ -119,6 +154,32 @@ class BookingController extends Controller
             'total_price' => $package->price,
             'status' => 'pending',
         ]);
+
+        // =========================
+        // 🔔 NOTIFY SUPPLIER
+        // =========================
+        $supplierUser = $package->supplier->user ?? null;
+
+        if ($supplierUser) {
+            $supplierUser->notify(new SystemNotification(
+                'New Booking',
+                'A client booked your package.',
+                route('supplier.booking.index')
+            ));
+        }
+
+        // =========================
+        // 🔔 NOTIFY ADMIN
+        // =========================
+        $admins = User::where('role', 'admin')->get();
+
+        foreach ($admins as $admin) {
+            $admin->notify(new SystemNotification(
+                'New Booking',
+                'A new booking needs monitoring.',
+                route('admin.booking.index')
+            ));
+        }
 
         return back()->with('success', 'Booking sent to supplier.');
     }
@@ -147,6 +208,15 @@ class BookingController extends Controller
             ]
         );
 
+        // =========================
+        // 🔔 NOTIFY CLIENT
+        // =========================
+        $booking->user?->notify(new SystemNotification(
+            'Booking Confirmed',
+            'Your booking has been approved.',
+            route('client.bookings.index')
+        ));
+
         return back()->with('success', 'Booking approved!');
     }
 
@@ -173,6 +243,16 @@ class BookingController extends Controller
             ]
         );
 
+        // =========================
+        // 🔔 NOTIFY CLIENT
+        // =========================
+        $booking->user?->notify(new SystemNotification(
+            'Booking Cancelled',
+            'Your booking was rejected by supplier.',
+            route('client.bookings.index')
+        ));
+
         return back()->with('error', 'Booking cancelled.');
     }
+
 }

@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SupplierAvailability;
 use App\Models\SupplierProfile;
+use Carbon\Carbon;
 
 class AdminAvailabilityController extends Controller
 {
-    // Calendar page
     public function index()
     {
         $suppliers = SupplierProfile::all();
@@ -16,35 +16,35 @@ class AdminAvailabilityController extends Controller
         return view('admin.calendar.index', compact('suppliers'));
     }
 
-    // Load ALL events
+    // 🔥 MAIN EVENTS (AUTO STATUS LOGIC)
     public function events(Request $request)
     {
+        $today = Carbon::today();
+
         $query = SupplierAvailability::with('supplier');
 
-        // 🔥 FILTER BY SUPPLIER
         if ($request->supplier_id) {
             $query->where('supplier_id', $request->supplier_id);
         }
 
-        $events = $query->get()->map(function ($item) {
+        $events = $query->get()->map(function ($item) use ($today) {
+
+            $status = $this->autoStatus($item, $today);
 
             return [
-                'title' => ($item->supplier->business_name ?? 'Supplier')
-                            . ' - ' . ucfirst($item->status),
+                'id' => $item->id,
+
+                'title' =>
+                    ($item->supplier->business_name ?? 'Supplier')
+                    . ' - ' . ucfirst($status),
 
                 'start' => $item->date,
 
-                // 🎨 COLOR BASED ON STATUS
-                'color' => match ($item->status) {
-                    'available' => '#28a745',
-                    'booked' => '#dc3545',
-                    'unavailable' => '#6c757d',
-                    default => '#007bff'
-                },
+                'color' => $this->colorByStatus($status),
 
                 'extendedProps' => [
                     'supplier' => $item->supplier->business_name ?? 'Unknown',
-                    'status' => $item->status
+                    'status' => $status,
                 ]
             ];
         });
@@ -52,12 +52,38 @@ class AdminAvailabilityController extends Controller
         return response()->json($events);
     }
 
+    // 🔥 AUTO STATUS ENGINE (IMPORTANT)
+    private function autoStatus($item, $today)
+    {
+        // 1. PAST DATE → COMPLETED (AUTO)
+        if ($item->date < $today) {
+            return 'completed';
+        }
+
+        // 2. TODAY + BOOKED
+        if ($item->status === 'booked') {
+            return 'booked';
+        }
+
+        // 3. PENDING STATE (MONITORING)
+        if ($item->status === 'pending') {
+            return 'pending';
+        }
+
+        // 4. DEFAULT
+        return $item->status ?? 'available';
+    }
+
+    // 🎨 COLORS
     private function colorByStatus($status)
     {
         return match ($status) {
+
             'available' => '#28a745',   // green
-            'booked' =>    '#6c757d', // gray
-            'unavailable' => '#dc3545',  // red
+            'pending'   => '#ffc107',   // yellow
+            'booked'    => '#dc3545',   // red
+            'completed' => '#6c757d',   // gray
+
             default => '#007bff'
         };
     }

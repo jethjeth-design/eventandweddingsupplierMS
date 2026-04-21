@@ -86,4 +86,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Booking::class, 'supplier_id');
     }
+
+    public function packages()
+    {
+        return $this->hasMany(Package::class, 'user_id'); 
+    }
 }

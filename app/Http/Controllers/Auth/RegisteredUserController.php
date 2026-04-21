@@ -83,12 +83,10 @@ class RegisteredUserController extends Controller
         'city' => 'required|string|max:255',
         'province' => 'required|string|max:255',
         'bio' => 'nullable|string',
-        'experience' => 'nullable|string',
         'category_id' => 'required|array',
         'category_id.*' => 'exists:categories,id',
         'description' => 'nullable|string',
         'address' => 'nullable|string',
-        'price' => 'required|numeric|min:0',
     ]);
 
         $user = User::create([
@@ -119,11 +117,9 @@ class RegisteredUserController extends Controller
         'city' => $request->city,
         'province' => $request->province,
         'bio' => $request->bio,
-        'experience' => $request->experience,
         'description' => $request->description,
         'address' => $request->address,
-        // ✅ ADD THIS (FIX)
-        'price' => $request->price,
+
     ]);
 
     
