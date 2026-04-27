@@ -178,6 +178,12 @@
         .bubble-wrap { display: flex; flex-direction: column; gap: 2px; max-width: 65%; }
         .msg-group.mine .bubble-wrap { align-items: flex-end; }
         .msg-group.theirs .bubble-wrap { align-items: flex-start; }
+
+        /* Sender name above bubble (for "theirs" only) */
+        .bubble-sender-name {
+            font-size: 0.62rem; font-weight: 600; color: var(--gold-dark);
+            font-family: var(--font-body); padding: 0 0.2rem; margin-bottom: 1px;
+        }
     
         /* Bubbles */
         .bubble {
@@ -271,12 +277,39 @@
             .cwh-badge { display: none; }
             .chat-page-header { padding: 1.1rem 1rem; }
         }
-    </style>
+</style>
 
 @if(auth()->user()->isSupplier())
 <x-supplier-layout>
     
- 
+@php
+    /*
+    |----------------------------------------------------------------------
+    | Resolve the other person's display name.
+    |
+    | - When the logged-in user is a SUPPLIER, $userId is the CLIENT's
+    |   user ID, so we look up that user's name.
+    | - When the logged-in user is a CLIENT, $userId is the supplier's
+    |   user ID, so we also look up that user's name.
+    |
+    | We try first_name + last_name, fall back to name, then email.
+    |----------------------------------------------------------------------
+    */
+    $otherUser     = \App\Models\User::find($userId);
+    $otherUserName = $otherUser
+        ? (trim(($otherUser->first_name ?? '') . ' ' . ($otherUser->last_name ?? '')) ?: ($otherUser->name ?? $otherUser->email))
+        : 'Unknown';
+
+    $otherInitials = strtoupper(collect(explode(' ', $otherUserName))->filter()->map(fn($w) => $w[0])->take(2)->implode(''));
+
+    $myInitials = strtoupper(
+        collect(explode(' ', trim((auth()->user()->first_name ?? '') . ' ' . (auth()->user()->last_name ?? '')) ?: auth()->user()->name ?? 'Me'))
+            ->filter()->map(fn($w) => $w[0])->take(2)->implode('')
+    );
+
+    $isSupplierView = auth()->user()->isSupplier();
+@endphp
+
 {{-- PAGE HEADER --}}
 <div class="chat-page-header">
     <div class="cph-inner">
@@ -287,43 +320,43 @@
         </a>
         <div class="cph-text">
             <div class="cph-eyebrow">
-                @if(auth()->user()->isSupplier()) Supplier Dashboard @else Client Dashboard @endif
+                {{ $isSupplierView ? 'Supplier Dashboard' : 'Client Dashboard' }}
             </div>
             <div class="cph-title">
-                Chat with <em>{{ $otherUserName ?? 'Supplier' }}</em>
+                Chat with <em>{{ $otherUserName }}</em>
             </div>
             <div class="cph-sub">
-                @if(auth()->user()->isSupplier()) Replying as supplier @else Conversation with your supplier @endif
+                {{ $isSupplierView ? 'Replying as supplier' : 'Conversation with your supplier' }}
             </div>
         </div>
         <span class="cwh-badge">
-            @if(auth()->user()->isSupplier()) Supplier View @else Client View @endif
+            {{ $isSupplierView ? 'Supplier View' : 'Client View' }}
         </span>
     </div>
 </div>
- 
+
 {{-- CHAT WINDOW --}}
 <div class="chat-window">
- 
+
     {{-- HEADER --}}
     <div class="chat-win-head">
         <div class="cwh-avatar">
-            {{ strtoupper(substr($otherUserName ?? 'S', 0, 2)) }}
+            {{ $otherInitials ?: 'US' }}
         </div>
         <div class="cwh-info">
-            <div class="cwh-name">{{ $otherUserName ?? 'Supplier' }}</div>
+            <div class="cwh-name">{{ $otherUserName }}</div>
             <div class="cwh-sub">
-                @if(auth()->user()->isSupplier()) Client @else Event Supplier @endif
+                {{ $isSupplierView ? 'Client' : 'Event Supplier' }}
             </div>
         </div>
         <span class="cwh-badge">Conversation</span>
     </div>
- 
+
     {{-- MESSAGES --}}
     <div class="chat-messages" id="chat-messages">
- 
+
         @forelse($messages as $msg)
- 
+
             {{-- Date divider on day change --}}
             @if($loop->first || $msg->created_at->toDateString() !== $messages[$loop->index - 1]->created_at->toDateString())
                 <div class="msg-date-divider">
@@ -335,32 +368,50 @@
                     </span>
                 </div>
             @endif
- 
-            @php $isMe = $msg->sender_id == auth()->id(); @endphp
- 
+
+            @php
+                $isMe        = $msg->sender_id == auth()->id();
+
+                /* Resolve sender name for the "theirs" bubble label */
+                if (!$isMe) {
+                    /* The sender is the other person — use the name we already resolved */
+                    $senderName     = $otherUserName;
+                    $senderInitials = $otherInitials;
+                } else {
+                    $senderName     = trim((auth()->user()->first_name ?? '') . ' ' . (auth()->user()->last_name ?? ''))
+                                      ?: (auth()->user()->name ?? 'Me');
+                    $senderInitials = $myInitials;
+                }
+            @endphp
+
             <div class="msg-group {{ $isMe ? 'mine' : 'theirs' }}">
- 
+
                 {{-- Avatar (theirs: left) --}}
                 @if(!$isMe)
-                <div class="msg-avatar theirs">
-                    {{ strtoupper(substr($otherUserName ?? 'S', 0, 2)) }}
+                <div class="msg-avatar theirs" title="{{ $senderName }}">
+                    {{ $senderInitials ?: 'US' }}
                 </div>
                 @endif
- 
+
                 <div class="bubble-wrap">
+                    {{-- Show sender name above bubble only for "theirs" --}}
+                    @if(!$isMe)
+                    <div class="bubble-sender-name">{{ $senderName }}</div>
+                    @endif
+
                     <div class="bubble {{ $isMe ? 'mine' : 'theirs' }}">{{ $msg->message }}</div>
                     <div class="bubble-time">{{ $msg->created_at->format('h:i A') }}</div>
                 </div>
- 
+
                 {{-- Avatar (mine: right) --}}
                 @if($isMe)
-                <div class="msg-avatar mine">
-                    {{ strtoupper(substr(auth()->user()->first_name ?? 'Me', 0, 2)) }}
+                <div class="msg-avatar mine" title="{{ $senderName }}">
+                    {{ $myInitials ?: 'ME' }}
                 </div>
                 @endif
- 
+
             </div>
- 
+
         @empty
             <div class="chat-empty">
                 <div class="chat-empty-icon">
@@ -372,16 +423,16 @@
                 <p>Start the conversation below.</p>
             </div>
         @endforelse
- 
+
     </div>
- 
+
     {{-- COMPOSE BAR --}}
     <div class="compose-bar">
         <form method="POST" action="{{ route('chat.send') }}" id="chat-form">
             @csrf
             <input type="hidden" name="receiver_id" value="{{ $userId }}">
             <input type="hidden" name="supplier_id" value="{{ $supplierId }}">
- 
+
             <div class="compose-row">
                 <textarea
                     class="compose-input"
@@ -400,14 +451,42 @@
             <div class="compose-hint">Enter to send &middot; Shift+Enter for new line</div>
         </form>
     </div>
- 
+
 </div>
- 
 
 </x-supplier-layout>
 @elseif(auth()->user()->isClient())
 <x-client-layout>
-    {{-- PAGE HEADER --}}
+
+@php
+    /*
+    |----------------------------------------------------------------------
+    | Resolve the other person's display name.
+    |
+    | - When the logged-in user is a SUPPLIER, $userId is the CLIENT's
+    |   user ID, so we look up that user's name.
+    | - When the logged-in user is a CLIENT, $userId is the supplier's
+    |   user ID, so we also look up that user's name.
+    |
+    | We try first_name + last_name, fall back to name, then email.
+    |----------------------------------------------------------------------
+    */
+    $otherUser     = \App\Models\User::find($userId);
+    $otherUserName = $otherUser
+        ? (trim(($otherUser->first_name ?? '') . ' ' . ($otherUser->last_name ?? '')) ?: ($otherUser->name ?? $otherUser->email))
+        : 'Unknown';
+
+    $otherInitials = strtoupper(collect(explode(' ', $otherUserName))->filter()->map(fn($w) => $w[0])->take(2)->implode(''));
+
+    $myInitials = strtoupper(
+        collect(explode(' ', trim((auth()->user()->first_name ?? '') . ' ' . (auth()->user()->last_name ?? '')) ?: auth()->user()->name ?? 'Me'))
+            ->filter()->map(fn($w) => $w[0])->take(2)->implode('')
+    );
+
+    $isSupplierView = auth()->user()->isSupplier();
+@endphp
+
+{{-- PAGE HEADER --}}
 <div class="chat-page-header">
     <div class="cph-inner">
         <a href="javascript:history.back()" class="cph-back">
@@ -417,43 +496,43 @@
         </a>
         <div class="cph-text">
             <div class="cph-eyebrow">
-                @if(auth()->user()->isSupplier()) Supplier Dashboard @else Client Dashboard @endif
+                {{ $isSupplierView ? 'Supplier Dashboard' : 'Client Dashboard' }}
             </div>
             <div class="cph-title">
-                Chat with <em>{{ $otherUserName ?? 'Supplier' }}</em>
+                Chat with <em>{{ $otherUserName }}</em>
             </div>
             <div class="cph-sub">
-                @if(auth()->user()->isSupplier()) Replying as supplier @else Conversation with your supplier @endif
+                {{ $isSupplierView ? 'Replying as supplier' : 'Conversation with your supplier' }}
             </div>
         </div>
         <span class="cwh-badge">
-            @if(auth()->user()->isSupplier()) Supplier View @else Client View @endif
+            {{ $isSupplierView ? 'Supplier View' : 'Client View' }}
         </span>
     </div>
 </div>
- 
+
 {{-- CHAT WINDOW --}}
 <div class="chat-window">
- 
+
     {{-- HEADER --}}
     <div class="chat-win-head">
         <div class="cwh-avatar">
-            {{ strtoupper(substr($otherUserName ?? 'S', 0, 2)) }}
+            {{ $otherInitials ?: 'US' }}
         </div>
         <div class="cwh-info">
-            <div class="cwh-name">{{ $otherUserName ?? 'Supplier' }}</div>
+            <div class="cwh-name">{{ $otherUserName }}</div>
             <div class="cwh-sub">
-                @if(auth()->user()->isSupplier()) Client @else Event Supplier @endif
+                {{ $isSupplierView ? 'Client' : 'Event Supplier' }}
             </div>
         </div>
         <span class="cwh-badge">Conversation</span>
     </div>
- 
+
     {{-- MESSAGES --}}
     <div class="chat-messages" id="chat-messages">
- 
+
         @forelse($messages as $msg)
- 
+
             {{-- Date divider on day change --}}
             @if($loop->first || $msg->created_at->toDateString() !== $messages[$loop->index - 1]->created_at->toDateString())
                 <div class="msg-date-divider">
@@ -465,32 +544,50 @@
                     </span>
                 </div>
             @endif
- 
-            @php $isMe = $msg->sender_id == auth()->id(); @endphp
- 
+
+            @php
+                $isMe        = $msg->sender_id == auth()->id();
+
+                /* Resolve sender name for the "theirs" bubble label */
+                if (!$isMe) {
+                    /* The sender is the other person — use the name we already resolved */
+                    $senderName     = $otherUserName;
+                    $senderInitials = $otherInitials;
+                } else {
+                    $senderName     = trim((auth()->user()->first_name ?? '') . ' ' . (auth()->user()->last_name ?? ''))
+                                      ?: (auth()->user()->name ?? 'Me');
+                    $senderInitials = $myInitials;
+                }
+            @endphp
+
             <div class="msg-group {{ $isMe ? 'mine' : 'theirs' }}">
- 
+
                 {{-- Avatar (theirs: left) --}}
                 @if(!$isMe)
-                <div class="msg-avatar theirs">
-                    {{ strtoupper(substr($otherUserName ?? 'S', 0, 2)) }}
+                <div class="msg-avatar theirs" title="{{ $senderName }}">
+                    {{ $senderInitials ?: 'US' }}
                 </div>
                 @endif
- 
+
                 <div class="bubble-wrap">
+                    {{-- Show sender name above bubble only for "theirs" --}}
+                    @if(!$isMe)
+                    <div class="bubble-sender-name">{{ $senderName }}</div>
+                    @endif
+
                     <div class="bubble {{ $isMe ? 'mine' : 'theirs' }}">{{ $msg->message }}</div>
                     <div class="bubble-time">{{ $msg->created_at->format('h:i A') }}</div>
                 </div>
- 
+
                 {{-- Avatar (mine: right) --}}
                 @if($isMe)
-                <div class="msg-avatar mine">
-                    {{ strtoupper(substr(auth()->user()->first_name ?? 'Me', 0, 2)) }}
+                <div class="msg-avatar mine" title="{{ $senderName }}">
+                    {{ $myInitials ?: 'ME' }}
                 </div>
                 @endif
- 
+
             </div>
- 
+
         @empty
             <div class="chat-empty">
                 <div class="chat-empty-icon">
@@ -502,16 +599,16 @@
                 <p>Start the conversation below.</p>
             </div>
         @endforelse
- 
+
     </div>
- 
+
     {{-- COMPOSE BAR --}}
     <div class="compose-bar">
         <form method="POST" action="{{ route('chat.send') }}" id="chat-form">
             @csrf
             <input type="hidden" name="receiver_id" value="{{ $userId }}">
             <input type="hidden" name="supplier_id" value="{{ $supplierId }}">
- 
+
             <div class="compose-row">
                 <textarea
                     class="compose-input"
@@ -530,28 +627,33 @@
             <div class="compose-hint">Enter to send &middot; Shift+Enter for new line</div>
         </form>
     </div>
- 
+
 </div>
+
 </x-client-layout>
 @endif
-
 <script>
-    /* Auto-scroll to bottom */
-    const msgBox = document.getElementById('chat-messages');
-    if (msgBox) msgBox.scrollTop = msgBox.scrollHeight;
- 
-    /* Auto-grow textarea */
-    const input = document.getElementById('compose-input');
-    input.addEventListener('input', function () {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
- 
-    /* Enter = send, Shift+Enter = new line */
-    input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            if (this.value.trim()) document.getElementById('chat-form').submit();
-        }
-    });
+    /* ── Auto-scroll to latest message ── */
+    (function () {
+        const box = document.getElementById('chat-messages');
+        if (box) box.scrollTop = box.scrollHeight;
+    })();
+
+    /* ── Auto-resize textarea ── */
+    const textarea = document.getElementById('compose-input');
+    if (textarea) {
+        textarea.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        /* Enter to send, Shift+Enter for newline */
+        textarea.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const form = document.getElementById('chat-form');
+                if (form && this.value.trim()) form.submit();
+            }
+        });
+    }
 </script>

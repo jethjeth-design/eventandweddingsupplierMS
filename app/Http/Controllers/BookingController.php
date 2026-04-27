@@ -3,8 +3,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Event;
 use App\Models\Package;
+use App\Notifications\SystemNotification;
 use App\Models\SupplierAvailability;
 use Illuminate\Http\Request;
 
@@ -126,133 +128,127 @@ class BookingController extends Controller
     // CLIENT: CREATE BOOKING
     // =========================
     public function store(Request $request)
-    {
-        $request->validate([
-            'event_id' => 'required|exists:events,id',
-            'package_id' => 'required|exists:packages,id',
-        ]);
+{
+    $request->validate([
+        'event_id' => 'required|exists:events,id',
+        'package_id' => 'required|exists:packages,id',
+    ]);
 
-        $event = Event::findOrFail($request->event_id);
-        $package = Package::findOrFail($request->package_id);
+    $event = Event::findOrFail($request->event_id);
+    $package = Package::findOrFail($request->package_id);
 
-        // prevent duplicate booking
-        $exists = Booking::where('event_id', $event->id)
-            ->where('package_id', $package->id)
-            ->exists();
+    // prevent duplicate
+    $exists = Booking::where('event_id', $event->id)
+        ->where('package_id', $package->id)
+        ->exists();
 
-        if ($exists) {
-            return back()->with('error', 'Already booked this package.');
-        }
+    if ($exists) {
+        return back()->with('error', 'Already booked this package.');
+    }
 
-        // ✅ CREATE BOOKING
-        $booking = Booking::create([
-            'user_id' => auth()->id(),
-            'event_id' => $event->id,
-            'package_id' => $package->id,
-            'supplier_id' => $package->supplier_id,
-            'event_date' => $event->event_date ?? now(),
-            'total_price' => $package->price,
-            'status' => 'pending',
-        ]);
+    // ✅ CREATE BOOKING
+    $booking = Booking::create([
+        'user_id' => auth()->id(),
+        'event_id' => $event->id,
+        'package_id' => $package->id,
+        'supplier_id' => $package->supplier_id,
+        'event_date' => $event->event_date ?? now(),
+        'total_price' => $package->price,
+        'status' => 'pending',
+    ]);
 
-        // =========================
-        // 🔔 NOTIFY SUPPLIER
-        // =========================
-        $supplierUser = $package->supplier->user ?? null;
+    // =========================
+    // 🔔 NOTIFY SUPPLIER
+    // =========================
+    $supplierUser = optional($package->supplier)->user;
 
-        if ($supplierUser) {
-            $supplierUser->notify(new SystemNotification(
-                'New Booking',
-                'A client booked your package.',
-                route('supplier.booking.index')
-            ));
-        }
+    if ($supplierUser) {
+        $supplierUser->notify(new SystemNotification(
+            'New Booking',
+            'A client booked your package.',
+            route('supplier.bookings') // ✅ fixed
+        ));
+    }
 
-        // =========================
-        // 🔔 NOTIFY ADMIN
-        // =========================
-        $admins = User::where('role', 'admin')->get();
+    // =========================
+    // 🔔 NOTIFY ADMIN
+    // =========================
+    $admins = User::where('role', 'admin')->get();
 
+    if ($admins->isNotEmpty()) {
         foreach ($admins as $admin) {
             $admin->notify(new SystemNotification(
                 'New Booking',
                 'A new booking needs monitoring.',
-                route('admin.booking.index')
+                route('admin.bookings')
             ));
         }
-
-        return back()->with('success', 'Booking sent to supplier.');
     }
+
+    return back()->with('success', 'Booking sent to supplier.');
+}
 
 
     // =========================
     // SUPPLIER: ACCEPT BOOKING
     // =========================
     public function approve($id)
-    {
-        $booking = Booking::where('supplier_id', auth()->user()->supplier->id)
-            ->findOrFail($id);
+{
+    $booking = Booking::where('supplier_id', auth()->user()->supplier->id)
+        ->findOrFail($id);
 
-        $booking->update([
-            'status' => 'confirmed'
-        ]);
+    $booking->update(['status' => 'confirmed']);
 
-        // lock calendar
-        SupplierAvailability::updateOrCreate(
-            [
-                'supplier_id' => $booking->supplier_id,
-                'date' => $booking->event_date,
-            ],
-            [
-                'status' => 'booked'
-            ]
-        );
+    SupplierAvailability::updateOrCreate(
+        [
+            'supplier_id' => $booking->supplier_id,
+            'date' => $booking->event_date,
+        ],
+        ['status' => 'booked']
+    );
 
-        // =========================
-        // 🔔 NOTIFY CLIENT
-        // =========================
-        $booking->user?->notify(new SystemNotification(
+    // 🔔 notify client
+    if ($booking->user) {
+        $booking->user->notify(new SystemNotification(
             'Booking Confirmed',
             'Your booking has been approved.',
             route('client.bookings.index')
         ));
-
-        return back()->with('success', 'Booking approved!');
     }
+
+    return back()->with('success', 'Booking approved!');
+}
 
     // =========================
     // SUPPLIER: REJECT BOOKING
     // =========================
     public function cancel($id)
-    {
-        $booking = Booking::where('supplier_id', auth()->user()->supplier->id)
-            ->findOrFail($id);
+{
+    $booking = Booking::where('supplier_id', auth()->user()->supplier->id)
+        ->findOrFail($id);
 
-        $booking->update([
-            'status' => 'cancelled'
-        ]);
+    $booking->update(['status' => 'cancelled']);
 
-        // release calendar
-        SupplierAvailability::updateOrCreate(
-            [
-                'supplier_id' => $booking->supplier_id,
-                'date' => $booking->event_date,
-            ],
-            [
-                'status' => 'available'
-            ]
-        );
+    SupplierAvailability::updateOrCreate(
+        [
+            'supplier_id' => $booking->supplier_id,
+            'date' => $booking->event_date,
+        ],
+        ['status' => 'available']
+    );
 
-        // =========================
-        // 🔔 NOTIFY CLIENT
-        // =========================
-        $booking->user?->notify(new SystemNotification(
+    // 🔔 notify client
+    if ($booking->user) {
+        $booking->user->notify(new SystemNotification(
             'Booking Cancelled',
             'Your booking was rejected by supplier.',
             route('client.bookings.index')
         ));
-
-        return back()->with('error', 'Booking cancelled.');
     }
+
+    return back()->with('error', 'Booking cancelled.');
+}
+
+
 
 }

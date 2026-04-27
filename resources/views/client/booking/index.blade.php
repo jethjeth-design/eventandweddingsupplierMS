@@ -95,14 +95,244 @@
     .mb-strip-value { font-family: var(--font-display); font-size: 0.82rem; font-weight: 600; color: var(--charcoal); }
     .mb-strip-price { font-size: 0.78rem; color: var(--gold-dark); font-weight: 700; margin-left: auto; font-family: var(--font-display); }
 
+    /* Rate button */
+    .mb-rate-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 0.75rem;
+        padding: 7px 16px;
+        border-radius: 4px;
+        border: 1px solid var(--gold);
+        background: var(--gold);
+        color: var(--charcoal);
+        font-size: 0.72rem;
+        font-weight: 700;
+        font-family: var(--font-body);
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        transition: background 0.18s, transform 0.12s;
+    }
+    .mb-rate-btn:hover { background: var(--gold-dark); border-color: var(--gold-dark); color: var(--white); transform: translateY(-1px); }
+    .mb-rate-btn svg { width: 13px; height: 13px; }
+
+    /* Already rated badge */
+    .mb-rated-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 0.75rem;
+        padding: 5px 12px;
+        border-radius: 4px;
+        background: rgba(22,163,74,0.07);
+        border: 1px solid rgba(22,163,74,0.2);
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: #166534;
+        letter-spacing: 0.04em;
+        font-family: var(--font-body);
+    }
+
     /* ── EMPTY STATE ── */
     .mb-empty { text-align: center; padding: 4.5rem 2rem; background: var(--white); border: 1px solid var(--border); border-radius: 4px; }
     .mb-empty svg { width: 52px; height: 52px; color: var(--gold); opacity: 0.25; margin: 0 auto 1.1rem; display: block; }
     .mb-empty-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.35rem; }
     .mb-empty-sub { font-size: 0.83rem; color: var(--warm-grey); line-height: 1.65; }
 
+    /* ── RATING MODAL ── */
+    .mbr-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+    .mbr-overlay.open { display: flex; }
+
+    .mbr-modal {
+        background: var(--white);
+        width: 100%;
+        max-width: 460px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+        animation: mbr-slide-in 0.22s ease;
+    }
+    @keyframes mbr-slide-in {
+        from { opacity: 0; transform: translateY(18px) scale(0.97); }
+        to   { opacity: 1; transform: none; }
+    }
+
+    .mbr-header {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .mbr-header-title {
+        font-family: var(--font-display);
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--charcoal);
+    }
+    .mbr-close {
+        width: 30px; height: 30px;
+        border-radius: 50%;
+        border: 1px solid var(--border-md);
+        background: transparent;
+        cursor: pointer;
+        font-size: 15px;
+        color: var(--warm-grey);
+        display: flex; align-items: center; justify-content: center;
+        transition: background 0.15s;
+        font-family: var(--font-body);
+    }
+    .mbr-close:hover { background: var(--ivory); }
+
+    .mbr-body { padding: 1.25rem; }
+
+    .mbr-supplier-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+    }
+    .mbr-avatar {
+        width: 42px; height: 42px;
+        border-radius: 50%;
+        background: rgba(201,168,76,0.12);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; font-weight: 700;
+        color: var(--gold-dark);
+        flex-shrink: 0;
+        font-family: var(--font-display);
+        border: 1.5px solid rgba(201,168,76,0.25);
+    }
+    .mbr-supplier-name { font-size: 14px; font-weight: 600; color: var(--charcoal); }
+    .mbr-package-name  { font-size: 12px; color: var(--warm-grey); margin-top: 2px; }
+
+    /* ── STARS ── */
+    .mbr-stars-section { text-align: center; margin-bottom: 1.3rem; }
+    .mbr-stars-prompt { font-size: 12px; color: var(--warm-grey); margin-bottom: 0.7rem; letter-spacing: 0.01em; }
+
+    .mbr-stars-row {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        margin-bottom: 0.55rem;
+    }
+    .mbr-star {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 3px;
+        line-height: 1;
+        transition: transform 0.12s;
+    }
+    .mbr-star:hover { transform: scale(1.2); }
+    .mbr-star svg {
+        width: 40px; height: 40px;
+        display: block;
+        fill: #EDEAE4;
+        stroke: #D4C8BC;
+        stroke-width: 1.4;
+        stroke-linejoin: round;
+        transition: fill 0.1s, stroke 0.1s, transform 0.1s;
+    }
+    .mbr-star.hov svg  { fill: #FDBA74; stroke: #F97316; }
+    .mbr-star.sel svg  { fill: #F97316; stroke: #EA580C; }
+
+    .mbr-sentiment {
+        font-size: 13px;
+        font-weight: 600;
+        min-height: 19px;
+        color: #C0B8B0;
+        transition: color 0.15s;
+        letter-spacing: 0.02em;
+    }
+
+    /* sentiment colors */
+    .mbr-sentiment.s1 { color: #EF4444; }
+    .mbr-sentiment.s2 { color: #F97316; }
+    .mbr-sentiment.s3 { color: #CA8A04; }
+    .mbr-sentiment.s4 { color: #16A34A; }
+    .mbr-sentiment.s5 { color: #15803D; }
+
+    /* ── TEXTAREA ── */
+    .mbr-review-label { font-size: 12px; color: var(--warm-grey); margin-bottom: 6px; }
+    .mbr-review-label span { color: #C0B8B0; font-weight: 400; }
+    .mbr-textarea {
+        width: 100%;
+        min-height: 92px;
+        resize: vertical;
+        font-size: 13px;
+        color: var(--charcoal);
+        background: var(--ivory);
+        border: 1px solid var(--border-md);
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-family: var(--font-body);
+        line-height: 1.55;
+        outline: none;
+        box-sizing: border-box;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .mbr-textarea:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+    }
+    .mbr-textarea::placeholder { color: #C0B8B0; }
+    .mbr-char { font-size: 11px; color: #C0B8B0; text-align: right; margin-top: 4px; }
+
+    /* ── FOOTER ── */
+    .mbr-footer {
+        padding: 0.9rem 1.25rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        background: var(--ivory);
+    }
+    .mbr-btn-cancel {
+        padding: 8px 20px;
+        border-radius: 5px;
+        border: 1px solid var(--border-md);
+        background: var(--white);
+        font-size: 13px;
+        cursor: pointer;
+        color: var(--warm-grey);
+        font-family: var(--font-body);
+        font-weight: 500;
+        transition: background 0.15s;
+    }
+    .mbr-btn-cancel:hover { background: var(--border); }
+
+    .mbr-btn-submit {
+        padding: 8px 24px;
+        border-radius: 5px;
+        border: none;
+        background: var(--gold);
+        color: var(--charcoal);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: var(--font-body);
+        transition: background 0.15s, opacity 0.15s, transform 0.1s;
+        letter-spacing: 0.03em;
+    }
+    .mbr-btn-submit:disabled { opacity: 0.38; cursor: not-allowed; }
+    .mbr-btn-submit:not(:disabled):hover { background: var(--gold-dark); color: var(--white); transform: translateY(-1px); }
+
+    /* ── ANIMATIONS ── */
     .reveal { opacity:0; transform: translateY(12px); transition: opacity 0.45s ease,transform 0.45s ease; }
     .reveal.visible { opacity:1; transform:none; }
+
     @media(max-width:700px){ .mb-page { padding: 1.25rem 1rem 3rem; } }
 </style>
 
@@ -236,6 +466,25 @@
 
                 </div>
 
+                {{-- Rate / Rated button --}}
+                @if($eventDate && \Carbon\Carbon::parse($eventDate)->isPast())
+                    @if(!$booking->rating)
+                    <button
+                        class="mb-rate-btn"
+                        onclick="mbrOpen({{ $booking->id }}, '{{ addslashes($supplierBiz ?? 'Supplier') }}', '{{ addslashes($pkgName ?? '') }}', '{{ $eventDate ? \Carbon\Carbon::parse($eventDate)->format('M d, Y') : '' }}')"
+                        type="button"
+                    >
+                        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        Rate this supplier
+                    </button>
+                    @else
+                    <div class="mb-rated-tag">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                        Reviewed
+                    </div>
+                    @endif
+                @endif
+
             </div>
         </div>
         @endforeach
@@ -253,10 +502,87 @@
     </div>
     @endif
 
-</div>
+</div>{{-- end .mb-page --}}
+
+
+{{-- ══════════════════════════════════════════
+     RATING MODAL  (Shopee-style star rating)
+     ══════════════════════════════════════════ --}}
+<div class="mbr-overlay" id="mbrOverlay" onclick="mbrOverlayClick(event)">
+    <div class="mbr-modal" role="dialog" aria-modal="true" aria-labelledby="mbrTitle">
+
+        {{-- Header --}}
+        <div class="mbr-header">
+            <span class="mbr-header-title" id="mbrTitle">Rate your experience</span>
+            <button class="mbr-close" onclick="mbrClose()" aria-label="Close">&times;</button>
+        </div>
+
+        {{-- Body --}}
+        <div class="mbr-body">
+
+            {{-- Supplier info --}}
+            <div class="mbr-supplier-row">
+                <div class="mbr-avatar" id="mbrAvatar">--</div>
+                <div>
+                    <div class="mbr-supplier-name" id="mbrSupplierName">Supplier</div>
+                    <div class="mbr-package-name"  id="mbrPackageMeta"></div>
+                </div>
+            </div>
+
+            {{-- Stars --}}
+            <div class="mbr-stars-section">
+                <div class="mbr-stars-prompt">How would you rate this supplier?</div>
+
+                <div class="mbr-stars-row" id="mbrStarsRow">
+                    @for($i = 1; $i <= 5; $i++)
+                    <button class="mbr-star" data-v="{{ $i }}" type="button" aria-label="{{ $i }} star{{ $i > 1 ? 's' : '' }}">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                    </button>
+                    @endfor
+                </div>
+
+                <div class="mbr-sentiment" id="mbrSentiment">Select a rating</div>
+            </div>
+
+            {{-- Form --}}
+            <form method="POST" action="{{ route('client.ratings.store') }}" id="mbrForm">
+                @csrf
+                <input type="hidden" name="booking_id" id="mbrBookingId">
+                <input type="hidden" name="rating"     id="mbrRatingVal">
+
+                <div class="mbr-review-label">
+                    Your review <span>(optional)</span>
+                </div>
+                <textarea
+                    class="mbr-textarea"
+                    name="review"
+                    id="mbrReview"
+                    placeholder="Tell others about your experience with this supplier…"
+                    maxlength="500"
+                ></textarea>
+                <div class="mbr-char"><span id="mbrCharCount">0</span> / 500</div>
+            </form>
+
+        </div>{{-- end .mbr-body --}}
+
+        {{-- Footer --}}
+        <div class="mbr-footer">
+            <button class="mbr-btn-cancel" type="button" onclick="mbrClose()">Cancel</button>
+            <button class="mbr-btn-submit" type="button" id="mbrSubmit" disabled onclick="mbrSubmit()">
+                Submit Review
+            </button>
+        </div>
+
+    </div>{{-- end .mbr-modal --}}
+</div>{{-- end .mbr-overlay --}}
+
 
 <script>
-    /* ── FILTER TABS ── */
+    /* ════════════════════════════════
+    FILTER TABS
+    ════════════════════════════════ */
     const tabs  = document.querySelectorAll('.mb-filter-tab');
     const cards = document.querySelectorAll('#mbList .mb-card');
 
@@ -271,7 +597,9 @@
         });
     });
 
-    /* ── SCROLL REVEAL ── */
+    /* ════════════════════════════════
+    SCROLL REVEAL
+    ════════════════════════════════ */
     const io = new IntersectionObserver(entries => {
         entries.forEach((e, i) => {
             if (e.isIntersecting) {
@@ -281,6 +609,115 @@
         });
     }, { threshold: 0.06 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+
+    /* ════════════════════════════════
+    RATING MODAL
+    ════════════════════════════════ */
+    const MBR = {
+        selected : 0,
+        labels   : ['', 'Bad', 'Poor', 'Average', 'Good', 'Excellent'],
+        classes  : ['', 's1', 's2', 's3', 's4', 's5'],
+    };
+
+    /* Paint stars: 0 = all empty, positive = fill up to that index */
+    function mbrPaint(upTo, mode) {
+        /* mode: 'sel' | 'hov' | '' (empty) */
+        document.querySelectorAll('.mbr-star').forEach((btn, i) => {
+            btn.classList.remove('sel', 'hov');
+            if (i < upTo) btn.classList.add(mode);
+        });
+    }
+
+    function mbrSetSentiment(val) {
+        const el = document.getElementById('mbrSentiment');
+        el.className = 'mbr-sentiment' + (val ? ' ' + MBR.classes[val] : '');
+        el.textContent = val ? MBR.labels[val] : 'Select a rating';
+    }
+
+    /* Wire up star buttons */
+    document.querySelectorAll('.mbr-star').forEach(btn => {
+        const v = +btn.dataset.v;
+
+        btn.addEventListener('mouseenter', () => {
+            mbrPaint(v, 'hov');
+            mbrSetSentiment(v);
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            mbrPaint(MBR.selected, 'sel');
+            mbrSetSentiment(MBR.selected);
+        });
+
+        btn.addEventListener('click', () => {
+            MBR.selected = v;
+            document.getElementById('mbrRatingVal').value = v;
+            mbrPaint(v, 'sel');
+            mbrSetSentiment(v);
+
+            /* Bounce animation on the selected star */
+            btn.style.transform = 'scale(1.35)';
+            setTimeout(() => btn.style.transform = '', 180);
+
+            /* Enable submit */
+            const sub = document.getElementById('mbrSubmit');
+            sub.disabled = false;
+        });
+    });
+
+    /* Character counter */
+    document.getElementById('mbrReview').addEventListener('input', function () {
+        document.getElementById('mbrCharCount').textContent = this.value.length;
+    });
+
+    /* Open modal */
+    function mbrOpen(bookingId, supplierName, packageName, eventDate) {
+        /* Reset */
+        MBR.selected = 0;
+        mbrPaint(0, '');
+        mbrSetSentiment(0);
+        document.getElementById('mbrBookingId').value = bookingId;
+        document.getElementById('mbrRatingVal').value  = '';
+        document.getElementById('mbrReview').value     = '';
+        document.getElementById('mbrCharCount').textContent = '0';
+        document.getElementById('mbrSubmit').disabled  = true;
+
+        /* Supplier info */
+        const name     = supplierName || 'Supplier';
+        const initials = name.split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+        document.getElementById('mbrAvatar').textContent       = initials;
+        document.getElementById('mbrSupplierName').textContent = name;
+
+        let meta = packageName || '';
+        if (eventDate) meta += (meta ? '  ·  ' : '') + eventDate;
+        document.getElementById('mbrPackageMeta').textContent = meta;
+
+        /* Show */
+        document.getElementById('mbrOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    /* Close modal */
+    function mbrClose() {
+        document.getElementById('mbrOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    /* Close on backdrop click */
+    function mbrOverlayClick(e) {
+        if (e.target === document.getElementById('mbrOverlay')) mbrClose();
+    }
+
+    /* Keyboard close */
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') mbrClose();
+    });
+
+    /* Submit */
+    function mbrSubmit() {
+        if (!MBR.selected) return;
+        document.getElementById('mbrForm').submit();
+    }
 </script>
 
 </x-client-layout>

@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Booking;
 use App\Services\AIRecommendationService;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 { 
     //Client and Admin Index methods to list events based on user role
-    public function clientIndex()
-    {
+    public function index()
+    {   
+        $bookings = auth()->user()->bookings()->with('event')->latest()->get();
         $events = Event::where('user_id', auth()->id())
             ->latest()
             ->get();
 
-        return view('client.events.index', compact('events'));
+        return view('client.events.index', compact('events', 'bookings'));
     }
     
     public function adminIndex(Request $request)
@@ -56,7 +58,7 @@ class EventController extends Controller
                                                 ->count(),
         ];
 
-        return view('admin.event.list', compact('events', 'stats'));
+        return view('admin.events.index', compact('events', 'stats'));
     }
 
     /**
@@ -100,28 +102,37 @@ class EventController extends Controller
 
         return view('client.events.show', compact('event', 'recommendations'));
     }
+     
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Event $event)
-    {
-        //
+    //Cancel event and all related bookings, then notify admin
+    public function cancel($id)
+{
+    $event = Event::where('id', $id)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
+
+    // ❌ cancel event
+    $event->update([
+        'status' => 'cancelled'
+    ]);
+
+    // 🔥 ALSO CANCEL ALL BOOKINGS UNDER THIS EVENT
+    \App\Models\Booking::where('event_id', $event->id)
+        ->update([
+            'status' => 'cancelled'
+        ]);
+
+    // 🔔 OPTIONAL: notify admin
+    $admins = \App\Models\User::where('role', 'admin')->get();
+
+    foreach ($admins as $admin) {
+        $admin->notify(new \App\Notifications\SystemNotification(
+            'Event Cancelled',
+            'A client cancelled an event: ' . $event->name,
+            route('admin.bookings')
+        ));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Event $event)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Event $event)
-    {
-        //
-    }
+    return back()->with('success', 'Event cancelled successfully.');
+}
 }

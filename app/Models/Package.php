@@ -46,5 +46,9 @@ class Package extends Model
     {
         return $this->belongsTo(User::class, 'supplier_id');
     }
+    public function portfolios()
+    {
+        return $this->hasMany(SupplierPortfolio::class, 'supplier_id', 'supplier_id');
+    }
 }
 

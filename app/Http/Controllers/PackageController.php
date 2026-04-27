@@ -23,7 +23,17 @@ class PackageController extends Controller
         return view('supplier.packages.index', compact('packages','eventcategories'));
     }
 
-    
+    public function listing()
+    {
+        $supplierId = auth()->user()->supplier->id;
+
+        $packages = \App\Models\Package::with('inclusions')
+            ->where('supplier_id', $supplierId)
+            ->latest()
+            ->get();
+
+        return view('supplier.packages.listing', compact('packages'));
+    }
 
     public function store(Request $request)
     {
@@ -164,13 +174,13 @@ class PackageController extends Controller
     }
     
     public function showAssignTeams($id)
-    {
-        $package = Package::findOrFail($id);
+{
+    $package = Package::findOrFail($id);
 
-        $teams = Team::where('supplier_id', auth()->user()->supplier->id)->get();
+    $teams = Team::where('supplier_id', auth()->user()->supplier->id)->get();
 
-        return view('supplier.packages.create', compact('package', 'teams'));
-    }
+    return view('supplier.packages.create', compact('package', 'teams'));
+}
     
     public function assignTeams(Request $request, $id)
 {
@@ -200,6 +210,7 @@ class PackageController extends Controller
 
     return back()->with('success', 'Teams assigned successfully!');
 }
+ 
     public function list()
     {
          $packages = Package::paginate(10);

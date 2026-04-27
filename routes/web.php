@@ -14,7 +14,7 @@ use App\Http\Controllers\SupplierProfileController;
 use App\Http\Controllers\SupplierPortfolioController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\BrowseSupplierController;
+use App\Http\Controllers\ClientBrowseController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\PackageController;
@@ -25,14 +25,16 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierAvailabilityController;
 use App\Http\Controllers\AdminAvailabilityController;
-
+use App\Http\Controllers\ClientCalendarController;
+use App\Http\Controllers\ClientDashboardController;
+use App\Http\Controllers\RatingController;
 use Illuminate\Support\Facades\Route;
 
 //Welcome Pages
 Route::get('/', [HomeController::class, 'index'])->name('welcomepage.welcome');
     Route::get('/profile', [HomeController::class, 'showprofile'])->name('welcomepage.profile');
     Route::get('/profile/{id}', [HomeController::class, 'showprofiledetails'])->name('welcomepage.profiledetails');
-    Route::get('/gallery', [HomeController::class, 'showgallery'])->name('welcomepage.gallery');
+    Route::get('/gallery/{id}', [HomeController::class, 'showgallery'])->name('welcomepage.gallery');
     Route::get('/package', [HomeController::class, 'package'])->name('welcomepage.package');
 
 //Activity Logs
@@ -194,10 +196,24 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-//Browse suppliers for clients
+//Client Browse Suppliers
 Route::middleware(['auth'])->group(function () {
-    Route::get('/client/suppliers', [BrowseSupplierController::class, 'browse'])->name('client.suppliers');
-    Route::get('/client/suppliers/{id}', [BrowseSupplierController::class, 'show'])->name('client.suppliers.show');
+   
+    Route::get('/browse-suppliers', [ClientBrowseController::class, 'index'])
+    ->name('client.browse.suppliers');
+    Route::get('/browse-suppliers/{id}', [ClientBrowseController::class, 'show'])
+        ->name('client.show.supplier');
+    route::get('/supplier/{id}/portfolio', [ClientBrowseController::class, 'portfolio'])
+    ->name('client.portfolio');
+    Route::post('/client/bookings', [BookingController::class, 'store'])
+    ->name('client.bookings.store');
+
+    // Client Calendar
+    Route::get('/supplier/{id}/calendar', [ClientCalendarController::class, 'show'])
+    ->name('client.supplier.calendar');
+
+    Route::get('/supplier/{id}/calendar/events', [ClientCalendarController::class, 'events'])
+    ->name('client.supplier.calendar.events');
 });
 
 //Messaging for suppliers AND clients (only inbox for suppliers, clients can only message from supplier details page)
@@ -250,6 +266,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/supplier/packages/{package}/edit', [PackageController::class, 'edit'])->name('supplier.package.edit');
     Route::put('/supplier/packages/{package}', [PackageController::class, 'update'])->name('supplier.package.update');
     Route::delete('/supplier/packages/{package}', [PackageController::class, 'destroy'])->name('supplier.package.destroy');
+    //My Listing
+    Route::get('/supplier/my-listings', [PackageController::class, 'listing'])->name('supplier.package.mylistings');
+    // Assign Teams to Package
     Route::post('/package/{id}/assign-teams', [PackageController::class, 'assignTeams'])
     ->name('supplier.package.assignTeams');
     Route::get('/supplier/package/{id}/assign-teams', [PackageController::class, 'showAssignTeams'])
@@ -258,18 +277,23 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/index', [PackageController::class, 'list'])->name('admin.package.list');
 });
 
+//Client Dashboard
+Route::middleware(['auth'])->group(function () {
+    Route::get('/client/dashboard', [ClientDashboardController::class, 'dashboard'])
+    ->name('client.dashboard');
+});
+
 //Event for Client
 Route::middleware(['auth'])->group(function () {
     //Admin view of events
     Route::get('/admin/events', [EventController::class, 'adminIndex'])
     ->name('admin.events.index');
      // CLIENT
-    Route::get('/client/index', [EventController::class, 'clientIndex'])->name('client.index');
-    Route::get('/client/events', [EventController::class, 'create'])->name('client.events');
+    Route::get('/client/index', [EventController::class, 'index'])->name('client.events');
     Route::get('/client/events/{id}', [EventController::class, 'show'])->name('client.show');
     Route::post('/client/events', [EventController::class, 'store'])->name('client.events.store');
-    Route::get('/client/events/{event}/edit', [EventController::class, 'edit'])->name('client.events.edit');
-    Route::put('/client/events/{event}', [EventController::class, 'update'])->name('client.events.update');
+    Route::patch('/client/events/{id}/cancel', [EventController::class, 'cancel'])
+    ->name('client.events.cancel');
     Route::delete('/client/events/{event}', [EventController::class, 'destroy'])->name('client.events.destroy');
 });
 //Client Booking routes
@@ -309,6 +333,17 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/supplier/bookings/{id}/cancel', [BookingController::class, 'cancel'])
         ->name('supplier.bookings.cancel');
+
+});
+//Client Ratings
+Route::middleware(['auth'])->group(function () {
+
+    // ⭐ Store rating (client submits review)
+    Route::post('/ratings', [RatingController::class, 'store'])
+        ->name('client.ratings.store');
+    Route::get('/supplier/ratings', [RatingController::class, 'reviews'])
+        ->name('supplier.ratings.index');
+
 });
 //Supplier Teams
 Route::middleware(['auth'])->group(function () {
@@ -374,5 +409,19 @@ Route::middleware(['auth'])->group(function () {
         return back();
     })->name('notifications.readAll');
 });
+Route::post('/notifications/{id}/read', function ($id) {
+    auth()->user()
+        ->notifications()
+        ->where('id', $id)
+        ->update(['read_at' => now()]);
+});
+
+Route::post('/notifications/read-all', function () {
+    auth()->user()->unreadNotifications->markAsRead();
+});
+
+Route::get('/notifications', function () {
+    return view('notifications.index');
+})->name('notifications.index')->middleware('auth');
 
 require __DIR__.'/auth.php';
