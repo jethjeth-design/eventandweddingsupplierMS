@@ -13,10 +13,8 @@ class SupplierPortfolioController extends Controller
      */
     public function index()
     {
-    $portfolios = SupplierPortfolio::where('supplier_id', $user->id)->get();
-    $supplierProfile = SupplierProfile::where('user_id', $user->id)->first();
- 
-    return view('supplier.portfolio.index', compact('portfolios','supplierProfile'));
+    $portfolios = SupplierPortfolio::where('supplier_id', auth()->id())->get();  
+    return view('supplier.portfolio.index', compact('portfolios'));
     }
 
     /**
@@ -60,7 +58,7 @@ class SupplierPortfolioController extends Controller
 
         // ✅ SAVE
         SupplierPortfolio::create([
-            'supplier_id' => auth()->id(),
+            'supplier_id' => auth()->user()->supplier->id,
             'title' => $request->title,
             'description' => $request->description,
             'images' => $imagePaths,

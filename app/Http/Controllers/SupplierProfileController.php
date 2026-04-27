@@ -22,7 +22,7 @@ class SupplierProfileController extends Controller
 
     $supplier = $user->supplier;
 
-    $portfolios = SupplierPortfolio::where('supplier_id', $user->id)->get();
+    $portfolios = SupplierPortfolio::where('supplier_id', auth()->user()->supplier->id)->get();
 
     $roles = $supplier
         ? Role::where('supplier_id', $supplier->id)->latest()->get()

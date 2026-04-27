@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Suppliers — Bikol's Craft</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
+<x-client-layout>
 
-    <style>
+<style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
@@ -34,121 +24,11 @@
         html { scroll-behavior: smooth; }
         body { font-family: var(--font-body); background: var(--ivory); color: var(--charcoal); overflow-x: hidden; }
 
-         /* ── NAVBAR ── */
-            nav.main-nav {
-                position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-                display: flex; align-items: center; justify-content: space-between;
-                padding: 1.2rem 3rem;
-                background: rgba(255,255,255,0.92);
-                backdrop-filter: blur(16px);
-                border-bottom: 1px solid rgba(201,168,76,0.18);
-                transition: background 0.3s;
-            }
-            .nav-logo {
-                font-family: var(--font-display);
-                font-size: 1.5rem; font-weight: 700;
-                color: var(--charcoal); letter-spacing: -0.01em;
-            }
-            .nav-logo span { color: var(--gold); font-style: italic; }
-            .nav-links { display: flex; gap: 0.25rem; align-items: center; }
-            .nav-links a {
-                font-size: 0.875rem; font-weight: 400; letter-spacing: 0.04em;
-                text-transform: uppercase; color: var(--warm-grey);
-                text-decoration: none;
-                padding: 0.45rem 0.85rem;
-                border-radius: 3px;
-                border-bottom: 2px solid transparent;
-                transition: color 0.2s, background 0.2s, border-color 0.2s;
-            }
-            .nav-links a:hover { color: var(--gold-dark); background: rgba(201,168,76,0.07); }
-
-            /* ── ACTIVE STATE (Desktop) ── */
-            .nav-links a.nav-active {
-                color: var(--gold-dark);
-                background: rgba(201,168,76,0.12);
-                border-bottom: 2px solid var(--gold);
-                font-weight: 500;
-            }
-
-            .nav-cta {
-                background: var(--charcoal); color: var(--white) !important;
-                padding: 0.55rem 1.4rem; border-radius: 2px;
-                font-size: 0.8rem !important; letter-spacing: 0.06em !important;
-                border-bottom: 2px solid transparent !important;
-                transition: background 0.2s !important;
-            }
-            .nav-cta:hover { background: var(--gold-dark) !important; color: var(--white) !important; }
-            /* CTA should never show active highlight style */
-            .nav-cta.nav-active {
-                background: var(--charcoal) !important;
-                border-bottom: 2px solid transparent !important;
-            }
-
-       /* ── HAMBURGER ── */
-            .hamburger {
-                display: none; flex-direction: column; justify-content: center; gap: 5px;
-                width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 4px; z-index: 200;
-            }
-            .hamburger span {
-                display: block; width: 100%; height: 2px; background: var(--charcoal);
-                border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease; transform-origin: center;
-            }
-            .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-            .hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
-            .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-            /* ── MOBILE DRAWER ── */
-            .mobile-menu {
-                display: none; position: fixed;
-                top: 64px; left: 0; right: 0;
-                background: var(--white); z-index: 99;
-                padding: 1.5rem 2rem 2.5rem;
-                flex-direction: column; gap: 0;
-                box-shadow: 0 8px 32px rgba(30,27,24,0.1);
-                transform: translateY(-110%);
-                transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
-                border-top: 2px solid rgba(201,168,76,0.2);
-            }
-            .mobile-menu.open { transform: translateY(0); }
-            .mobile-menu a {
-                font-size: 1.05rem; font-weight: 400; letter-spacing: 0.05em; text-transform: uppercase;
-                color: var(--charcoal); text-decoration: none; padding: 1rem 0.75rem;
-                border-bottom: 1px solid rgba(201,168,76,0.15);
-                border-left: 3px solid transparent;
-                transition: color 0.2s, background 0.2s, border-color 0.2s, padding 0.2s;
-            }
-            .mobile-menu a:last-child { border-bottom: none; }
-            .mobile-menu a:hover { color: var(--gold-dark); background: rgba(201,168,76,0.05); }
-
-            /* ── ACTIVE STATE (Mobile Drawer) ── */
-            .mobile-menu a.mob-active {
-                color: var(--gold-dark);
-                background: rgba(201,168,76,0.10);
-                border-left: 3px solid var(--gold);
-                padding-left: calc(0.75rem + 2px);
-                font-weight: 500;
-            }
-
-            .mobile-menu .mob-cta {
-                margin-top: 1.5rem; background: var(--charcoal); color: var(--white) !important;
-                text-align: center; padding: 0.85rem 1.4rem; border-radius: 2px;
-                font-size: 0.85rem !important; letter-spacing: 0.08em !important;
-                border-bottom: none !important; border-left: 3px solid transparent !important;
-            }
-            .mobile-menu .mob-cta:hover { background: var(--gold-dark) !important; }
-            /* CTA should never get mob-active highlight */
-            .mobile-menu .mob-cta.mob-active {
-                background: var(--charcoal) !important;
-                border-left: 3px solid transparent !important;
-            }
-
-        
-
         /* ══════════════════════════════
            PAGE HERO
         ══════════════════════════════ */
         .page-hero {
-            margin-top: var(--nav-h);
+            margin-top: 0rem;
             background: var(--charcoal);
             position: relative; overflow: hidden;
             padding: 2.5rem 5% 2rem;
@@ -205,7 +85,6 @@
             background: var(--gold);
             border: none;
             padding: 0 1.4rem;
-            height: 100%;
             font-family: var(--font-body);
             font-size: 0.78rem;
             font-weight: 700;
@@ -550,6 +429,23 @@
         .sp-view-btn span, .sp-view-btn svg { position: relative; z-index: 1; }
         .sp-view-btn svg { width: 11px; height: 11px; }
 
+        .sv-view-btn {
+            display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            background: var(--charcoal); color: var(--white);
+            border: none; border-radius: 5px;
+            font-family: var(--font-body); font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.05em; text-transform: uppercase;
+            text-decoration: none; cursor: pointer;
+            position: relative; overflow: hidden; width: 100%;
+            transition: transform 0.15s;
+        }
+        .sv-view-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--gold-dark), var(--gold)); opacity: 0; transition: opacity 0.22s; }
+        .sv-view-btn:hover::after { opacity: 1; }
+        .sv-view-btn:hover { transform: translateY(-1px); }
+        .sv-view-btn span, .sv-view-btn svg { position: relative; z-index: 1; }
+        .sv-view-btn svg { width: 11px; height: 11px; }
+
         /* No results */
         .sp-no-results { display: none; text-align: center; padding: 3rem 2rem; background: var(--white); border: 1px solid var(--border); border-radius: 10px; grid-column: 1/-1; }
         .sp-no-results svg { width: 44px; height: 44px; color: var(--gold); opacity: 0.2; margin: 0 auto 0.75rem; display: block; }
@@ -687,51 +583,13 @@
         @media (max-width: 420px) {
             .sp-grid { grid-template-columns: 1fr; }
         }
-    </style>
-</head>
-<body>
+</style>
 
-{{-- NAVBAR --}}
-<nav class="main-nav">
-    <a href="{{ route('welcomepage.welcome') }}" class="nav-logo">Bikol's<span>Craft</span></a>
-    <div class="nav-links">
-        <a href="{{ route('welcomepage.welcome') }}" class="{{ request()->routeIs('welcomepage.welcome') ? 'nav-active' : '' }}">Home</a>
-        <a href="{{ route('welcomepage.profile') }}" class="{{ request()->routeIs('welcomepage.profile') ? 'nav-active' : '' }}">Suppliers</a>
-        <a href="#" class="{{ request()->routeIs('events*') ? 'nav-active' : '' }}">Events</a>
-        <a href="{{ route('welcomepage.package') }}" class="{{ request()->routeIs('welcomepage.package') ? 'nav-active' : '' }}">Packages</a>
-        @if (Route::has('login'))
-            @auth
-                <a href="{{ url('/dashboard') }}" class="nav-cta">Dashboard</a>
-            @else
-                <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'nav-active' : '' }}">Sign In</a>
-                @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="nav-cta">Get Started</a>
-                @endif
-            @endauth
-        @endif
-    </div>
-    <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
-        <span></span><span></span><span></span>
-    </button>
-</nav>
-
-{{-- MOBILE NAV DRAWER --}}
-<div class="mobile-menu" id="mobileMenu">
-    <a href="{{ route('welcomepage.welcome') }}" class="{{ request()->routeIs('welcomepage.welcome') ? 'mob-active' : '' }}" onclick="closeMenu()">Home</a>
-    <a href="{{ route('welcomepage.profile') }}" class="{{ request()->routeIs('welcomepage.profile') ? 'mob-active' : '' }}" onclick="closeMenu()">Suppliers</a>
-    <a href="#" onclick="closeMenu()">Events</a>
-    <a href="{{ route('welcomepage.package') }}" class="{{ request()->routeIs('welcomepage.package') ? 'mob-active' : '' }}" onclick="closeMenu()">Packages</a>
-    @if (Route::has('login'))
-        @auth
-            <a href="{{ url('/dashboard') }}" class="mob-cta">Dashboard</a>
-        @else
-            <a href="{{ route('login') }}" class="mob-cta">Sign In</a>
-            @if (Route::has('register'))
-                <a href="{{ route('register') }}" class="mob-cta" style="margin-top:.4rem;">Get Started</a>
-            @endif
-        @endauth
-    @endif
-</div>
+<x-slot name="header">
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        {{ __('Browse Suppliers') }}
+    </h2>
+</x-slot>
 
 {{-- PAGE HERO WITH LIVE SEARCH --}}
 <div class="page-hero">
@@ -1091,12 +949,12 @@
 
                         <div class="sp-card-divider"></div>
 
-                        <a href="{{ route('welcomepage.gallery', $supplier->id) }}" class="sp-view-btn">
-                            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
-                                <rect x="1" y="2" width="12" height="11" rx="2"/>
-                                <circle cx="4.5" cy="5.5" r="1"/>
-                                <path d="M1 10l3-3 2.5 2.5 2-2 3.5 3.5"/>
-                            </svg>
+                        <a href="{{ route('client.show.supplier', $supplier->id) }}" class="sp-view-btn">
+                             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 2l5 5-5 5"/></svg>
+                            <span>View Packages</span>
+                        </a>
+                        <a href="{{ route('client.portfolio', $supplier->id) }}" class="sv-view-btn">
+                            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 2l5 5-5 5"/></svg>
                             <span>View Profile</span>
                         </a>
                     </div>
@@ -1121,14 +979,6 @@
 
     </div>{{-- /sp-content --}}
 </div>{{-- /sp-layout --}}
-
-<footer>
-    <div class="footer-brand">Bikol's<span>Craft</span></div>
-    <div class="footer-links">
-        <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Support</a><a href="#">Blog</a>
-    </div>
-    <div class="footer-copy">&copy; {{ date('Y') }} Bikol'sCraft. All rights reserved.</div>
-</footer>
 
 <script>
     /* ══════════════════════════════════════
@@ -1320,27 +1170,6 @@
     }, { threshold: 0.05 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    /* ══════════════════════════════════════
-    HAMBURGER / MOBILE NAV
-    ══════════════════════════════════════ */
-    const hamburger  = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
-
-    hamburger.addEventListener('click', () => {
-        const isOpen = mobileMenu.classList.toggle('open');
-        hamburger.classList.toggle('open', isOpen);
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-    });
-
-    function closeMenu() {
-        mobileMenu.classList.remove('open');
-        hamburger.classList.remove('open');
-        document.body.style.overflow = '';
-    }
-
-    document.addEventListener('click', e => {
-        if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) closeMenu();
-    });
 </script>
-</body>
-</html>
+
+</x-client-layout>

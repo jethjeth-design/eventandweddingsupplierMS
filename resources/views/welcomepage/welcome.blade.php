@@ -53,20 +53,39 @@
                 color: var(--charcoal); letter-spacing: -0.01em;
             }
             .nav-logo span { color: var(--gold); font-style: italic; }
-            .nav-links { display: flex; gap: 2rem; align-items: center; }
+            .nav-links { display: flex; gap: 0.25rem; align-items: center; }
             .nav-links a {
                 font-size: 0.875rem; font-weight: 400; letter-spacing: 0.04em;
                 text-transform: uppercase; color: var(--warm-grey);
-                text-decoration: none; transition: color 0.2s;
+                text-decoration: none;
+                padding: 0.45rem 0.85rem;
+                border-radius: 3px;
+                border-bottom: 2px solid transparent;
+                transition: color 0.2s, background 0.2s, border-color 0.2s;
             }
-            .nav-links a:hover { color: var(--gold-dark); }
+            .nav-links a:hover { color: var(--gold-dark); background: rgba(201,168,76,0.07); }
+
+            /* ── ACTIVE STATE (Desktop) ── */
+            .nav-links a.nav-active {
+                color: var(--gold-dark);
+                background: rgba(201,168,76,0.12);
+                border-bottom: 2px solid var(--gold);
+                font-weight: 500;
+            }
+
             .nav-cta {
                 background: var(--charcoal); color: var(--white) !important;
                 padding: 0.55rem 1.4rem; border-radius: 2px;
                 font-size: 0.8rem !important; letter-spacing: 0.06em !important;
+                border-bottom: 2px solid transparent !important;
                 transition: background 0.2s !important;
             }
             .nav-cta:hover { background: var(--gold-dark) !important; color: var(--white) !important; }
+            /* CTA should never show active highlight style */
+            .nav-cta.nav-active {
+                background: var(--charcoal) !important;
+                border-bottom: 2px solid transparent !important;
+            }
 
             /* ── HERO BANNER ── */
             .hero {
@@ -84,8 +103,6 @@
                 content: ''; position: absolute; inset: 0;
                 background: linear-gradient(135deg,rgba(30,27,24,0.65) 0%,rgba(30,27,24,0.3) 50%,rgba(201,168,76,0.15) 100%);
             }
-
-            /* ── SLIDE BACKGROUND IMAGES REMOVED FROM CSS — now inline style on each .slide ── */
 
             .hero-content {
                 position: relative; z-index: 2;
@@ -253,9 +270,6 @@
                 transition: opacity 0.3s, transform 0.4s;
             }
             .cat-card:hover .cat-bg { opacity: 0.7; transform: scale(1.06); }
-
-            /* ── CATEGORY BACKGROUND IMAGES REMOVED FROM CSS — now inline style on each .cat-bg ── */
-
             .cat-info {
                 position: relative; z-index: 1; padding: 1rem 0.8rem;
                 width: 100%;
@@ -403,17 +417,35 @@
             .mobile-menu.open { transform: translateY(0); }
             .mobile-menu a {
                 font-size: 1.05rem; font-weight: 400; letter-spacing: 0.05em; text-transform: uppercase;
-                color: var(--charcoal); text-decoration: none; padding: 1rem 0;
-                border-bottom: 1px solid rgba(201,168,76,0.15); transition: color 0.2s;
+                color: var(--charcoal); text-decoration: none; padding: 1rem 0.75rem;
+                border-bottom: 1px solid rgba(201,168,76,0.15);
+                border-left: 3px solid transparent;
+                transition: color 0.2s, background 0.2s, border-color 0.2s, padding 0.2s;
             }
             .mobile-menu a:last-child { border-bottom: none; }
-            .mobile-menu a:hover { color: var(--gold-dark); }
+            .mobile-menu a:hover { color: var(--gold-dark); background: rgba(201,168,76,0.05); }
+
+            /* ── ACTIVE STATE (Mobile Drawer) ── */
+            .mobile-menu a.mob-active {
+                color: var(--gold-dark);
+                background: rgba(201,168,76,0.10);
+                border-left: 3px solid var(--gold);
+                padding-left: calc(0.75rem + 2px);
+                font-weight: 500;
+            }
+
             .mobile-menu .mob-cta {
                 margin-top: 1.5rem; background: var(--charcoal); color: var(--white) !important;
                 text-align: center; padding: 0.85rem 1.4rem; border-radius: 2px;
-                font-size: 0.85rem !important; letter-spacing: 0.08em !important; border-bottom: none !important;
+                font-size: 0.85rem !important; letter-spacing: 0.08em !important;
+                border-bottom: none !important; border-left: 3px solid transparent !important;
             }
             .mobile-menu .mob-cta:hover { background: var(--gold-dark) !important; }
+            /* CTA should never get mob-active highlight */
+            .mobile-menu .mob-cta.mob-active {
+                background: var(--charcoal) !important;
+                border-left: 3px solid transparent !important;
+            }
 
             @media (max-width: 768px) {
                 .hamburger { display: flex; }
@@ -427,16 +459,24 @@
         <nav class="main-nav">
             <div class="nav-logo">Bikol's<span>Craft</span></div>
             <div class="nav-links">
-                <a href="{{ route('welcomepage.welcome') }} " class="active">Home</a>
-                <a href="{{ route('welcomepage.profile') }}">Suppliers</a>
-                <a href="#">Events</a>
-                <a href="{{route('welcomepage.package')}}">Packages</a>
-                <a href="{{ route('welcomepage.gallery') }}">Gallery</a>
+                <a href="{{ route('welcomepage.welcome') }}"
+                   class="{{ request()->routeIs('welcomepage.welcome') ? 'nav-active' : '' }}">Home</a>
+
+                <a href="{{ route('welcomepage.profile') }}"
+                   class="{{ request()->routeIs('welcomepage.profile') ? 'nav-active' : '' }}">Suppliers</a>
+
+                <a href="#"
+                   class="{{ request()->routeIs('events*') ? 'nav-active' : '' }}">Events</a>
+
+                <a href="{{ route('welcomepage.package') }}"
+                   class="{{ request()->routeIs('welcomepage.package') ? 'nav-active' : '' }}">Packages</a>
+
                 @if (Route::has('login'))
                     @auth
                         <a href="{{ url('/dashboard') }}" class="nav-cta">Dashboard</a>
                     @else
-                        <a href="{{ route('login') }}">Sign In</a>
+                        <a href="{{ route('login') }}"
+                           class="{{ request()->routeIs('login') ? 'nav-active' : '' }}">Sign In</a>
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}" class="nav-cta">Get Started</a>
                         @endif
@@ -450,16 +490,28 @@
 
         <!-- MOBILE DRAWER -->
         <div class="mobile-menu" id="mobileMenu">
-            <a href="{{ route('welcomepage.welcome') }}" onclick="closeMenu()">Home</a>
-            <a href="{{ route('welcomepage.profile') }}" onclick="closeMenu()">Suppliers</a>
-            <a href="#" onclick="closeMenu()">Events</a>
-            <a href="{{route('welcomepage.package')}}" onclick="closeMenu()">Packages</a>
-            <a href="{{route('welcomepage.gallery')}}" onclick="closeMenu()">Gallery</a>
+            <a href="{{ route('welcomepage.welcome') }}"
+               class="{{ request()->routeIs('welcomepage.welcome') ? 'mob-active' : '' }}"
+               onclick="closeMenu()">Home</a>
+
+            <a href="{{ route('welcomepage.profile') }}"
+               class="{{ request()->routeIs('welcomepage.profile') ? 'mob-active' : '' }}"
+               onclick="closeMenu()">Suppliers</a>
+
+            <a href="#"
+               class="{{ request()->routeIs('events*') ? 'mob-active' : '' }}"
+               onclick="closeMenu()">Events</a>
+
+            <a href="{{ route('welcomepage.package') }}"
+               class="{{ request()->routeIs('welcomepage.package') ? 'mob-active' : '' }}"
+               onclick="closeMenu()">Packages</a>
+
             @if (Route::has('login'))
                 @auth
                     <a href="{{ url('/dashboard') }}" class="mob-cta">Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="mob-cta">Sign In</a>
+                    <a href="{{ route('login') }}"
+                       class="mob-cta {{ request()->routeIs('login') ? 'mob-active' : '' }}">Sign In</a>
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}" class="mob-cta" style="margin-top:0.5rem;">Get Started</a>
                     @endif
@@ -476,8 +528,8 @@
             <div class="banner-slides">
                 @for ($i = 1; $i <= 5; $i++)
                     <div class="slide {{ $i == 1 ? 'active' : '' }}"
-                        style="background-image: url('{{ isset($banner) && $banner->{'slide_'.$i} 
-                            ? asset('storage/'.$banner->{'slide_'.$i}) 
+                        style="background-image: url('{{ isset($banner) && $banner->{'slide_'.$i}
+                            ? asset('storage/'.$banner->{'slide_'.$i})
                             : asset('images/default.jpg') }}');">
                     </div>
                 @endfor

@@ -42,6 +42,7 @@ class HomeController extends Controller
             });
         }
 
+
         $suppliers = $query->get();
 
         // Filters
@@ -64,13 +65,15 @@ class HomeController extends Controller
         return view('welcomepage.supplier.details', compact('supplier'));
     }
     
-    public function showgallery()
+    public function showgallery($id)
     {
-        $portfolios = SupplierPortfolio::with('supplier')
+        $supplier = SupplierProfile::findOrFail($id);
+
+        $portfolios = SupplierPortfolio::where('supplier_id', $supplier->id)
         ->latest()
         ->get();
 
-        return view('welcomepage.supplier.portfolio', compact('portfolios'));
+        return view('welcomepage.supplier.portfolio', compact('portfolios', 'supplier'));
     }
 
     public function package(Request $request)

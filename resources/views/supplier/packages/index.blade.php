@@ -259,11 +259,13 @@
                     <tbody>
                         @foreach($packages as $i => $package)
                         @php
-                            $inclusions = is_array($package->inclusions)
-                                ? $package->inclusions
-                                : (json_decode($package->inclusions ?? '[]', true) ?? []);
-                            $inclusions = array_values(array_filter($inclusions));
-                            $inclCount  = count($inclusions);
+    
+                            $inclTitles = $package->inclusions
+                                ->pluck('title')
+                                ->filter()
+                                ->values()
+                                ->toArray();
+                            $inclCount = count($inclTitles);
                         @endphp
                         <tr>
                             <td><span class="bv-row-num">{{ $i + 1 }}</span></td>
@@ -308,12 +310,17 @@
                                 </span>
                             </td>
 
-                            {{-- ✅ Inclusions cell — data stored safely in data attributes --}}
+                            {{-- INCLUSIONS CELL --}}
                             <td>
                                 @if($inclCount > 0)
+                                    {{--
+                                        Pass titles as JSON in a data attribute.
+                                        Using json_encode on a plain PHP array of strings
+                                        is safe and will always produce valid JSON.
+                                    --}}
                                     <button type="button" class="bv-incl-pill"
                                         data-pkg-name="{{ $package->name }}"
-                                        data-inclusions="{{ json_encode($inclusions) }}"
+                                        data-inclusions="{{ json_encode($inclTitles) }}"
                                         onclick="openViewModal(this)">
                                         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
                                             <path d="M2 5h12M2 8h8M2 11h5"/>
@@ -327,7 +334,10 @@
 
                             <td>
                                 <div class="bv-actions">
-                                    {{-- ✅ Edit button — data stored safely in data attributes --}}
+                                    {{--
+                                        Pass inclusion titles (not model objects) to the
+                                        edit modal so they can be pre-filled as text inputs.
+                                    --}}
                                     <button type="button" class="bv-btn-edit"
                                         data-id="{{ $package->id }}"
                                         data-name="{{ $package->name }}"
@@ -335,7 +345,7 @@
                                         data-price="{{ $package->price ?? '' }}"
                                         data-capacity="{{ $package->guest_capacity ?? '' }}"
                                         data-event-type="{{ $package->event_type ?? '' }}"
-                                        data-inclusions="{{ json_encode($inclusions) }}"
+                                        data-inclusions="{{ json_encode($inclTitles) }}"
                                         onclick="openEditModal(this)">
                                         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z"/></svg>
                                         Edit
@@ -569,7 +579,12 @@
             const capacity    = btn.dataset.capacity;
             const eventType   = btn.dataset.eventType;
 
-            // ✅ Safe JSON parse from data attribute
+            /*
+             * FIX: data-inclusions now contains a JSON array of plain title strings
+             * (e.g. ["Flowers","Catering"]) because the Blade already called
+             * ->pluck('title')->toArray() before json_encode().
+             * No mapping needed here — just parse and iterate.
+             */
             let inclusions = [];
             try {
                 inclusions = JSON.parse(btn.dataset.inclusions || '[]');
@@ -610,12 +625,14 @@
         });
 
         /* ═══════════════════════════════════════
-           VIEW INCLUSIONS MODAL — reads from data-* attributes
+           VIEW INCLUSIONS MODAL
         ═══════════════════════════════════════ */
         function openViewModal(btn) {
             const pkgName = btn.dataset.pkgName;
 
-            // ✅ Safe JSON parse from data attribute
+            /*
+             * FIX: same as above — already a plain string array from the server.
+             */
             let inclusions = [];
             try {
                 inclusions = JSON.parse(btn.dataset.inclusions || '[]');

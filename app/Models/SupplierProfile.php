@@ -32,7 +32,8 @@ class SupplierProfile extends Model
     {
        return $this->hasMany(Package::class, 'supplier_id');
     }
-
+    
+    
     // 🔗 Many-to-Many with categories
     public function categories()
     {
@@ -54,7 +55,7 @@ class SupplierProfile extends Model
 
     public function ratings()
     {
-        return $this->hasMany(Rating::class);
+        return $this->hasMany(Rating::class, 'supplier_id');
     }
 
     public function user()

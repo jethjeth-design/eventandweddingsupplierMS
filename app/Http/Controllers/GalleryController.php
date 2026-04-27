@@ -8,7 +8,7 @@ class GalleryController extends Controller
 {
     public function index()
     {
-        $portfolios = SupplierPortfolio::where('supplier_id', auth()->id())->get();
+        $portfolios = SupplierPortfolio::where('supplier_id', auth()->user()->supplier->id)->get();
         return view('supplier.portfolio.gallery', compact('portfolios'));
     }
 }

@@ -10,7 +10,7 @@ class Booking extends Model
         'user_id',
         'event_id',
         'package_id',
-        'supplier_id', // 🔥 ADD THIS
+        'supplier_id', 
         'event_date',
         'total_price',
         'status',
@@ -24,6 +24,11 @@ class Booking extends Model
     public function event()
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function rating()
+    {
+        return $this->hasOne(Rating::class);
     }
 
     public function user()
