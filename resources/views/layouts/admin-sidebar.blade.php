@@ -75,6 +75,30 @@
             <span class="nav-tooltip">Packages</span>
         </a>
 
+        <a href="{{ route('admin.popular.index') }}"
+           class="nav-item {{ request()->routeIs('admin.popular.index*') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Box -->
+                <path d="M21 8l-9-5-9 5 9 5 9-5z"/>
+                <path d="M3 8v8l9 5 9-5V8"/>
+                <path d="M12 13v8"/>
+
+                <!-- Star (popular badge) -->
+                <path d="M12 6l.9 1.9 2.1.3-1.5 1.4.4 2.1-1.9-1-1.9 1 .4-2.1-1.5-1.4 2.1-.3L12 6z"/>
+            </svg>
+            <span>Popular Packages</span>
+            <span class="nav-tooltip">Popular Packages</span>
+        </a>
+
+        <a href="{{ route('featured-suppliers') }}"
+           class="nav-item {{ request()->routeIs('featured-suppliers*') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 17.3l-5.4 3 1.1-6.1L3 9.8l6.2-.9L12 3.5l2.8 5.4 6.2.9-4.7 4.4 1.1 6.1z"/>
+            </svg>
+            <span>Feature Suppliers</span>
+            <span class="nav-tooltip">Featured Suppliers</span>
+        </a>
+
         <div class="sidebar-divider"></div>
         <div class="nav-group-label">Planning</div>
 
@@ -186,14 +210,14 @@
             </a>
             <div class="nav-submenu">
 
-                <a href="#"
+                {{--<a href="#"
                    class="nav-subitem {{ request()->is('settings/general*') ? 'active' : '' }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="3"/>
                         <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
                     </svg>
                     General
-                </a>
+                </a>--}}
 
                 <a href="{{ route('admin.user') }}"
                    class="nav-subitem {{ request()->routeIs('admin.user') ? 'active' : '' }}">
@@ -205,14 +229,14 @@
                     User Roles
                 </a>
 
-                <a href="#"
+                {{--<a href="#"
                    class="nav-subitem {{ request()->is('settings/payments*') ? 'active' : '' }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="1" y="4" width="22" height="16" rx="2"/>
                         <line x1="1" y1="10" x2="23" y2="10"/>
                     </svg>
                     Payments
-                </a>
+                </a>--}}
 
                 <a href="{{ route('admin.homepage.banners') }}"
                    class="nav-subitem {{ request()->routeIs('admin.homepage.*') ? 'active' : '' }}">

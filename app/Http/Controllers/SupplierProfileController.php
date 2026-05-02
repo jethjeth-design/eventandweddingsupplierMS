@@ -18,23 +18,24 @@ class SupplierProfileController extends Controller
      */
     public function index()
     {   
-    $user = auth()->user();
+        
+        $user = auth()->user();
 
-    $supplier = $user->supplier;
+        $supplier = $user->supplier;
 
-    $portfolios = SupplierPortfolio::where('supplier_id', auth()->user()->supplier->id)->get();
+        $portfolios = SupplierPortfolio::where('supplier_id', auth()->user()->supplier->id)->get();
 
-    $roles = $supplier
-        ? Role::where('supplier_id', $supplier->id)->latest()->get()
-        : collect();
+        $roles = $supplier
+            ? Role::where('supplier_id', $supplier->id)->latest()->get()
+            : collect();
 
-    $teams = $supplier
-        ? Team::where('supplier_id', $supplier->id)->get()
-        : collect();
+        $teams = $supplier
+            ? Team::where('supplier_id', $supplier->id)->get()
+            : collect();
 
-    $supplierProfile = SupplierProfile::with('categories')
-        ->where('user_id', $user->id)
-        ->first();
+        $supplierProfile = SupplierProfile::with('categories')
+            ->where('user_id', $user->id)
+            ->first();
 
         return view('supplier.supplierprofile', compact('supplierProfile', 'portfolios','teams', 'roles'));
     }
@@ -99,6 +100,30 @@ class SupplierProfileController extends Controller
           return redirect()->route('supplier.supplierprofile')->with('success', 'Profile created successfully.');
     }
 
+    public function storeCoverPhoto(Request $request)
+    {
+        $request->validate([
+            'cover_photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ]);
+
+        $supplier = auth()->user()->supplier;
+
+        if (!$supplier) {
+            return back()->with('error', 'Supplier profile not found.');
+        }
+
+        if ($supplier->cover_photo && Storage::disk('public')->exists($supplier->cover_photo)) {
+            Storage::disk('public')->delete($supplier->cover_photo);
+        }
+
+        $coverPath = $request->file('cover_photo')->store('supplier_covers', 'public');
+
+        $supplier->update([
+            'cover_photo' => $coverPath
+        ]);
+
+        return back()->with('success', 'Cover photo uploaded successfully.');
+    }
     /**
      * Display the specified resource.
      */
@@ -213,6 +238,9 @@ class SupplierProfileController extends Controller
         return redirect()->route('supplier.supplierprofile')->with('success', 'Profile updated successfully.');
 
     }
+
+
+    
     /**
      * Remove the specified resource from storage.
      */
@@ -228,6 +256,28 @@ class SupplierProfileController extends Controller
 
         return redirect()->route('supplier.supplierprofile')
             ->with('success', 'Supplier profile deleted successfully.');
+    }
+
+    //Delete Cover Photo
+    public function deleteCoverPhoto()
+    {
+        $supplier = auth()->user()->supplier;
+
+        if (!$supplier) {
+            return back()->with('error', 'Supplier profile not found.');
+        }
+
+        // 🧹 delete file
+        if ($supplier->cover_photo && Storage::disk('public')->exists($supplier->cover_photo)) {
+            Storage::disk('public')->delete($supplier->cover_photo);
+        }
+
+        // 💾 remove from DB
+        $supplier->update([
+            'cover_photo' => null
+        ]);
+
+        return back()->with('success', 'Cover photo removed successfully.');
     }
 
 
@@ -252,4 +302,7 @@ class SupplierProfileController extends Controller
             $supplier->delete();
             return redirect()->route('admin.suppliers.index')->with('success', 'Supplier profile deleted successfully.');
         }
+
+
+        
 }

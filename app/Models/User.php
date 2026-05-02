@@ -6,13 +6,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
 class User extends Authenticatable
 {
     const ROLE_ADMIN = 'admin';
     const ROLE_SUPPLIER = 'supplier';
     const ROLE_CLIENT = 'client';
-
     public function isAdmin()
     {
         return $this->role === self::ROLE_ADMIN;
@@ -32,8 +30,6 @@ class User extends Authenticatable
     {
         return $this->role === $role;
     }
-
-     
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 

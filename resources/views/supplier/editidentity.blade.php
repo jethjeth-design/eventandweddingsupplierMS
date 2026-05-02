@@ -14,11 +14,29 @@
             box-shadow:0 2px 8px rgba(30,27,24,0.06);
             margin-bottom:1.5rem;
         }
+
+        /* ── Banner with cover photo support ── */
         .bv-id-banner{
-            height:110px;
+            height:200px;
             background:linear-gradient(135deg,var(--charcoal) 0%,#2a2016 60%,#3d2f14 100%);
             position:relative;
+            overflow:hidden;
         }
+        .bv-id-banner-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+        .bv-id-banner-overlay{position:absolute;inset:0;background:rgba(30,27,24,0.18);pointer-events:none;}
+        .bv-cover-btn{
+            position:absolute;bottom:10px;right:12px;
+            display:inline-flex;align-items:center;gap:0.4rem;
+            padding:0.38rem 0.85rem;border-radius:8px;
+            background:rgba(30,27,24,0.62);
+            backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+            border:1.5px solid rgba(255,255,255,0.22);
+            font-family:var(--font-body);font-size:0.7rem;font-weight:500;
+            color:rgba(255,255,255,0.92);cursor:pointer;
+            transition:background 0.2s,border-color 0.2s,transform 0.15s;z-index:3;
+        }
+        .bv-cover-btn svg{width:12px;height:12px;flex-shrink:0;}
+        .bv-cover-btn:hover{background:rgba(201,168,76,0.78);border-color:rgba(201,168,76,0.5);transform:translateY(-1px);}
 
         /* ── Card inner: avatar left, info middle, tips right ── */
         .bv-id-inner{
@@ -181,17 +199,94 @@
         .bv-btn-back svg{width:12px;height:12px;}
         .bv-btn-back:hover{border-color:var(--gold);color:var(--charcoal);}
 
+        /* ══ COVER PHOTO MODAL ══ */
+        .cp-overlay{position:fixed;inset:0;z-index:9000;background:rgba(30,27,24,0.6);display:none;align-items:center;justify-content:center;padding:1rem;}
+        .cp-overlay.open{display:flex;}
+        .cp-modal{background:var(--white);border-radius:16px;border:1px solid #F0EBE5;box-shadow:0 12px 48px rgba(30,27,24,0.22);width:100%;max-width:500px;overflow:hidden;animation:cpIn 0.22s ease;}
+        @keyframes cpIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+        .cp-head{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem;border-bottom:1px solid #F7F3EF;}
+        .cp-head-l{display:flex;align-items:center;gap:0.65rem;}
+        .cp-head-icon{width:34px;height:34px;border-radius:9px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);flex-shrink:0;}
+        .cp-head-icon svg{width:16px;height:16px;}
+        .cp-head-title{font-family:var(--font-display);font-size:0.98rem;font-weight:700;color:var(--charcoal);}
+        .cp-head-sub{font-size:0.7rem;color:var(--warm-grey);margin-top:0.04rem;}
+        .cp-close{width:32px;height:32px;border-radius:50%;border:1.5px solid #E5DDD5;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--warm-grey);transition:border-color 0.15s,color 0.15s,background 0.15s;flex-shrink:0;}
+        .cp-close:hover{border-color:var(--gold);color:var(--gold-dark);background:rgba(201,168,76,0.05);}
+        .cp-close svg{width:12px;height:12px;}
+
+        .cp-body{padding:1.35rem 1.4rem;display:flex;flex-direction:column;gap:1rem;}
+
+        /* Current cover strip */
+        .cp-current{border-radius:10px;overflow:hidden;border:1.5px solid #F0EBE5;position:relative;}
+        .cp-current img{width:100%;height:110px;object-fit:cover;display:block;}
+        .cp-current-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(30,27,24,0.6);backdrop-filter:blur(3px);padding:0.4rem 0.75rem;display:flex;align-items:center;justify-content:space-between;}
+        .cp-current-label{font-size:0.65rem;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:0.35rem;}
+        .cp-current-label svg{width:11px;height:11px;color:var(--gold);}
+        .cp-del-btn{display:inline-flex;align-items:center;gap:0.3rem;padding:0.28rem 0.7rem;border-radius:6px;background:rgba(192,57,43,0.88);border:none;font-family:var(--font-body);font-size:0.68rem;font-weight:500;color:var(--white);cursor:pointer;transition:background 0.15s;}
+        .cp-del-btn svg{width:11px;height:11px;}
+        .cp-del-btn:hover{background:#C0392B;}
+
+        /* Drop zone */
+        .cp-dz{border:2px dashed #E5DDD5;border-radius:10px;padding:1.75rem 1.5rem;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;background:rgba(201,168,76,0.02);position:relative;}
+        .cp-dz:hover,.cp-dz.drag-over{border-color:var(--gold);background:rgba(201,168,76,0.06);}
+        .cp-dz input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+        .cp-dz-icon{width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;color:var(--gold-dark);}
+        .cp-dz-icon svg{width:20px;height:20px;}
+        .cp-dz-label{font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.25rem;}
+        .cp-dz-sub{font-size:0.72rem;color:#C0B8B0;line-height:1.5;}
+
+        /* Preview */
+        .cp-preview{display:none;border-radius:10px;overflow:hidden;border:1.5px solid #F0EBE5;position:relative;}
+        .cp-preview.show{display:block;}
+        .cp-preview img{width:100%;height:140px;object-fit:cover;display:block;}
+        .cp-preview-clear{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(30,27,24,0.65);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--white);transition:background 0.2s;}
+        .cp-preview-clear:hover{background:rgba(192,57,43,0.85);}
+        .cp-preview-clear svg{width:12px;height:12px;}
+        .cp-file-name{font-size:0.68rem;color:var(--warm-grey);display:none;}
+        .cp-file-name.show{display:block;}
+
+        .cp-foot{padding:0.85rem 1.4rem;border-top:1px solid #F7F3EF;display:flex;align-items:center;justify-content:flex-end;gap:0.55rem;}
+        .cp-btn-cancel{display:inline-flex;align-items:center;gap:0.4rem;padding:0.58rem 1.1rem;border-radius:6px;border:1.5px solid #E5DDD5;background:var(--white);font-family:var(--font-body);font-size:0.8rem;font-weight:500;color:var(--warm-grey);cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+        .cp-btn-cancel:hover{border-color:var(--gold);color:var(--charcoal);}
+        .cp-btn-apply{display:inline-flex;align-items:center;gap:0.45rem;padding:0.58rem 1.4rem;border-radius:6px;border:none;background:var(--charcoal);font-family:var(--font-body);font-size:0.8rem;font-weight:500;color:var(--white);cursor:pointer;transition:background 0.2s,box-shadow 0.2s,transform 0.15s;}
+        .cp-btn-apply svg{width:13px;height:13px;}
+        .cp-btn-apply:hover{background:var(--gold-dark);box-shadow:0 4px 12px rgba(201,168,76,0.2);transform:translateY(-1px);}
+        .cp-btn-apply:disabled{background:#C0B8B0;cursor:not-allowed;transform:none;box-shadow:none;}
+
+        /* ══ CONFIRM DELETE MODAL ══ */
+        .cp-confirm-overlay{position:fixed;inset:0;z-index:9100;background:rgba(30,27,24,0.55);display:none;align-items:center;justify-content:center;padding:1rem;}
+        .cp-confirm-overlay.open{display:flex;}
+        .cp-confirm-box{background:var(--white);border-radius:14px;border:1px solid #F0EBE5;box-shadow:0 8px 32px rgba(30,27,24,0.18);width:100%;max-width:360px;overflow:hidden;animation:cpIn 0.2s ease;}
+        .cp-confirm-body{padding:1.5rem 1.4rem 1rem;text-align:center;}
+        .cp-confirm-ico{width:52px;height:52px;border-radius:50%;background:#FFF5F5;border:1.5px solid #FADBD8;display:flex;align-items:center;justify-content:center;margin:0 auto 0.9rem;color:#C0392B;}
+        .cp-confirm-ico svg{width:22px;height:22px;}
+        .cp-confirm-title{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--charcoal);margin-bottom:0.4rem;}
+        .cp-confirm-desc{font-size:0.8rem;color:var(--warm-grey);line-height:1.6;}
+        .cp-confirm-foot{padding:0.85rem 1.4rem;border-top:1px solid #F7F3EF;display:flex;gap:0.55rem;justify-content:center;}
+        .cp-confirm-keep{display:inline-flex;align-items:center;padding:0.58rem 1.2rem;border-radius:6px;border:1.5px solid #E5DDD5;background:var(--white);font-family:var(--font-body);font-size:0.8rem;font-weight:500;color:var(--warm-grey);cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+        .cp-confirm-keep:hover{border-color:var(--gold);color:var(--charcoal);}
+        .cp-confirm-remove{display:inline-flex;align-items:center;gap:0.4rem;padding:0.58rem 1.4rem;border-radius:6px;border:none;background:#C0392B;font-family:var(--font-body);font-size:0.8rem;font-weight:500;color:var(--white);cursor:pointer;transition:background 0.2s,transform 0.15s;}
+        .cp-confirm-remove svg{width:13px;height:13px;}
+        .cp-confirm-remove:hover{background:#a93226;transform:translateY(-1px);}
+
         @media(max-width:680px){
             .bv-id-inner{flex-wrap:wrap;gap:1rem;padding:0 1.25rem 1.25rem;}
             .bv-id-photo-zone{min-width:unset;width:100%;align-self:auto;}
             .bv-id-tips-strip{padding:0.85rem 1.25rem;}
         }
+        @media(max-width:480px){
+            .cp-body{padding:1rem;}
+            .cp-foot{padding:0.75rem 1rem;}
+        }
     </style>
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Edit') }}
         </h2>
     </x-slot>
+
     <div class="page-content">
 
         <div class="bv-page-header">
@@ -252,7 +347,26 @@
 
         {{-- ══ FULL-WIDTH IDENTITY CARD ══ --}}
         <div class="bv-id-card">
-            <div class="bv-id-banner"></div>
+
+            {{-- ── COVER PHOTO BANNER ── --}}
+            <div class="bv-id-banner" id="bvBanner">
+                @if(!empty($supplierProfile->cover_photo))
+                    <img class="bv-id-banner-img" id="bvBannerImg"
+                         src="{{ asset('storage/' . $supplierProfile->cover_photo) }}"
+                         alt="Cover photo">
+                    <div class="bv-id-banner-overlay" id="bvBannerOverlay"></div>
+                @else
+                    <img class="bv-id-banner-img" id="bvBannerImg" src="" alt="" style="display:none;">
+                @endif
+                <button type="button" class="bv-cover-btn" id="bvCoverBtn" onclick="cpOpen()">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M1 5a2 2 0 012-2h1.5l1-1.5h5L11.5 3H13a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V5z"/>
+                        <circle cx="8" cy="8.5" r="2.5"/>
+                    </svg>
+                    <span id="bvCoverBtnLabel">{{ empty($supplierProfile->cover_photo) ? 'Add Cover Photo' : 'Change Cover' }}</span>
+                </button>
+            </div>
+            {{-- END COVER PHOTO BANNER --}}
 
             <div class="bv-id-inner">
                 {{-- Big avatar with camera badge --}}
@@ -317,9 +431,14 @@
         <div class="bv-main-stack">
             <form method="POST"
                   action="{{ route('supplier.updateidentity', $supplierProfile->id) }}"
-                  enctype="multipart/form-data">
+                  enctype="multipart/form-data"
+                  id="bvMainForm">
                 @csrf
                 @method('PUT')
+
+                {{-- Hidden cover_photo input — populated by modal --}}
+                <input type="file" id="bvCoverField" name="cover_photo"
+                       accept="image/jpeg,image/png,image/webp,image/gif" style="display:none;">
 
                 <div class="bv-sc">
                     <div class="bv-sc-head">
@@ -441,6 +560,121 @@
 
     </div>{{-- /page-content --}}
 
+
+    {{-- ══════════════════════════════════════
+         COVER PHOTO MODAL
+    ══════════════════════════════════════ --}}
+    <div class="cp-overlay" id="cpOverlay" onclick="if(event.target===this)cpClose()">
+        <div class="cp-modal">
+
+            <div class="cp-head">
+                <div class="cp-head-l">
+                    <div class="cp-head-icon">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 5a2 2 0 012-2h1.5l1-1.5h5L11.5 3H13a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V5z"/>
+                            <circle cx="8" cy="8.5" r="2.5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="cp-head-title">Cover Photo</div>
+                        <div class="cp-head-sub">Profile banner displayed on your card</div>
+                    </div>
+                </div>
+                <button type="button" class="cp-close" onclick="cpClose()">
+                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
+                </button>
+            </div>
+
+            <div class="cp-body">
+
+                {{-- Current cover (only if one exists) --}}
+                @if(!empty($supplierProfile->cover_photo))
+                <div class="cp-current" id="cpCurrentWrap">
+                    <img src="{{ asset('storage/' . $supplierProfile->cover_photo) }}" alt="Current cover">
+                    <div class="cp-current-bar">
+                        <span class="cp-current-label">
+                            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg>
+                            Current cover photo
+                        </span>
+                        <button type="button" class="cp-del-btn" onclick="cpConfirmOpen()">
+                            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3.5h10M5 3.5V2.5h4v1M4.5 3.5v7a1 1 0 001 1h3a1 1 0 001-1v-7"/></svg>
+                            Remove
+                        </button>
+                    </div>
+                </div>
+                @endif
+
+                {{-- Drop zone --}}
+                <div class="cp-dz" id="cpDz">
+                    <input type="file" id="cpFileInput" accept="image/jpeg,image/png,image/webp,image/gif"
+                           onchange="cpHandleFile(this)">
+                    <div class="cp-dz-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <div class="cp-dz-label">Click to upload or drag & drop</div>
+                    <div class="cp-dz-sub">JPG, PNG, WEBP or GIF &nbsp;·&nbsp; Max 5 MB<br>Recommended: 1200 × 300 px</div>
+                </div>
+
+                {{-- New photo preview --}}
+                <div class="cp-preview" id="cpPreview">
+                    <img id="cpPreviewImg" src="" alt="Preview">
+                    <button type="button" class="cp-preview-clear" onclick="cpClearPreview()" title="Clear">
+                        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
+                    </button>
+                </div>
+                <div class="cp-file-name" id="cpFileName"></div>
+
+            </div>
+
+            <div class="cp-foot">
+                <button type="button" class="cp-btn-cancel" onclick="cpClose()">Cancel</button>
+                <button type="button" class="cp-btn-apply" id="cpApplyBtn" disabled onclick="cpApply()">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l4 4 6-6"/></svg>
+                    Apply Cover
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    {{-- ══ CONFIRM REMOVE MODAL ══ --}}
+    <div class="cp-confirm-overlay" id="cpConfirmOverlay" onclick="if(event.target===this)cpConfirmClose()">
+        <div class="cp-confirm-box">
+            <div class="cp-confirm-body">
+                <div class="cp-confirm-ico">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                        <path d="M10 11v6M14 11v6"/>
+                        <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+                    </svg>
+                </div>
+                <div class="cp-confirm-title">Remove Cover Photo?</div>
+                <div class="cp-confirm-desc">Your current cover photo will be permanently removed. This cannot be undone.</div>
+            </div>
+            <div class="cp-confirm-foot">
+                <button type="button" class="cp-confirm-keep" onclick="cpConfirmClose()">Keep It</button>
+                <button type="button" class="cp-confirm-remove" onclick="cpExecuteRemove()">
+                    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3.5h10M5 3.5V2.5h4v1M4.5 3.5v7a1 1 0 001 1h3a1 1 0 001-1v-7"/></svg>
+                    Yes, Remove
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Hidden DELETE form for removing existing cover --}}
+    <form id="cpDeleteForm"
+          action="{{ route('supplier.cover.delete') }}"
+          method="POST"
+          style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
+
 <script>
 /* ── LIVE PREVIEW ── */
 function updatePreview() {
@@ -481,7 +715,6 @@ function updateCatCount() {
     if (n === 0) { el.classList.remove('show'); }
     else { el.classList.add('show'); el.textContent = n + ' categor' + (n === 1 ? 'y' : 'ies') + ' selected'; }
 }
-
 updateCatCount();
 updateCatPreview();
 
@@ -533,6 +766,110 @@ function previewPhoto(input) {
 function bvCt(id, el, max) {
     document.getElementById(id).textContent = el.value.length + ' / ' + max;
 }
+
+/* ══════════════════════════════
+   COVER PHOTO MODAL
+══════════════════════════════ */
+function cpOpen() {
+    document.getElementById('cpOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function cpClose() {
+    document.getElementById('cpOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function cpHandleFile(input) {
+    if (!input.files || !input.files[0]) return;
+    var file = input.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be under 5 MB.');
+        input.value = ''; return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var prev = document.getElementById('cpPreview');
+        var prevImg = document.getElementById('cpPreviewImg');
+        var fn = document.getElementById('cpFileName');
+        prevImg.src = e.target.result;
+        prev.classList.add('show');
+        document.getElementById('cpDz').style.display = 'none';
+        fn.textContent = file.name; fn.classList.add('show');
+        document.getElementById('cpApplyBtn').removeAttribute('disabled');
+    };
+    reader.readAsDataURL(file);
+}
+
+function cpClearPreview() {
+    document.getElementById('cpFileInput').value = '';
+    document.getElementById('cpPreviewImg').src = '';
+    document.getElementById('cpPreview').classList.remove('show');
+    var fn = document.getElementById('cpFileName');
+    fn.textContent = ''; fn.classList.remove('show');
+    document.getElementById('cpDz').style.display = '';
+    document.getElementById('cpApplyBtn').setAttribute('disabled', 'disabled');
+}
+
+/* Copy selected file to the main form hidden input + live-update banner */
+function cpApply() {
+    var cpInput = document.getElementById('cpFileInput');
+    var mainInput = document.getElementById('bvCoverField');
+    if (!cpInput.files || !cpInput.files[0]) return;
+
+    var dt = new DataTransfer();
+    dt.items.add(cpInput.files[0]);
+    mainInput.files = dt.files;
+
+    /* Live update banner */
+    var bannerImg = document.getElementById('bvBannerImg');
+    if (bannerImg) {
+        bannerImg.src = document.getElementById('cpPreviewImg').src;
+        bannerImg.style.display = 'block';
+    }
+    /* Ensure overlay exists */
+    if (!document.getElementById('bvBannerOverlay')) {
+        var ov = document.createElement('div');
+        ov.id = 'bvBannerOverlay';
+        ov.className = 'bv-id-banner-overlay';
+        document.getElementById('bvBanner').appendChild(ov);
+    }
+    /* Update button label */
+    var lbl = document.getElementById('bvCoverBtnLabel');
+    if (lbl) lbl.textContent = 'Change Cover';
+
+    cpClose();
+}
+
+/* Drag & drop */
+(function() {
+    var dz = document.getElementById('cpDz');
+    if (!dz) return;
+    dz.addEventListener('dragover',  function(e) { e.preventDefault(); dz.classList.add('drag-over'); });
+    dz.addEventListener('dragleave', function()  { dz.classList.remove('drag-over'); });
+    dz.addEventListener('drop', function(e) {
+        e.preventDefault(); dz.classList.remove('drag-over');
+        var fi = document.getElementById('cpFileInput');
+        if (e.dataTransfer.files.length) { fi.files = e.dataTransfer.files; cpHandleFile(fi); }
+    });
+})();
+
+/* ══ CONFIRM REMOVE ══ */
+function cpConfirmOpen() {
+    document.getElementById('cpOverlay').classList.remove('open');
+    document.getElementById('cpConfirmOverlay').classList.add('open');
+}
+function cpConfirmClose() {
+    document.getElementById('cpConfirmOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+function cpExecuteRemove() {
+    document.getElementById('cpDeleteForm').submit();
+}
+
+/* ESC key closes both modals */
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { cpClose(); cpConfirmClose(); }
+});
 </script>
 
 </x-supplier-layout>

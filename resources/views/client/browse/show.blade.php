@@ -540,6 +540,119 @@
     .modal-pkg-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
     .modal-pkg-name { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; color: var(--charcoal); }
     .modal-pkg-price { font-size: 0.75rem; color: var(--gold-dark); font-weight: 600; margin-top: 2px; font-family: var(--font-body); }
+    
+    /* ══════════════════════════════
+     EMAIL VERIFICATION MODAL
+══════════════════════════════ */
+    .ev-modal-backdrop {
+        display: none; position: fixed; inset: 0;
+        background: rgba(30,27,24,0.52); z-index: 400;
+        align-items: center; justify-content: center;
+        padding: 1.5rem; backdrop-filter: blur(3px);
+    }
+    .ev-modal-backdrop.open { display: flex; }
+    .ev-modal {
+        background: var(--white); border-radius: 12px;
+        width: 440px; max-width: 100%;
+        border-top: 2px solid var(--gold);
+        display: flex; flex-direction: column; overflow: hidden;
+        margin: auto; flex-shrink: 0;
+        box-shadow: 0 20px 60px rgba(30,27,24,0.22);
+        animation: evSlideIn 0.25s ease;
+    }
+    @keyframes evSlideIn {
+        from { opacity: 0; transform: translateY(12px) scale(0.98); }
+        to   { opacity: 1; transform: none; }
+    }
+    .ev-modal-header {
+        flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+        padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--border); background: var(--white);
+    }
+    .ev-modal-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--charcoal); }
+    .ev-modal-title em { font-style: italic; color: var(--gold-dark); }
+    .ev-modal-close {
+        width: 28px; height: 28px; border: 1px solid var(--border);
+        background: var(--ivory); border-radius: 6px; cursor: pointer;
+        font-size: 15px; color: var(--warm-grey);
+        display: flex; align-items: center; justify-content: center;
+        transition: border-color 0.18s, color 0.18s;
+    }
+    .ev-modal-close:hover { border-color: var(--gold); color: var(--gold-dark); }
+    .ev-modal-body {
+        padding: 1.75rem 1.4rem;
+        display: flex; flex-direction: column; align-items: center; gap: 1.1rem;
+    }
+    .ev-icon-ring {
+        width: 72px; height: 72px; border-radius: 50%;
+        background: rgba(201,168,76,0.1);
+        border: 2px solid rgba(201,168,76,0.25);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .ev-icon-ring svg { width: 32px; height: 32px; }
+    .ev-modal-copy { text-align: center; }
+    .ev-modal-copy-head {
+        font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
+        color: var(--charcoal); margin-bottom: 0.4rem;
+    }
+    .ev-modal-copy-body {
+        font-size: 0.82rem; color: var(--warm-grey); line-height: 1.65; margin: 0;
+        font-family: var(--font-body);
+    }
+    .ev-modal-copy-body strong { color: var(--charcoal); font-weight: 600; }
+    .ev-info-box {
+        background: var(--ivory); border: 1px solid var(--border);
+        border-radius: 8px; padding: 0.85rem 1rem; width: 100%;
+        display: flex; align-items: flex-start; gap: 0.6rem;
+    }
+    .ev-info-box svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
+    .ev-info-box span {
+        font-size: 0.77rem; color: var(--warm-grey); line-height: 1.55;
+        font-family: var(--font-body);
+    }
+    .ev-info-box strong { color: var(--gold-dark); font-weight: 600; }
+    .ev-modal-footer {
+        flex-shrink: 0; padding: 0.85rem 1.4rem; border-top: 1px solid var(--border);
+        display: flex; gap: 0.5rem; justify-content: flex-end; background: var(--white);
+    }
+    .ev-status-msg {
+        font-size: 0.75rem; font-family: var(--font-body);
+        display: none; align-items: center; gap: 0.4rem;
+        margin-right: auto; color: #166534;
+    }
+    .ev-status-msg.show { display: flex; }
+    .ev-status-msg svg { width: 13px; height: 13px; }
+    .btn-ev-resend {
+        padding: 0.6rem 1.4rem; border-radius: 6px; border: none;
+        background: var(--gold); color: var(--charcoal);
+        font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+        cursor: pointer; font-family: var(--font-body);
+        transition: background 0.18s, transform 0.15s;
+        display: flex; align-items: center; gap: 0.4rem;
+    }
+    .btn-ev-resend:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+    .btn-ev-resend:not(:disabled):hover { background: var(--gold-light); transform: translateY(-1px); }
+    .btn-ev-resend svg { width: 13px; height: 13px; }
+    .btn-ev-close-modal {
+        padding: 0.6rem 1.1rem; border-radius: 6px;
+        border: 1px solid var(--border-md); background: var(--white);
+        font-size: 0.78rem; font-weight: 500; color: var(--warm-grey);
+        cursor: pointer; font-family: var(--font-body); transition: border-color 0.18s;
+    }
+    .btn-ev-close-modal:hover { border-color: var(--gold); color: var(--charcoal); }
+
+    /* Pulse ring animation on icon */
+    .ev-icon-ring { position: relative; }
+    .ev-icon-ring::before {
+        content: '';
+        position: absolute; inset: -6px; border-radius: 50%;
+        border: 1.5px solid rgba(201,168,76,0.18);
+        animation: evPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes evPulse {
+        0%, 100% { transform: scale(1); opacity: 0.6; }
+        50% { transform: scale(1.08); opacity: 0.15; }
+    }
 
     /* Mobile */
     @media (max-width: 720px) {
@@ -696,7 +809,8 @@
                     </div>
                     @endif
                 </div>
-
+                {{-- Footer with booking button (only if email verified) --}}
+                @if(auth()->user()->hasVerifiedEmail())
                 <div class="sp-pkg-panel-foot">
                     <button type="button" class="btn-book"
                         onclick="openBookingModal({{ $package->id }}, '{{ addslashes($package->name) }}', '{{ number_format($package->price) }}')">
@@ -705,8 +819,19 @@
                             <path d="M6 3l5 5-5 5"/>
                         </svg>
                     </button>
+                    
                 </div>
+                @else
+                    <button type="button" class="btn-book opacity-50 cursor-not-allowed"
+                        onclick="openEmailVerificationModal()">
 
+                        <span>Verify Email to Book</span>
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 3l5 5-5 5"/>
+                        </svg>
+                    </button>
+
+                @endif
             </div>
             @endforeach
         </div>
@@ -860,7 +985,8 @@
      FLOATING ACTION BUTTONS
 ══════════════════════════════ --}}
 <div class="sp-fab-group">
-
+    {{-- Only allow messaging if user's email is verified, otherwise show an alert prompting verification--}}
+    @if(auth()->user()->hasVerifiedEmail())
     <div class="sp-fab-item" style="position:relative;">
         <span class="sp-fab-note">Send a message</span>
         <a href="{{ route('chat', [$supplier->user_id, $supplier->id]) }}"
@@ -870,7 +996,17 @@
             </svg>
         </a>
     </div>
-
+    @else
+    <div class="sp-fab-item" style="position:relative;">
+        <span class="sp-fab-note">Send a message</span>
+        <a href="javascript:void(0)" onclick="openEmailVerificationModal()"
+           class="sp-fab-btn fab-msg" title="Send Message">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            </svg>
+        </a>
+    </div>
+    @endif
     <div class="sp-fab-item" style="position:relative;">
         <span class="sp-fab-note">Check availability</span>
         <a href="{{ route('client.supplier.calendar', $supplier->id) }}"
@@ -881,10 +1017,75 @@
             </svg>
         </a>
     </div>
-
+    
 </div>
 
+{{-- ══════════════════════════════
+     EMAIL VERIFICATION MODAL
+══════════════════════════════ --}}
+<div id="emailVerificationModal" class="ev-modal-backdrop">
+    <div class="ev-modal">
 
+        <div class="ev-modal-header">
+            <span class="ev-modal-title">Verify your <em>Email</em></span>
+            <button class="ev-modal-close" onclick="closeEmailVerificationModal()">✕</button>
+        </div>
+
+        <div class="ev-modal-body">
+
+            <div class="ev-icon-ring">
+                <svg viewBox="0 0 24 24" fill="none" stroke="{{ '#C9A84C' }}" stroke-width="1.7">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+            </div>
+
+            <div class="ev-modal-copy">
+                <div class="ev-modal-copy-head">Check your inbox</div>
+                <p class="ev-modal-copy-body">
+                    We sent a verification link to
+                    <strong>{{ auth()->user()->email }}</strong>.
+                    Please verify your email to unlock booking and messaging features.
+                </p>
+            </div>
+
+            <div class="ev-info-box">
+                <svg viewBox="0 0 20 20" fill="none" stroke="var(--gold)" stroke-width="1.8">
+                    <circle cx="10" cy="10" r="8"/>
+                    <path d="M10 6v4M10 14h.01"/>
+                </svg>
+                <span>
+                    Didn't receive the email? Check your spam folder or click
+                    <strong>Resend</strong> below to get a new link.
+                </span>
+            </div>
+
+        </div>
+
+        <div class="ev-modal-footer">
+            <span class="ev-status-msg" id="ev-sent-msg">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 8l3.5 3.5L13 4"/>
+                </svg>
+                Email sent!
+            </span>
+
+            <button type="button" class="btn-ev-close-modal" onclick="closeEmailVerificationModal()">Close</button>
+
+            <form method="POST" action="{{ route('verification.send') }}" id="ev-resend-form" style="margin:0;">
+                @csrf
+                <button type="submit" class="btn-ev-resend" id="ev-resend-btn"
+                        onclick="handleEvResend(event)">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 4l7 5 7-5M1 4v8a1 1 0 001 1h12a1 1 0 001-1V4"/>
+                    </svg>
+                    <span>Resend Verification</span>
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
 {{-- ══════════════════════════════
      BOOKING MODAL
 ══════════════════════════════ --}}
@@ -978,6 +1179,48 @@
         if (e.target === this) closeBookingModal();
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBookingModal(); });
+
+    /* ── EMAIL VERIFICATION MODAL ── */
+     function openEmailVerificationModal() {
+        document.getElementById('emailVerificationModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeEmailVerificationModal() {
+        document.getElementById('emailVerificationModal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    /* Close on backdrop click */
+    document.getElementById('emailVerificationModal').addEventListener('click', function(e) {
+        if (e.target === this) closeEmailVerificationModal();
+    });
+
+    /* Close on Escape — chain with existing booking modal handler */
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeEmailVerificationModal();
+            closeBookingModal();
+        }
+    });
+
+    /* Resend with cooldown feedback */
+    function handleEvResend(e) {
+        e.preventDefault();
+        const btn = document.getElementById('ev-resend-btn');
+        const msg = document.getElementById('ev-sent-msg');
+
+        btn.disabled = true;
+        msg.classList.add('show');
+
+        /* Submit the form */
+        document.getElementById('ev-resend-form').submit();
+
+        /* Re-enable button after 60s cooldown */
+        setTimeout(() => {
+            btn.disabled = false;
+            msg.classList.remove('show');
+        }, 60000);
+    }
 </script>
 
 </x-client-layout>

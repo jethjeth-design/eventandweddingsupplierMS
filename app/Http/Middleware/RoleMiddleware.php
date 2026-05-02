@@ -13,14 +13,16 @@ class RoleMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-   public function handle(Request $request, Closure $next, ...$roles)
+   public function handle($request, Closure $next, ...$roles)
     {
-        if (!auth()->check()) {
-            abort(403);
+        $user = auth()->user();
+
+        if (!$user) {
+            abort(403, 'Unauthorized');
         }
 
-        if (!in_array(auth()->user()->role, $roles)) {
-            abort(403);
+        if (!in_array($user->role, $roles)) {
+            abort(403, 'Forbidden: insufficient role');
         }
 
         return $next($request);

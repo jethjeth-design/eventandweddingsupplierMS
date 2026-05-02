@@ -11,18 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('packages', function (Blueprint $table) {
+        Schema::create('popular_packages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
+            $table->string('name'); // Intimate Wedding Package
+            $table->string('event_type'); // Wedding, Birthday
+            $table->decimal('price', 10, 2)->nullable();
 
-            $table->string('name');
-            $table->text('description')->nullable();
-
-            $table->decimal('price', 10, 2);
             $table->integer('guest_capacity')->nullable();
-            $table->boolean('is_listed')->default(false);
-            $table->boolean('is_featured')->default(false);
-            $table->string('event_type');
+            $table->integer('duration_hours')->nullable();
+
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('packages');
+        Schema::dropIfExists('popular_packages');
     }
 };

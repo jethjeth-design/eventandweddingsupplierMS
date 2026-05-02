@@ -1,24 +1,40 @@
 <x-client-layout>
 
+{{--
+    resources/views/client/inbox.blade.php
+    Client Inbox — Bikol's Craft gold / ivory / charcoal design system
+    Combined: conversation list (left) + inline chat panel (right) with supplier meta strip
+    Variables: $conversations (collection), $messages (collection), $userId, $supplierId
+--}}
+
+@php
+    $myUser     = auth()->user();
+    $myInitials = strtoupper(
+        collect(explode(' ', trim(($myUser->first_name ?? '') . ' ' . ($myUser->last_name ?? '')) ?: ($myUser->name ?? 'Me')))
+            ->filter()->map(fn($w) => $w[0])->take(2)->implode('')
+    );
+    $totalUnread = isset($conversations) ? $conversations->sum('unread_count') : 0;
+@endphp
+
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap');
 
     :root {
-        --gold:        #C9A84C;
-        --gold-light:  #E8C97A;
-        --gold-dark:   #8A6A1F;
-        --blush-deep:  #D4A090;
-        --ivory:       #FAF7F2;
-        --charcoal:    #1E1B18;
-        --warm-grey:   #6B6560;
-        --white:       #FFFFFF;
-        --border:      #F0EBE5;
-        --border-md:   #E0D8D0;
-        --font-display:'Playfair Display', Georgia, serif;
-        --font-body:   'DM Sans', sans-serif;
+        --gold:         #C9A84C;
+        --gold-light:   #E8C97A;
+        --gold-dark:    #8A6A1F;
+        --blush-deep:   #D4A090;
+        --ivory:        #FAF7F2;
+        --charcoal:     #1E1B18;
+        --warm-grey:    #6B6560;
+        --white:        #FFFFFF;
+        --border:       #F0EBE5;
+        --border-md:    #E0D8D0;
+        --font-display: 'Playfair Display', Georgia, serif;
+        --font-body:    'DM Sans', sans-serif;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: var(--font-body); background: var(--ivory); }
 
     /* ══════════════════════════════════════════
@@ -85,7 +101,6 @@
         display: flex; flex-direction: column; overflow: hidden;
     }
 
-    /* Search */
     .list-search {
         padding: 0.75rem 1rem;
         border-bottom: 1px solid var(--border); flex-shrink: 0;
@@ -104,7 +119,6 @@
     }
     .search-inner input::placeholder { color: #B0A89E; }
 
-    /* List header label */
     .list-head {
         padding: 0.55rem 1rem 0.35rem;
         font-size: 0.58rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
@@ -114,7 +128,6 @@
     }
     .list-head::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--gold), transparent); }
 
-    /* Scrollable area */
     .list-scroll { overflow-y: auto; flex: 1; }
     .list-scroll::-webkit-scrollbar { width: 4px; }
     .list-scroll::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 99px; }
@@ -141,7 +154,6 @@
         background: var(--gold);
     }
 
-    /* Avatar */
     .c-avatar {
         width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
         display: flex; align-items: center; justify-content: center;
@@ -151,7 +163,6 @@
     }
     .c-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* Row text */
     .c-info { flex: 1; min-width: 0; }
     .c-row-top {
         display: flex; align-items: baseline;
@@ -182,7 +193,6 @@
         font-family: var(--font-body); margin-left: auto;
     }
 
-    /* Empty list */
     .list-empty {
         text-align: center; padding: 3rem 1.5rem;
         font-size: 0.8rem; color: var(--warm-grey); font-family: var(--font-body);
@@ -198,7 +208,7 @@
         background: var(--ivory); overflow: hidden;
     }
 
-    /* ── Placeholder ── */
+    /* Placeholder */
     .chat-placeholder {
         flex: 1; display: flex; flex-direction: column;
         align-items: center; justify-content: center;
@@ -216,10 +226,10 @@
     }
     .chat-placeholder p { font-size: 0.82rem; color: var(--warm-grey); font-family: var(--font-body); }
 
-    /* ── Active convo wrapper ── */
+    /* Active convo wrapper */
     #active-convo { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
-    /* ── Detail header (supplier info) ── */
+    /* Supplier header */
     .dp-head {
         background: var(--white); border-bottom: 1px solid var(--border);
         padding: 0.9rem 1.25rem;
@@ -267,7 +277,7 @@
     }
     .btn-outline:hover { border-color: var(--gold); color: var(--gold-dark); }
 
-    /* ── Supplier meta strip ── */
+    /* Supplier meta strip */
     .supplier-strip {
         background: var(--white); border-bottom: 1px solid var(--border);
         padding: 0.6rem 1.25rem;
@@ -288,7 +298,7 @@
     .ss-avail-yes { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; border-radius: 2px; padding: 2px 8px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-body); }
     .ss-avail-no  { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; border-radius: 2px; padding: 2px 8px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-body); }
 
-    /* Rating row */
+    /* Rating strip */
     .rating-strip {
         display: none;
         background: var(--white); border-bottom: 1px solid var(--border);
@@ -300,11 +310,18 @@
     .sf { color: var(--gold); font-size: 11px; }
     .se { color: #D8D0C8; font-size: 11px; }
     .rating-label { font-size: 0.68rem; color: var(--warm-grey); font-family: var(--font-body); }
-    .rating-val { font-size: 0.72rem; font-weight: 600; color: var(--charcoal); font-family: var(--font-body); }
+    .rating-val   { font-size: 0.72rem; font-weight: 600; color: var(--charcoal); font-family: var(--font-body); }
 
     /* ══════════════════════════════════════════
-       CHAT MESSAGES
+       CHAT PANELS (one per conversation, pre-rendered)
     ══════════════════════════════════════════ */
+    .chat-panel-wrap {
+        display: none; flex-direction: column;
+        flex: 1; overflow: hidden;
+    }
+    .chat-panel-wrap.active { display: flex; }
+
+    /* Messages scroll area */
     .chat-messages {
         flex: 1; overflow-y: auto;
         padding: 1.25rem;
@@ -350,6 +367,11 @@
     .msg-group.mine   .bubble-wrap { align-items: flex-end; }
     .msg-group.theirs .bubble-wrap { align-items: flex-start; }
 
+    .bubble-sender-name {
+        font-size: 0.62rem; color: var(--warm-grey);
+        font-family: var(--font-body); font-weight: 500; margin-bottom: 1px;
+    }
+
     /* Bubbles */
     .bubble {
         padding: 0.62rem 0.9rem;
@@ -367,7 +389,7 @@
     }
     .bubble-time { font-size: 0.6rem; color: var(--warm-grey); font-family: var(--font-body); padding: 0 0.2rem; }
 
-    /* Chat empty */
+    /* Empty state inside chat */
     .chat-msgs-empty {
         flex: 1; display: flex; flex-direction: column;
         align-items: center; justify-content: center;
@@ -379,8 +401,8 @@
         display: flex; align-items: center; justify-content: center;
     }
     .chat-msgs-empty-icon svg { color: var(--gold); opacity: 0.35; }
-    .chat-msgs-empty h4 { font-family: var(--font-display); font-size: 1rem; font-weight: 600; color: var(--charcoal); margin: 0; }
-    .chat-msgs-empty p  { font-size: 0.78rem; color: var(--warm-grey); font-family: var(--font-body); margin: 0; }
+    .chat-msgs-empty h4 { font-family: var(--font-display); font-size: 1rem; font-weight: 600; color: var(--charcoal); }
+    .chat-msgs-empty p  { font-size: 0.78rem; color: var(--warm-grey); font-family: var(--font-body); }
 
     /* ══════════════════════════════════════════
        COMPOSE BAR
@@ -434,7 +456,7 @@
     }
 </style>
 
-{{-- ── PAGE HEADER ── --}}
+{{-- ── PAGE HEADER ──────────────────────────────────────────────── --}}
 <div class="inbox-header">
     <div class="ih-inner">
         <div>
@@ -442,7 +464,6 @@
             <div class="ih-title">My <em>Inbox</em></div>
             <div class="ih-sub">Your conversations with suppliers.</div>
         </div>
-        @php $totalUnread = isset($conversations) ? $conversations->sum('unread_count') : 0; @endphp
         @if($totalUnread)
         <span class="ih-pill">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -454,7 +475,7 @@
     </div>
 </div>
 
-{{-- ── TWO-PANEL BODY ── --}}
+{{-- ── TWO-PANEL BODY ───────────────────────────────────────────── --}}
 <div class="inbox-body">
 
     {{-- ════════════════════════════
@@ -478,18 +499,36 @@
             Conversations
         </div>
 
-        <div class="list-scroll" id="conv-scroll">
+        <div class="list-scroll">
             @forelse($conversations as $conv)
             @php
                 $otherUser   = $conv->sender_id == auth()->id() ? $conv->receiver : $conv->sender;
                 $supplier    = $otherUser->supplierProfile ?? null;
                 $isUnread    = ($conv->unread_count ?? 0) > 0;
-                $initials    = strtoupper(substr($otherUser->name ?? 'S', 0, 2));
+                $initials    = strtoupper(
+                    collect(explode(' ', trim(($otherUser->first_name ?? '') . ' ' . ($otherUser->last_name ?? '')) ?: ($otherUser->name ?? 'S')))
+                        ->filter()->map(fn($w) => $w[0])->take(2)->implode('')
+                );
                 $convId      = $conv->id ?? $loop->index;
-                $chatRoute   = route('chat', [$otherUser->id, $conv->supplier_id]);
-                $otherName   = $supplier->business_name ?? $otherUser->name ?? 'Supplier';
-                $roleLine    = $otherUser->name . ($supplier && $supplier->category ? ' · ' . $supplier->category : '');
+                $otherName   = $supplier->business_name ?? trim(($otherUser->first_name ?? '') . ' ' . ($otherUser->last_name ?? '')) ?: ($otherUser->name ?? 'Supplier');
+                $roleLine    = trim(($otherUser->first_name ?? '') . ' ' . ($otherUser->last_name ?? '')) ?: ($otherUser->name ?? '');
+                $roleLine   .= ($supplier && $supplier->category ? ' · ' . $supplier->category : '');
+
+                /*
+                 * Load thread messages for this conversation so the panel is
+                 * fully rendered on page load — no extra HTTP request required.
+                 */
+                $threadMessages = \App\Models\Message::where(function($q) use ($otherUser, $conv) {
+                        $q->where('sender_id',   auth()->id())->where('receiver_id', $otherUser->id);
+                    })->orWhere(function($q) use ($otherUser, $conv) {
+                        $q->where('sender_id',   $otherUser->id)->where('receiver_id',  auth()->id());
+                    })
+                    ->when(isset($conv->supplier_id), fn($q) => $q->where('supplier_id', $conv->supplier_id))
+                    ->orderBy('created_at')
+                    ->get();
             @endphp
+
+            {{-- ── Row in left list ── --}}
             <div class="conv-row reveal {{ $isUnread ? 'unread' : '' }}"
                  id="conv-row-{{ $convId }}"
                  data-name="{{ strtolower($otherUser->name ?? '') }} {{ strtolower($supplier->business_name ?? '') }}"
@@ -499,18 +538,17 @@
                      '{{ addslashes($roleLine) }}',
                      '{{ addslashes($supplier->category ?? '') }}',
                      '{{ addslashes(collect([$supplier->city ?? '', $supplier->province ?? ''])->filter()->implode(', ')) }}',
-                     '{{ addslashes($supplier->phone ?? '') }}',
+                     '{{ addslashes($supplier->phone ?? $otherUser->phone ?? '') }}',
                      {{ (float)($supplier->rating ?? 0) }},
                      {{ $supplier && $supplier->is_available ? 1 : 0 }},
                      {{ (float)($supplier->price ?? 0) }},
                      {{ $conv->unread_count ?? 0 }},
-                     '{{ $chatRoute }}',
                      '{{ addslashes($initials) }}'
                  )">
 
                 <div class="c-avatar">
                     @if($otherUser->photo ?? false)
-                        <img src="{{ asset('storage/'.$otherUser->photo) }}" alt="">
+                        <img src="{{ asset('storage/'.$otherUser->photo) }}" alt="{{ $otherName }}">
                     @else
                         {{ $initials }}
                     @endif
@@ -520,7 +558,7 @@
                         <div class="c-name">{{ $otherName }}</div>
                         <span class="c-time">{{ $conv->created_at?->diffForHumans(null, true) }}</span>
                     </div>
-                    <div class="c-preview">{{ $conv->message ?? 'Tap to open chat' }}</div>
+                    <div class="c-preview">{{ Str::limit($conv->message ?? 'Tap to open chat', 52) }}</div>
                     <div class="c-row-foot">
                         @if($supplier && $supplier->category)
                             <span class="c-badge-supplier">{{ $supplier->category }}</span>
@@ -531,6 +569,7 @@
                     </div>
                 </div>
             </div>
+
             @empty
             <div class="list-empty">
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
@@ -541,7 +580,8 @@
             </div>
             @endforelse
         </div>
-    </div>
+
+    </div>{{-- /conv-list --}}
 
     {{-- ════════════════════════════
          RIGHT: DETAIL + CHAT
@@ -559,7 +599,7 @@
             <p>Choose a supplier from the list to view your messages and their profile details.</p>
         </div>
 
-        {{-- Active conversation --}}
+        {{-- Active conversation wrapper (shared header + strips; messages panel swaps inside) --}}
         <div id="active-convo">
 
             {{-- Supplier header --}}
@@ -570,12 +610,6 @@
                     <div class="dp-role" id="dp-role">Event Supplier</div>
                 </div>
                 <div class="dp-actions">
-                    <a id="dp-open-chat" href="#" class="btn-gold">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                        </svg>
-                        Open Chat
-                    </a>
                     <button class="btn-outline" onclick="closeDetail()">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -586,7 +620,7 @@
             </div>
 
             {{-- Supplier meta strip --}}
-            <div class="supplier-strip" id="supplier-strip">
+            <div class="supplier-strip">
                 <span class="ss-item" id="ss-location" style="display:none;">
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
@@ -600,8 +634,8 @@
                     <span id="ss-phone-text"></span>
                 </span>
                 <span id="ss-category" class="ss-chip" style="display:none;"></span>
-                <span id="ss-avail" style="display:none;"></span>
-                <span class="ss-item" id="ss-price" style="display:none;">
+                <span id="ss-avail"    style="display:none;"></span>
+                <span class="ss-item"  id="ss-price" style="display:none;">
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23"/>
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
@@ -617,79 +651,112 @@
                 <span class="rating-val" id="dp-rating-val"></span>
             </div>
 
-            {{-- ── MESSAGES ── --}}
-            <div class="chat-messages" id="chat-messages">
+            {{-- ── Per-conversation chat panels (pre-rendered) ── --}}
+            @forelse($conversations as $conv)
+            @php
+                $otherUser2  = $conv->sender_id == auth()->id() ? $conv->receiver : $conv->sender;
+                $convId2     = $conv->id ?? $loop->index;
+                $initials2   = strtoupper(
+                    collect(explode(' ', trim(($otherUser2->first_name ?? '') . ' ' . ($otherUser2->last_name ?? '')) ?: ($otherUser2->name ?? 'S')))
+                        ->filter()->map(fn($w) => $w[0])->take(2)->implode('')
+                );
+                $supplier2   = $otherUser2->supplierProfile ?? null;
+                $otherName2  = $supplier2->business_name
+                               ?? trim(($otherUser2->first_name ?? '') . ' ' . ($otherUser2->last_name ?? ''))
+                               ?: ($otherUser2->name ?? 'Supplier');
 
-                @forelse($messages as $msg)
+                $threadMsgs2 = \App\Models\Message::where(function($q) use ($otherUser2, $conv) {
+                        $q->where('sender_id',   auth()->id())->where('receiver_id', $otherUser2->id);
+                    })->orWhere(function($q) use ($otherUser2, $conv) {
+                        $q->where('sender_id',   $otherUser2->id)->where('receiver_id',  auth()->id());
+                    })
+                    ->when(isset($conv->supplier_id), fn($q) => $q->where('supplier_id', $conv->supplier_id))
+                    ->orderBy('created_at')
+                    ->get();
+            @endphp
 
-                    @if($loop->first || $msg->created_at->toDateString() !== $messages[$loop->index - 1]->created_at->toDateString())
+            <div class="chat-panel-wrap" id="chat-panel-{{ $convId2 }}">
+
+                {{-- Messages --}}
+                <div class="chat-messages" id="chat-messages-{{ $convId2 }}">
+                    @forelse($threadMsgs2 as $tmsg)
+                        {{-- Date divider --}}
+                        @if($loop->first || $tmsg->created_at->toDateString() !== $threadMsgs2[$loop->index - 1]->created_at->toDateString())
                         <div class="msg-date-divider">
                             <span>
-                                @if($msg->created_at->isToday()) Today
-                                @elseif($msg->created_at->isYesterday()) Yesterday
-                                @else {{ $msg->created_at->format('M d, Y') }}
+                                @if($tmsg->created_at->isToday()) Today
+                                @elseif($tmsg->created_at->isYesterday()) Yesterday
+                                @else {{ $tmsg->created_at->format('M d, Y') }}
                                 @endif
                             </span>
                         </div>
-                    @endif
-
-                    @php $isMe = $msg->sender_id == auth()->id(); @endphp
-
-                    <div class="msg-group {{ $isMe ? 'mine' : 'theirs' }}">
-                        @if(!$isMe)
-                        <div class="msg-avatar theirs" id="msg-avatar-them">
-                            {{ strtoupper(substr($msg->sender->name ?? 'S', 0, 2)) }}
-                        </div>
                         @endif
-                        <div class="bubble-wrap">
-                            <div class="bubble {{ $isMe ? 'mine' : 'theirs' }}">{{ $msg->message }}</div>
-                            <div class="bubble-time">{{ $msg->created_at->format('h:i A') }}</div>
-                        </div>
-                        @if($isMe)
-                        <div class="msg-avatar mine">
-                            {{ strtoupper(substr(auth()->user()->first_name ?? 'Me', 0, 2)) }}
-                        </div>
-                        @endif
-                    </div>
 
-                @empty
-                    <div class="chat-msgs-empty">
-                        <div class="chat-msgs-empty-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                            </svg>
+                        @php
+                            $isMe2 = $tmsg->sender_id == auth()->id();
+                            if (!$isMe2) {
+                                $senderName2    = $otherName2;
+                                $senderInits2   = $initials2;
+                            } else {
+                                $senderName2    = trim(($myUser->first_name ?? '') . ' ' . ($myUser->last_name ?? '')) ?: ($myUser->name ?? 'Me');
+                                $senderInits2   = $myInitials;
+                            }
+                        @endphp
+
+                        <div class="msg-group {{ $isMe2 ? 'mine' : 'theirs' }}">
+                            @if(!$isMe2)
+                            <div class="msg-avatar theirs" title="{{ $senderName2 }}">{{ $senderInits2 ?: 'S' }}</div>
+                            @endif
+                            <div class="bubble-wrap">
+                                @if(!$isMe2)<div class="bubble-sender-name">{{ $senderName2 }}</div>@endif
+                                <div class="bubble {{ $isMe2 ? 'mine' : 'theirs' }}">{{ $tmsg->message }}</div>
+                                <div class="bubble-time">{{ $tmsg->created_at->format('h:i A') }}</div>
+                            </div>
+                            @if($isMe2)
+                            <div class="msg-avatar mine" title="{{ $senderName2 }}">{{ $myInitials ?: 'Me' }}</div>
+                            @endif
                         </div>
-                        <h4>No messages yet</h4>
-                        <p>Start the conversation below.</p>
-                    </div>
-                @endforelse
 
-            </div>
+                    @empty
+                        <div class="chat-msgs-empty">
+                            <div class="chat-msgs-empty-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                            </div>
+                            <h4>No messages yet</h4>
+                            <p>Start the conversation below.</p>
+                        </div>
+                    @endforelse
+                </div>
 
-            {{-- ── COMPOSE BAR ── --}}
-            <div class="compose-bar">
-                <form method="POST" action="{{ route('chat.send') }}" id="chat-form">
-                    @csrf
-                    <input type="hidden" name="receiver_id" id="receiver-id-input" value="{{ $userId ?? '' }}">
-                    <input type="hidden" name="supplier_id" id="supplier-id-input" value="{{ $supplierId ?? '' }}">
-                    <div class="compose-row">
-                        <textarea
-                            class="compose-input"
-                            name="message"
-                            id="compose-input"
-                            placeholder="Write a message…"
-                            rows="1"
-                            required></textarea>
-                        <button type="submit" class="compose-send" title="Send">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="22" y1="2" x2="11" y2="13"/>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="compose-hint">Enter to send &middot; Shift+Enter for new line</div>
-                </form>
-            </div>
+                {{-- Compose bar (one per panel so receiver_id / supplier_id are correct) --}}
+                <div class="compose-bar">
+                    <form method="POST" action="{{ route('chat.send') }}">
+                        @csrf
+                        <input type="hidden" name="receiver_id" value="{{ $otherUser2->id }}">
+                        <input type="hidden" name="supplier_id" value="{{ $conv->supplier_id ?? 0 }}">
+                        <div class="compose-row">
+                            <textarea
+                                class="compose-input panel-compose"
+                                name="message"
+                                placeholder="Write a message…"
+                                rows="1"
+                                required></textarea>
+                            <button type="submit" class="compose-send" title="Send">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="22" y1="2" x2="11" y2="13"/>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="compose-hint">Enter to send &middot; Shift+Enter for new line</div>
+                    </form>
+                </div>
+
+            </div>{{-- /chat-panel-wrap --}}
+            @empty
+            @endforelse
 
         </div>{{-- #active-convo --}}
 
@@ -698,12 +765,15 @@
 </div>{{-- .inbox-body --}}
 
 <script>
+    /* Track the currently open conv id */
+    let _activeConvId = null;
+
     /* ════════════════════════════════════
        OPEN CONVERSATION
     ════════════════════════════════════ */
-    function openConversation(convId, name, role, category, location, phone, rating, isAvail, price, unreadCount, chatRoute, initials) {
+    function openConversation(convId, name, role, category, location, phone, rating, isAvail, price, unreadCount, initials) {
 
-        /* Highlight row */
+        /* Highlight list row */
         document.querySelectorAll('.conv-row').forEach(r => r.classList.remove('active'));
         const row = document.getElementById('conv-row-' + convId);
         if (row) {
@@ -712,34 +782,33 @@
             row.querySelector('.unread-badge')?.remove();
         }
 
-        /* Show active panel */
+        /* Show the active-convo wrapper */
         document.getElementById('chat-placeholder').style.display = 'none';
         document.getElementById('active-convo').style.display = 'flex';
 
-        /* Avatar + header */
+        /* Update supplier header */
         document.getElementById('dp-avatar').textContent = initials;
         document.getElementById('dp-name').textContent   = name;
         document.getElementById('dp-role').textContent   = role;
-        document.getElementById('dp-open-chat').href     = chatRoute;
 
         /* Location */
         const ssLoc = document.getElementById('ss-location');
         if (location) { document.getElementById('ss-location-text').textContent = location; ssLoc.style.display = ''; }
-        else { ssLoc.style.display = 'none'; }
+        else ssLoc.style.display = 'none';
 
         /* Phone */
         const ssPhone = document.getElementById('ss-phone');
         if (phone) { document.getElementById('ss-phone-text').textContent = phone; ssPhone.style.display = ''; }
-        else { ssPhone.style.display = 'none'; }
+        else ssPhone.style.display = 'none';
 
         /* Category */
         const ssCat = document.getElementById('ss-category');
         if (category) { ssCat.textContent = category; ssCat.style.display = ''; }
-        else { ssCat.style.display = 'none'; }
+        else ssCat.style.display = 'none';
 
         /* Availability */
         const ssAvail = document.getElementById('ss-avail');
-        ssAvail.className = isAvail ? 'ss-avail-yes' : 'ss-avail-no';
+        ssAvail.className   = isAvail ? 'ss-avail-yes' : 'ss-avail-no';
         ssAvail.textContent = isAvail ? '● Available' : '● Unavailable';
         ssAvail.style.display = '';
 
@@ -748,7 +817,7 @@
         if (price > 0) {
             document.getElementById('ss-price-text').textContent = '₱' + price.toLocaleString('en-PH', { minimumFractionDigits: 0 });
             ssPrice.style.display = '';
-        } else { ssPrice.style.display = 'none'; }
+        } else ssPrice.style.display = 'none';
 
         /* Rating */
         const ratingStrip = document.getElementById('rating-strip');
@@ -758,17 +827,30 @@
             document.getElementById('dp-stars').innerHTML = stars;
             document.getElementById('dp-rating-val').textContent = rating.toFixed(1) + ' / 5';
             ratingStrip.classList.add('show');
-        } else { ratingStrip.classList.remove('show'); }
+        } else ratingStrip.classList.remove('show');
 
-        /* Scroll chat to bottom */
-        const msgBox = document.getElementById('chat-messages');
-        if (msgBox) setTimeout(() => msgBox.scrollTop = msgBox.scrollHeight, 50);
+        /* Swap visible chat panel */
+        document.querySelectorAll('.chat-panel-wrap').forEach(p => p.classList.remove('active'));
+        const panel = document.getElementById('chat-panel-' + convId);
+        if (panel) {
+            panel.classList.add('active');
+            /* Scroll to bottom */
+            const msgs = panel.querySelector('.chat-messages');
+            if (msgs) setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
+        }
+
+        _activeConvId = convId;
     }
 
+    /* ════════════════════════════════════
+       CLOSE
+    ════════════════════════════════════ */
     function closeDetail() {
         document.getElementById('chat-placeholder').style.display = '';
         document.getElementById('active-convo').style.display = 'none';
         document.querySelectorAll('.conv-row').forEach(r => r.classList.remove('active'));
+        document.querySelectorAll('.chat-panel-wrap').forEach(p => p.classList.remove('active'));
+        _activeConvId = null;
     }
 
     /* ════════════════════════════════════
@@ -782,24 +864,24 @@
     }
 
     /* ════════════════════════════════════
-       COMPOSE — auto-grow + Enter to send
+       AUTO-GROW + ENTER-TO-SEND (all compose areas)
     ════════════════════════════════════ */
-    const composeInput = document.getElementById('compose-input');
-    if (composeInput) {
-        composeInput.addEventListener('input', function () {
+    document.querySelectorAll('.panel-compose').forEach(ta => {
+        ta.addEventListener('input', function () {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 120) + 'px';
         });
-        composeInput.addEventListener('keydown', function (e) {
+        ta.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                if (this.value.trim()) document.getElementById('chat-form').submit();
+                const form = this.closest('form');
+                if (form && this.value.trim()) form.submit();
             }
         });
-    }
+    });
 
     /* ════════════════════════════════════
-       SCROLL REVEAL
+       SCROLL REVEAL (list rows)
     ════════════════════════════════════ */
     const io = new IntersectionObserver(entries => {
         entries.forEach((e, i) => {
@@ -810,10 +892,6 @@
         });
     }, { threshold: 0.05 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-    /* Scroll messages on load */
-    const msgBox = document.getElementById('chat-messages');
-    if (msgBox) msgBox.scrollTop = msgBox.scrollHeight;
 </script>
 
 </x-client-layout>

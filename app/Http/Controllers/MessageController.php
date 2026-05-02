@@ -11,7 +11,7 @@ class MessageController extends Controller
     
     //Show the Client Inbox
     public function inbox(Request $request)
-    {
+    {   
         $userId = $request->user_id;
         $supplierId = $request->supplier_id;
         $authId = auth()->id();

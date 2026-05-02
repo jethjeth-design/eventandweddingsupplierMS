@@ -25,6 +25,18 @@
 .ev-btn-danger{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .72rem;border-radius:6px;border:1.5px solid #FADBD8;background:transparent;font-family:var(--font-body);font-size:.7rem;font-weight:500;color:#C0392B;cursor:pointer;transition:background .15s,border-color .15s;white-space:nowrap;}
 .ev-btn-danger svg{width:10px;height:10px;}
 .ev-btn-danger:hover{background:#FFF5F5;border-color:#C0392B;}
+
+/* ── DISABLED / CANCELLED STATE for Cancel button ── */
+.ev-btn-danger:disabled,
+.ev-btn-danger.ev-btn-disabled{
+    opacity:.45;
+    cursor:not-allowed;
+    pointer-events:none;
+    border-color:#E5DDD5;
+    color:#C0B8B0;
+    background:transparent;
+}
+
 .ev-cancelled-tag{font-size:.72rem;color:#C0B8B0;font-style:italic;font-family:var(--font-body);}
 
 /* ── CARD + TABLE ── */
@@ -80,13 +92,44 @@
 .ev-empty-desc{font-size:.8rem;color:var(--warm-grey);line-height:1.6;margin-bottom:1.1rem;}
 
 /* ══ SHARED MODAL STYLES ══ */
-.mo-overlay{position:fixed;inset:0;z-index:8000;background:rgba(30,27,24,.55);display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(3px);}
+.mo-overlay{
+    position:fixed;inset:0;z-index:8000;
+    background:rgba(30,27,24,.55);
+    display:none;align-items:center;justify-content:center;
+    padding:1rem;
+    backdrop-filter:blur(3px);
+    /* Make the overlay itself scrollable on very short viewports */
+    overflow-y:auto;
+}
 .mo-overlay.open{display:flex;}
-.mo-box{background:var(--white);border-radius:14px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(30,27,24,.18);width:100%;overflow:hidden;animation:moSlide .22s ease;margin:auto;flex-shrink:0;}
+
+.mo-box{
+    background:var(--white);border-radius:14px;border:1px solid var(--border);
+    box-shadow:0 8px 40px rgba(30,27,24,.18);
+    width:100%;overflow:hidden;
+    animation:moSlide .22s ease;
+    /* Sit naturally in the flex overlay; don't force 100% height */
+    margin:auto;
+    flex-shrink:0;
+}
 @keyframes moSlide{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 .mo-box.sm{max-width:420px;}
-.mo-box.lg{max-width:600px;max-height:calc(100vh - 2rem);display:flex;flex-direction:column;}
-.mo-head{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);flex-shrink:0;}
+
+/* Large modal: fixed header + footer, scrollable body only */
+.mo-box.lg{
+    max-width:600px;
+    /* Cap to viewport minus overlay padding, leaving room to breathe */
+    max-height:calc(100vh - 2rem);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden; /* children handle their own overflow */
+}
+
+.mo-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);
+    flex-shrink:0; /* never squish */
+}
 .mo-head-l{display:flex;align-items:center;gap:.65rem;}
 .mo-icon{width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);flex-shrink:0;}
 .mo-icon svg{width:15px;height:15px;}
@@ -95,10 +138,24 @@
 .mo-close{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--warm-grey);transition:border-color .15s,color .15s;}
 .mo-close:hover{border-color:var(--gold);color:var(--gold-dark);}
 .mo-close svg{width:12px;height:12px;}
-.mo-body{padding:1.35rem 1.4rem;overflow-y:auto;flex:1;}
+
+/* ── Scrollable body ── */
+.mo-body{
+    padding:1.35rem 1.4rem;
+    overflow-y:auto;   /* scroll here, not on the whole modal */
+    flex:1;            /* take remaining space between head and foot */
+    min-height:0;      /* critical: lets flex shrink below content height */
+}
 .mo-body::-webkit-scrollbar{width:4px;}
 .mo-body::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:99px;}
-.mo-foot{padding:.85rem 1.4rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:.55rem;flex-shrink:0;}
+.mo-body::-webkit-scrollbar-thumb:hover{background:var(--gold);}
+
+.mo-foot{
+    padding:.85rem 1.4rem;border-top:1px solid var(--border);
+    display:flex;align-items:center;justify-content:flex-end;gap:.55rem;
+    flex-shrink:0; /* never squish */
+    background:var(--white); /* stays visible above scrolled content */
+}
 
 /* Form fields */
 .mo-fg{display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem;}
@@ -128,6 +185,15 @@
 .mo-btn-cancel:hover{border-color:var(--gold);color:var(--charcoal);}
 .mo-btn-danger-confirm{display:inline-flex;align-items:center;gap:.45rem;padding:.62rem 1.3rem;border-radius:6px;border:none;background:#DC2626;font-family:var(--font-body);font-size:.82rem;font-weight:500;color:var(--white);cursor:pointer;transition:background .2s,box-shadow .2s;}
 .mo-btn-danger-confirm:hover{background:#B91C1C;box-shadow:0 4px 12px rgba(220,38,38,.25);}
+
+/* ── Disabled state for the confirm button inside the modal ── */
+.mo-btn-danger-confirm:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    background:#DC2626;
+    box-shadow:none;
+    transform:none;
+}
 
 /* Cancel confirm modal body */
 .cancel-warning{display:flex;flex-direction:column;gap:.75rem;}
@@ -242,14 +308,16 @@
                         </td>
 
                         <td>
-                            <span class="ev-status {{ $status }}">{{ ucfirst($status) }}</span>
+                            <span class="ev-status {{ $status }}" data-status-id="{{ $event->id }}">{{ ucfirst($status) }}</span>
                         </td>
 
                         <td style="text-align:center;">
                             @if($status !== 'cancelled')
+                                {{-- data-id lets JS find and disable this specific button after cancel --}}
                                 <button type="button"
                                     class="ev-btn-danger"
-                                    onclick="cancelEvModal({{ $event->id }}, '{{ addslashes($event->event_name) }}', '{{ route('client.events.cancel', $event->id) }}')">
+                                    data-event-id="{{ $event->id }}"
+                                    onclick="cancelEvModal({{ $event->id }}, '{{ addslashes($event->event_name) }}', '{{ route('client.events.cancel', $event->id) }}', this)">
                                     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
                                         <circle cx="7" cy="7" r="5.5"/>
                                         <path d="M4.5 4.5l5 5M9.5 4.5l-5 5"/>
@@ -257,7 +325,7 @@
                                     Cancel
                                 </button>
                             @else
-                                <span class="ev-cancelled-tag">Cancelled</span>
+                                <span class="ev-cancelled-tag" data-cancelled-id="{{ $event->id }}">Cancelled</span>
                             @endif
                         </td>
                     </tr>
@@ -308,11 +376,12 @@
             </button>
         </div>
 
-        <form action="{{ route('client.events.store') }}" method="POST">
+        <form action="{{ route('client.events.store') }}" method="POST" style="display:contents;">
             @csrf
             {{-- Pass the authenticated user's id --}}
             <input type="hidden" name="user_id" value="{{ Auth::id() }}">
 
+            {{-- ── scrollable body ── --}}
             <div class="mo-body">
                 <div class="mo-fg">
 
@@ -338,10 +407,10 @@
                         <div class="mo-sw">
                             <select id="ev_type" name="event_type" class="mo-sel" required>
                                 <option value="" disabled {{ !old('event_type') ? 'selected' : '' }}>Select type…</option>
-                                @foreach($eventcategories as $eventcategories)
-                                    <option value="{{ $eventcategories->name }}"
-                                        {{ old('') == $eventcategories->name? 'selected' : '' }}>
-                                        {{ $eventcategories->name }}
+                                @foreach($eventcategories as $eventcategory)
+                                    <option value="{{ $eventcategory->name }}"
+                                        {{ old('event_type') == $eventcategory->name ? 'selected' : '' }}>
+                                        {{ $eventcategory->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -407,7 +476,7 @@
                     </div>
 
                 </div>
-            </div>
+            </div>{{-- /mo-body --}}
 
             <div class="mo-foot">
                 <button type="button" class="mo-btn-cancel" onclick="closeAddEv()">Cancel</button>
@@ -416,6 +485,7 @@
                     Save Event
                 </button>
             </div>
+
         </form>
 
     </div>
@@ -464,7 +534,7 @@
             <form id="cancelEvForm" method="POST" style="margin:0;">
                 @csrf
                 @method('PATCH')
-                <button type="submit" class="mo-btn-danger-confirm">
+                <button type="submit" class="mo-btn-danger-confirm" id="cancelEvConfirmBtn">
                     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" style="width:13px;height:13px;">
                         <circle cx="7" cy="7" r="5.5"/><path d="M4.5 4.5l5 5M9.5 4.5l-5 5"/>
                     </svg>
@@ -489,16 +559,69 @@ function closeAddEv() {
 }
 
 /* ── CANCEL CONFIRM MODAL ── */
-function cancelEvModal(id, name, actionUrl) {
+
+// Tracks the row-level Cancel button that triggered the modal
+var _activeCancelRowBtn = null;
+// Tracks the event ID being cancelled so we can update the row DOM immediately
+var _activeCancelEventId = null;
+
+function cancelEvModal(id, name, actionUrl, triggerBtn) {
     document.getElementById('cancelEvName').textContent = name;
     document.getElementById('cancelEvForm').action = actionUrl;
+
+    // Reset the confirm button in case a previous cancel was aborted
+    var confirmBtn = document.getElementById('cancelEvConfirmBtn');
+    confirmBtn.disabled = false;
+    confirmBtn.innerHTML = '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" style="width:13px;height:13px;"><circle cx="7" cy="7" r="5.5"/><path d="M4.5 4.5l5 5M9.5 4.5l-5 5"/></svg> Yes, Cancel Event';
+
+    // Remember which row button opened this modal + its event id
+    _activeCancelRowBtn  = triggerBtn || null;
+    _activeCancelEventId = id;
+
     document.getElementById('cancelEvOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
 }
+
 function closeCancelEv() {
     document.getElementById('cancelEvOverlay').classList.remove('open');
     document.body.style.overflow = '';
+    _activeCancelRowBtn  = null;
+    _activeCancelEventId = null;
 }
+
+/* Intercept the cancel-confirm form submission */
+document.getElementById('cancelEvForm').addEventListener('submit', function() {
+
+    /* 1. Disable & update the modal confirm button */
+    var confirmBtn = document.getElementById('cancelEvConfirmBtn');
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" style="width:13px;height:13px;"><circle cx="7" cy="7" r="5.5"/><path d="M4.5 4.5l5 5M9.5 4.5l-5 5"/></svg> Cancelling…';
+
+    /* 2. Permanently replace the row Cancel button with a "Cancelled" tag
+          so it can never be clicked again — even if the browser navigates
+          back to this page from cache. */
+    if (_activeCancelRowBtn) {
+        // Build the static cancelled tag that mirrors the server-rendered markup
+        var tag = document.createElement('span');
+        tag.className = 'ev-cancelled-tag';
+        tag.textContent = 'Cancelled';
+
+        // Swap the button out of the DOM entirely
+        _activeCancelRowBtn.parentNode.replaceChild(tag, _activeCancelRowBtn);
+        _activeCancelRowBtn = null;
+    }
+
+    /* 3. Update the status badge in the same row to "Cancelled" */
+    if (_activeCancelEventId) {
+        var statusBadge = document.querySelector('.ev-status[data-status-id="' + _activeCancelEventId + '"]');
+        if (statusBadge) {
+            // Strip all existing status classes and apply cancelled
+            statusBadge.className = 'ev-status cancelled';
+            statusBadge.textContent = 'Cancelled';
+        }
+        _activeCancelEventId = null;
+    }
+});
 
 /* Close on Escape */
 document.addEventListener('keydown', function(e) {

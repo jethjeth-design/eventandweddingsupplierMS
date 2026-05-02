@@ -44,7 +44,13 @@
 
         /* ══ IDENTITY CARD ══ */
         .bv-id-card{background:var(--white);border-radius:14px;border:1px solid #F0EBE5;overflow:hidden;box-shadow:0 2px 8px rgba(30,27,24,0.06);}
-        .bv-id-card-banner{height:120px;background:linear-gradient(135deg,var(--charcoal) 0%,#2a2016 60%,#3d2f14 100%);position:relative;}
+        .bv-id-card-banner{height:200px;background:linear-gradient(135deg,var(--charcoal) 0%,#2a2016 60%,#3d2f14 100%);position:relative;overflow:hidden;}
+        .bv-id-card-banner-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+        .bv-id-card-banner-overlay{position:absolute;inset:0;background:rgba(30,27,24,0.18);pointer-events:none;}
+        /* ── Cover Photo Button ── */
+        .bv-cover-btn{position:absolute;bottom:10px;right:12px;display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.85rem;border-radius:8px;background:rgba(30,27,24,0.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border:1.5px solid rgba(255,255,255,0.22);font-family:var(--font-body);font-size:0.72rem;font-weight:500;color:rgba(255,255,255,0.9);cursor:pointer;transition:background 0.2s,border-color 0.2s,transform 0.15s;z-index:3;}
+        .bv-cover-btn svg{width:13px;height:13px;flex-shrink:0;}
+        .bv-cover-btn:hover{background:rgba(201,168,76,0.75);border-color:rgba(201,168,76,0.5);transform:translateY(-1px);}
         .bv-id-card-inner{display:flex;align-items:flex-start;gap:1.75rem;padding:0 2rem 1.75rem;flex-wrap:wrap;}
         .bv-id-avatar-wrap{position:relative;width:120px;height:120px;margin-top:-60px;flex-shrink:0;z-index:2;}
         .bv-id-avatar{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:2.6rem;font-weight:700;color:var(--white);overflow:hidden;border:5px solid var(--white);box-shadow:0 4px 18px rgba(30,27,24,0.2);}
@@ -150,6 +156,7 @@
         .pf-post-tag{display:inline-flex;align-items:center;gap:0.25rem;padding:0.16rem 0.55rem;border-radius:999px;background:rgba(201,168,76,0.1);color:var(--gold-dark);font-size:0.63rem;font-weight:600;}
         .pf-post-tag::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold);}
         .pf-gallery-empty{text-align:center;padding:2.5rem 1.5rem;}
+        .pf-gallery-empty-icon{width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.08);display:flex;align-items:center;justify-content:margin:0 auto 0.75rem;color:var(--gold-dark);}
         .pf-gallery-empty-icon{width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;color:var(--gold-dark);}
         .pf-gallery-empty-icon svg{width:22px;height:22px;}
         .pf-gallery-empty p{font-size:0.8rem;color:var(--warm-grey);line-height:1.6;}
@@ -220,6 +227,48 @@
         .tm-btn-save:hover{background:var(--gold-dark);box-shadow:0 4px 12px rgba(201,168,76,0.2);transform:translateY(-1px);}
         .tm-btn-cancel{display:inline-flex;align-items:center;gap:0.4rem;padding:0.62rem 1.1rem;border-radius:6px;border:1.5px solid #E5DDD5;background:var(--white);font-family:var(--font-body);font-size:0.82rem;font-weight:500;color:var(--warm-grey);cursor:pointer;transition:border-color 0.2s,color 0.2s;}
         .tm-btn-cancel:hover{border-color:var(--gold);color:var(--charcoal);}
+
+        /* ══ COVER PHOTO MODAL ══ */
+        .cp-modal-overlay{position:fixed;inset:0;z-index:8100;background:rgba(30,27,24,0.6);display:none;align-items:center;justify-content:center;padding:1rem;}
+        .cp-modal-overlay.open{display:flex;}
+        .cp-modal{background:var(--white);border-radius:14px;border:1px solid #F0EBE5;box-shadow:0 8px 40px rgba(30,27,24,0.2);width:100%;max-width:480px;overflow:hidden;animation:tmSlideIn 0.22s ease;}
+        .cp-modal-head{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem;border-bottom:1px solid #F7F3EF;}
+        .cp-modal-head-l{display:flex;align-items:center;gap:0.65rem;}
+        .cp-modal-icon{width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);flex-shrink:0;}
+        .cp-modal-icon svg{width:15px;height:15px;}
+        .cp-modal-title{font-family:var(--font-display);font-size:0.95rem;font-weight:700;color:var(--charcoal);}
+        .cp-modal-close{width:30px;height:30px;border-radius:50%;border:1.5px solid #E5DDD5;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--warm-grey);transition:border-color 0.15s,color 0.15s,background 0.15s;}
+        .cp-modal-close:hover{border-color:var(--gold);color:var(--gold-dark);background:rgba(201,168,76,0.05);}
+        .cp-modal-close svg{width:12px;height:12px;}
+        .cp-modal-body{padding:1.35rem 1.4rem;display:flex;flex-direction:column;gap:1rem;}
+        .cp-modal-foot{padding:0.85rem 1.4rem;border-top:1px solid #F7F3EF;display:flex;align-items:center;justify-content:flex-end;gap:0.55rem;}
+        /* Drop zone */
+        .cp-dropzone{border:2px dashed #E5DDD5;border-radius:10px;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;background:rgba(201,168,76,0.02);position:relative;}
+        .cp-dropzone:hover,.cp-dropzone.drag-over{border-color:var(--gold);background:rgba(201,168,76,0.06);}
+        .cp-dropzone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+        .cp-dropzone-icon{width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;color:var(--gold-dark);}
+        .cp-dropzone-icon svg{width:20px;height:20px;}
+        .cp-dropzone-label{font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.25rem;}
+        .cp-dropzone-sub{font-size:0.72rem;color:#C0B8B0;line-height:1.5;}
+        /* Preview */
+        .cp-preview-wrap{display:none;border-radius:10px;overflow:hidden;border:1.5px solid #F0EBE5;position:relative;}
+        .cp-preview-wrap.visible{display:block;}
+        .cp-preview-wrap img{width:100%;height:160px;object-fit:cover;display:block;}
+        .cp-preview-remove{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(30,27,24,0.65);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--white);transition:background 0.2s;}
+        .cp-preview-remove:hover{background:rgba(192,57,43,0.8);}
+        .cp-preview-remove svg{width:12px;height:12px;}
+        /* Remove cover */
+        .cp-remove-row{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;background:#FFF5F5;border:1px solid #FADBD8;border-radius:8px;}
+        .cp-remove-row span{font-size:0.78rem;color:#C0392B;}
+        .cp-remove-btn{display:inline-flex;align-items:center;gap:0.3rem;padding:0.3rem 0.75rem;border-radius:6px;border:1.5px solid #FADBD8;background:transparent;font-family:var(--font-body);font-size:0.72rem;font-weight:500;color:#C0392B;cursor:pointer;transition:background 0.15s,border-color 0.15s;}
+        .cp-remove-btn svg{width:11px;height:11px;}
+        .cp-remove-btn:hover{background:#FFF5F5;border-color:#C0392B;}
+        /* Save btn */
+        .cp-btn-save{display:inline-flex;align-items:center;gap:0.45rem;padding:0.62rem 1.5rem;border-radius:6px;border:none;background:var(--charcoal);font-family:var(--font-body);font-size:0.82rem;font-weight:500;color:var(--white);cursor:pointer;transition:background 0.2s,box-shadow 0.2s,transform 0.15s;}
+        .cp-btn-save svg{width:13px;height:13px;}
+        .cp-btn-save:hover{background:var(--gold-dark);box-shadow:0 4px 12px rgba(201,168,76,0.2);transform:translateY(-1px);}
+        .cp-btn-cancel{display:inline-flex;align-items:center;gap:0.4rem;padding:0.62rem 1.1rem;border-radius:6px;border:1.5px solid #E5DDD5;background:var(--white);font-family:var(--font-body);font-size:0.82rem;font-weight:500;color:var(--warm-grey);cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+        .cp-btn-cancel:hover{border-color:var(--gold);color:var(--charcoal);}
 
         /* ══ LIGHTBOX ══ */
         .fb-lb{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.96);display:none;flex-direction:column;}
@@ -346,7 +395,6 @@
                     </svg>
                     Teams
                 </button>
-                {{-- ✅ Assign Teams tab REMOVED --}}
             </div>
 
             {{-- ══ RIGHT: CONTENT PANELS ══ --}}
@@ -357,7 +405,23 @@
 
                     {{-- Identity Hero Card --}}
                     <div class="bv-id-card">
-                        <div class="bv-id-card-banner"></div>
+                        {{-- ══ COVER PHOTO BANNER ══ --}}
+                        <div class="bv-id-card-banner">
+                            @if(!empty($supplierProfile->cover_photo))
+                                <img class="bv-id-card-banner-img"
+                                     src="{{ asset('storage/' . $supplierProfile->cover_photo) }}"
+                                     alt="Cover photo">
+                                <div class="bv-id-card-banner-overlay"></div>
+                            @endif
+                            <button type="button" class="bv-cover-btn" onclick="cpModalOpen()">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <path d="M1 5a2 2 0 012-2h1.5l1-1.5h5L11.5 3H13a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V5z"/>
+                                    <circle cx="8" cy="8.5" r="2.5"/>
+                                </svg>
+                                {{ empty($supplierProfile->cover_photo) ? 'Add Cover Photo' : 'Change Cover' }}
+                            </button>
+                        </div>
+                        {{-- END COVER PHOTO BANNER --}}
                         <div class="bv-id-card-inner">
                             <div class="bv-id-avatar-wrap">
                                 <div class="bv-id-avatar {{ $supplierProfile->photo ? 'has-photo' : '' }}">
@@ -494,80 +558,6 @@
                         </div>
                     </div>
 
-                    {{-- Portfolio / Gallery 
-                    <div class="pf-card">
-                        <div class="pf-card-header">
-                            <div class="pf-card-header-l">
-                                <div class="pf-card-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="13" rx="2"/><circle cx="7" cy="9" r="1.5"/><path d="M2 14l4-4 3 3 3-3 6 5"/></svg></div>
-                                <div>
-                                    <div class="pf-card-title">My Gallery</div>
-                                    @php $totalItems = isset($portfolios) ? count($portfolios) : 0; @endphp
-                                    <div class="pf-card-desc">{{ $totalItems }} {{ $totalItems === 1 ? 'item' : 'items' }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pf-card-body">
-                            @if(isset($portfolios) && count($portfolios))
-                                <div class="pf-portfolio-list">
-                                    @foreach($portfolios as $portfolio)
-                                    @php
-                                        $imgs=$portfolio->images??[];$imgCount=count($imgs);$hasVideo=!empty($portfolio->video);
-                                        $shown=$imgCount>=5?4:$imgCount;
-                                        $cls=$imgCount===1?'count-1':($imgCount===2?'count-2':($imgCount===3?'count-3':($imgCount===4?'count-4':'count-5plus')));
-                                        $allUrls=array_map(fn($i)=>asset('storage/'.$i),$imgs);$allJson=json_encode($allUrls);
-                                    @endphp
-                                    <div class="pf-post">
-                                        <div class="pf-post-head">
-                                            <div class="pf-post-head-l">
-                                                <div class="pf-post-avatar">
-                                                    @if(!empty($supplierProfile->photo))
-                                                        <img src="{{ asset('storage/'.$supplierProfile->photo) }}" alt="">
-                                                    @else
-                                                        {{ strtoupper(substr(Auth::user()->name,0,2)) }}
-                                                    @endif
-                                                </div>
-                                                <div>
-                                                    <div class="pf-post-title">{{ $portfolio->title }}</div>
-                                                    <div class="pf-post-date">{{ $portfolio->created_at ? $portfolio->created_at->diffForHumans() : '' }}</div>
-                                                </div>
-                                            </div>
-                                            <form method="POST" action="{{ route('supplier.portfolio.destroy',$portfolio->id) }}" onsubmit="return confirm('Remove this portfolio item?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="pf-post-delete-btn">
-                                                    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3.5h10M5 3.5V2.5h4v1M4.5 3.5v7a1 1 0 001 1h3a1 1 0 001-1v-7"/></svg>Delete
-                                                </button>
-                                            </form>
-                                        </div>
-                                        @if($portfolio->description)<div class="pf-post-desc">{{ $portfolio->description }}</div>@endif
-                                        @if($imgCount>0)
-                                        <div class="pf-mosaic {{ $cls }}" onclick="fbLbOpen({{ $allJson }},0,'{{ addslashes($portfolio->title) }}')">
-                                            @for($ci=0;$ci<$shown;$ci++)
-                                            <div class="pf-mos-cell">
-                                                <img src="{{ asset('storage/'.$imgs[$ci]) }}" alt="" loading="lazy">
-                                                @if($ci===$shown-1&&$imgCount>$shown)<div class="pf-mos-more">+{{ $imgCount-$shown }}</div>@endif
-                                            </div>
-                                            @endfor
-                                        </div>
-                                        @endif
-                                        @if($hasVideo)
-                                        <div class="pf-post-video"><video width="100%" controls preload="metadata"><source src="{{ asset('storage/'.$portfolio->video) }}"></video></div>
-                                        @endif
-                                        <div class="pf-post-foot">
-                                            @if($imgCount>0)<span class="pf-post-tag">{{ $imgCount }} photo{{ $imgCount!==1?'s':'' }}</span>@endif
-                                            @if($hasVideo)<span class="pf-post-tag">Video</span>@endif
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <div class="pf-gallery-empty">
-                                    <div class="pf-gallery-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
-                                    <p>No portfolio items yet.<br>Upload your first photos or video below.</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>--}}
-
                 </div>{{-- /panel-info --}}
 
                 {{-- ── PANEL: Teams ── --}}
@@ -653,7 +643,6 @@
                     </div>
 
                 </div>{{-- /panel-teams --}}
-                {{-- ✅ panel-assignteams REMOVED --}}
 
             </div>{{-- /right content --}}
         </div>{{-- /bv-outer-layout --}}
@@ -740,6 +729,89 @@
         </div>
     </div>
 
+    {{-- ══ COVER PHOTO MODAL ══ --}}
+    <div class="cp-modal-overlay" id="cpModalOverlay" onclick="if(event.target===this)cpModalClose()">
+        <div class="cp-modal">
+            <div class="cp-modal-head">
+                <div class="cp-modal-head-l">
+                    <div class="cp-modal-icon">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 5a2 2 0 012-2h1.5l1-1.5h5L11.5 3H13a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V5z"/>
+                            <circle cx="8" cy="8.5" r="2.5"/>
+                        </svg>
+                    </div>
+                    <div class="cp-modal-title">Cover Photo</div>
+                </div>
+                <button type="button" class="cp-modal-close" onclick="cpModalClose()">
+                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
+                </button>
+            </div>
+
+            {{-- Upload form --}}
+            <form id="cpUploadForm" action="{{ route('supplier.cover.store') }}" method="POST" enctype="multipart/form-data">
+
+                @csrf
+                <div class="cp-modal-body">
+
+                    {{-- Drop zone --}}
+                    <div class="cp-dropzone" id="cpDropzone">
+                        <input type="file"
+                               id="cpFileInput"
+                               name="cover_photo"
+                               accept="image/jpeg,image/png,image/webp,image/gif"
+                               onchange="cpHandleFile(this)">
+                        <div class="cp-dropzone-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                        </div>
+                        <div class="cp-dropzone-label">Click to upload or drag & drop</div>
+                        <div class="cp-dropzone-sub">JPG, PNG, WEBP or GIF &nbsp;·&nbsp; Max 5 MB<br>Recommended: 1200 × 300 px</div>
+                    </div>
+
+                    {{-- Preview --}}
+                    <div class="cp-preview-wrap" id="cpPreviewWrap">
+                        <img id="cpPreviewImg" src="" alt="Preview">
+                        <button type="button" class="cp-preview-remove" onclick="cpClearPreview()" title="Remove">
+                            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
+                        </button>
+                    </div>
+
+                    {{-- Remove existing cover --}}
+                    @if(!empty($supplierProfile->cover_photo))
+                    <div class="cp-remove-row" id="cpRemoveRow">
+                        <span>Remove current cover photo</span>
+                        <button type="button" class="cp-remove-btn" onclick="cpConfirmRemove()">
+                            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3.5h10M5 3.5V2.5h4v1M4.5 3.5v7a1 1 0 001 1h3a1 1 0 001-1v-7"/></svg>
+                            Remove
+                        </button>
+                    </div>
+                    @endif
+
+                </div>
+                <div class="cp-modal-foot">
+                    <button type="button" class="cp-btn-cancel" onclick="cpModalClose()">Cancel</button>
+                    <button type="submit" class="cp-btn-save" id="cpSaveBtn" disabled>
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l4 4 6-6"/></svg>
+                        Save Cover
+                    </button>
+                </div>
+            </form>
+
+            {{-- Separate form to remove cover --}}
+            <form id="cpRemoveForm"
+                  action="{{route('supplier.cover.delete')}}"
+                  method="POST"
+                  style="display:none;">
+                @csrf
+                @method('DELETE')
+            </form>
+        </div>
+    </div>
+    {{-- END COVER PHOTO MODAL --}}
+
     {{-- ══ LIGHTBOX ══ --}}
     <div id="fbLb" class="fb-lb" onclick="if(event.target===this)fbLbClose()">
         <div class="fb-lb-bar">
@@ -790,8 +862,63 @@
             document.body.style.overflow = '';
         }
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { tmModalClose(); fbLbClose(); }
+            if (e.key === 'Escape') { tmModalClose(); cpModalClose(); fbLbClose(); }
         });
+
+        /* ── COVER PHOTO MODAL ── */
+        function cpModalOpen() {
+            document.getElementById('cpModalOverlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function cpModalClose() {
+            document.getElementById('cpModalOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function cpHandleFile(input) {
+            if (!input.files || !input.files[0]) return;
+            var file = input.files[0];
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be under 5 MB.');
+                input.value = '';
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('cpPreviewImg').src = e.target.result;
+                document.getElementById('cpPreviewWrap').classList.add('visible');
+                document.getElementById('cpDropzone').style.display = 'none';
+                document.getElementById('cpSaveBtn').removeAttribute('disabled');
+            };
+            reader.readAsDataURL(file);
+        }
+        function cpClearPreview() {
+            document.getElementById('cpFileInput').value = '';
+            document.getElementById('cpPreviewImg').src = '';
+            document.getElementById('cpPreviewWrap').classList.remove('visible');
+            document.getElementById('cpDropzone').style.display = '';
+            document.getElementById('cpSaveBtn').setAttribute('disabled', 'disabled');
+        }
+        function cpConfirmRemove() {
+            if (confirm('Remove your current cover photo?')) {
+                document.getElementById('cpRemoveForm').submit();
+            }
+        }
+        /* Drag & drop on dropzone */
+        (function() {
+            var dz = document.getElementById('cpDropzone');
+            if (!dz) return;
+            dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('drag-over'); });
+            dz.addEventListener('dragleave', function() { dz.classList.remove('drag-over'); });
+            dz.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dz.classList.remove('drag-over');
+                var fi = document.getElementById('cpFileInput');
+                if (e.dataTransfer.files.length) {
+                    fi.files = e.dataTransfer.files;
+                    cpHandleFile(fi);
+                }
+            });
+        })();
 
         /* ── LIGHTBOX ── */
         var fbUrls=[],fbIdx=0,fbTitle='';

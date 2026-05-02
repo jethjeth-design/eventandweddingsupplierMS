@@ -4,16 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PackageInclusion extends Model
+class PopularPackageInclusion extends Model
 {
     protected $fillable = [
-        'package_id',
+        'popular_package_id',
         'title',
         'type'
     ];
 
     public function package()
-    {
-        return $this->belongsTo(Package::class);
-    }
+{
+    return $this->belongsTo(PopularPackage::class, 'popular_package_id');
+}
 }

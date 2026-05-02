@@ -439,12 +439,29 @@
                 @csrf
                 <input type="hidden" name="event_id"   value="{{ $event->id }}">
                 <input type="hidden" name="package_id" value="{{ $package->id }}">
-                <button type="submit" class="btn-book">
-                    <span>Book This Package</span>
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M6 3l5 5-5 5"/>
-                    </svg>
-                </button>
+
+                {{-- Disable booking button if email not verified, but still show the form for potential future use after verification --}}
+                {{--@if(auth()->user()->hasVerifiedEmail())--}}
+
+                    <button type="submit" class="btn-book">
+                        <span>Book This Package</span>
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 3l5 5-5 5"/>
+                        </svg>
+                    </button>
+               
+                {{--@else
+
+                    <button type="button" class="btn-book opacity-50 cursor-not-allowed"
+                        onclick="alert('Please verify your email before booking.')">
+
+                        <span>Verify Email to Book</span>
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 3l5 5-5 5"/>
+                        </svg>
+                    </button>
+
+                @endif--}}
             </form>
         </div>
 

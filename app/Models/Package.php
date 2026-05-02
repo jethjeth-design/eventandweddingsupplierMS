@@ -13,18 +13,27 @@ class Package extends Model
         'price',
         'guest_capacity',
         'event_type',
+        'is_listed',
     ];
      
     protected $casts = [
         'inclusion' => 'array',
     ];
 
+    public function featured()
+    {
+        return $this->hasOne(FeaturedPackage::class);
+    }
     public function supplier()
     {
         return $this->belongsTo(SupplierProfile::class, 'supplier_id');
     }
 
-
+    public function scopeListed($query)
+    {
+        return $query->where('is_listed', true);
+    }
+    
     public function bookings()
     {
         return $this->hasMany(Booking::class);

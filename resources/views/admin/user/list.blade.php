@@ -384,7 +384,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role's</th>
-                        <th>Actions</th>
+                        <th>Verify Email</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -408,25 +408,9 @@
                             </span>
                         </td>
                         <td>
-                            <div class="bv-actions">
-                                <a href="{{ route('admin.event.edit', $users->id) }}" class="bv-btn-edit">
-                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7">
-                                        <path d="M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z"/>
-                                    </svg>
-                                    Edit
-                                </a>
-                                <form method="POST" action="{{ route('admin.user.destroy', $users->id) }}" style="display:inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bv-btn-delete"
-                                        onclick="return confirm('Delete {{ addslashes($users->name) }}?')">
-                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7">
-                                            <path d="M3 4h10M6 4V3h4v1M5 4v8a1 1 0 001 1h4a1 1 0 001-1V4"/>
-                                        </svg>
-                                        Delete
-                                    </button>
-                                </form>
-                            </div>
+                            <span class="bv-users-desc" title="{{ $users->role }}">
+                                {{ $users->email_verified_at ?: '—' }}
+                            </span>
                         </td>
                     </tr>
                     @endforeach
