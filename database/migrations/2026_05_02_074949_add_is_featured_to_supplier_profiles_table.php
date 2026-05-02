@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('package_inclusions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('package_id')->constrained()->cascadeOnDelete();
-            $table->string('title');
-            $table->string('type')->nullable();
-            $table->timestamps();
+        Schema::table('supplier_profiles', function (Blueprint $table) {
+            $table->boolean('is_featured')
+                ->default(false)
+                ->after('is_available');
         });
     }
 
@@ -25,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('package_inclusions');
+        Schema::table('supplier_profiles', function (Blueprint $table) {
+             $table->dropColumn('is_featured');
+        });
     }
 };

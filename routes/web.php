@@ -28,6 +28,11 @@ use App\Http\Controllers\AdminAvailabilityController;
 use App\Http\Controllers\ClientCalendarController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\Admin\FeaturedPackageController;
+use App\Http\Controllers\Admin\EventBundleController;
+use App\Http\Controllers\PopularPackageController;
+use App\Http\Controllers\Admin\FeaturedSupplierController;
+
 use Illuminate\Support\Facades\Route;
 
 //Welcome Pages
@@ -36,6 +41,8 @@ Route::get('/', [HomeController::class, 'index'])->name('welcomepage.welcome');
     Route::get('/profile/{id}', [HomeController::class, 'showprofiledetails'])->name('welcomepage.profiledetails');
     Route::get('/gallery/{id}', [HomeController::class, 'showgallery'])->name('welcomepage.gallery');
     Route::get('/package', [HomeController::class, 'package'])->name('welcomepage.package');
+    Route::get('/popular-packages/{id}', [HomeController::class, 'showPopular'])
+    ->name('popular.show');
 
 //Activity Logs
 Route::get('/admin/logs', [ActivityLogController::class, 'index'])
@@ -52,6 +59,37 @@ Route::get('/dashboard', function () {
     };
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Show supplier registration form
+Route::get('/register/supplier', [RegisteredUserController::class, 'createSupplier'])
+    ->middleware('guest')
+    ->name('register.supplier');
+
+// Handle supplier registration
+Route::post('/register/supplier', [RegisteredUserController::class, 'storeSupplier'])
+    ->middleware('guest')
+    ->name('supplier.register.store');
+
+// Admin routes
+Route::middleware(['auth', 'verified','role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+});
+
+// Supplier routes
+Route::middleware(['auth', 'verified', 'role:supplier'])->group(function () {
+    Route::get('/supplier/dashboard', function () {
+        return view('supplier.dashboard');
+    })->name('supplier.dashboard');
+});
+
+// Client routes
+Route::middleware(['auth', 'verified', 'role:client'])->group(function () {
+    Route::get('/client/dashboard', function () {
+        return view('client.dashboard');
+    })->name('client.dashboard');
+});
+
 Route::middleware('auth')->group(function () {
     //User View
     Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
@@ -65,45 +103,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-// Show supplier registration form
-Route::get('/register/supplier', [RegisteredUserController::class, 'createSupplier'])
-    ->middleware('guest')
-    ->name('register.supplier');
-
-// Handle supplier registration
-Route::post('/register/supplier', [RegisteredUserController::class, 'storeSupplier'])
-    ->middleware('guest')
-    ->name('supplier.register.store');
-
-// Supplier landing page
-Route::middleware(['auth','supplier'])->group(function() {
-    Route::get('/supplier/dashboard', function() {
-        return view('supplier.dashboard');
-    })->name('supplier.dashboard');
-});
-
-
-// Admin routes
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-});
-
-// Supplier routes
-Route::middleware(['auth', 'role:supplier'])->group(function () {
-    Route::get('/supplier/dashboard', function () {
-        return view('supplier.dashboard');
-    })->name('supplier.dashboard');
-});
-
-// Client routes
-Route::middleware(['auth', 'role:client'])->group(function () {
-    Route::get('/client/dashboard', function () {
-        return view('client.dashboard');
-    })->name('client.dashboard');
 });
 
 // Theme management routes for admin
@@ -180,6 +179,13 @@ Route::middleware(['auth'])->group(function () {
     ->name('supplier.updateidentity');
     Route::put('/supplier/supplierProfiles/{supplierProfile}', [SupplierProfileController::class, 'update'])->name('supplier.update');
     Route::delete('/supplier/supplierProfiles/{supplierProfile}', [SupplierProfileController::class, 'destroy'])->name('supplier.destroy');
+    //Cover Photo
+    Route::post('/supplier/cover-photo', [SupplierProfileController::class, 'storeCoverPhoto'])
+    ->name('supplier.cover.store');
+
+
+    Route::delete('/supplier/cover-photo/delete', [SupplierProfileController::class, 'deleteCoverPhoto'])
+    ->name('supplier.cover.delete');
 });
 
 //Supplier Portfolio routes
@@ -201,10 +207,19 @@ Route::middleware(['auth'])->group(function () {
    
     Route::get('/browse-suppliers', [ClientBrowseController::class, 'index'])
     ->name('client.browse.suppliers');
+
+    Route::get('/popular-packages.show/{id}', [ClientBrowseController::class, 'showPopular'])
+    ->name('popular.packages.show');
+
+    Route::get('/browse-all-suppliers', [ClientBrowseController::class, 'supplier'])
+    ->name('client.all.suppliers');
+
     Route::get('/browse-suppliers/{id}', [ClientBrowseController::class, 'show'])
         ->name('client.show.supplier');
+
     route::get('/supplier/{id}/portfolio', [ClientBrowseController::class, 'portfolio'])
     ->name('client.portfolio');
+
     Route::post('/client/bookings', [BookingController::class, 'store'])
     ->name('client.bookings.store');
 
@@ -268,6 +283,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/supplier/packages/{package}', [PackageController::class, 'destroy'])->name('supplier.package.destroy');
     //My Listing
     Route::get('/supplier/my-listings', [PackageController::class, 'listing'])->name('supplier.package.mylistings');
+    Route::post('/supplier/package/{id}/toggle', [PackageController::class, 'togglePublish'])
+    ->name('supplier.package.toggle');
     // Assign Teams to Package
     Route::post('/package/{id}/assign-teams', [PackageController::class, 'assignTeams'])
     ->name('supplier.package.assignTeams');
@@ -424,4 +441,28 @@ Route::get('/notifications', function () {
     return view('notifications.index');
 })->name('notifications.index')->middleware('auth');
 
+
+//Popular Packages For Admin
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/popular-packages', [PopularPackageController::class, 'index'])
+        ->name('admin.popular.index');
+
+    Route::get('/popular-packages/create', [PopularPackageController::class, 'create'])
+        ->name('admin.popular.create');
+
+    Route::post('/popular-packages', [PopularPackageController::class, 'store'])
+        ->name('admin.popular.store');
+});
+
+Route::middleware(['auth'])->group(function () {
+ 
+    // Featured Suppliers
+    Route::get('/featured-suppliers', [FeaturedSupplierController::class, 'index'])
+         ->name('featured-suppliers');
+ 
+    Route::patch('/featured-suppliers/{supplierProfile}/toggle', [FeaturedSupplierController::class, 'toggle'])
+         ->name('featured-suppliers.toggle');
+ 
+});
 require __DIR__.'/auth.php';

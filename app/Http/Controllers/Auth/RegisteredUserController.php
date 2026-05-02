@@ -51,12 +51,8 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('verification.notice');
     }
-
-
-
-
 
      // Show supplier registration form
     public function createSupplier()
@@ -130,7 +126,7 @@ class RegisteredUserController extends Controller
         // ✅ FIXED
         $supplier->categories()->sync($request->category_id);
         // redirect to supplier landing page
-        return redirect(route('supplier.dashboard', absolute: false));
+        return redirect()->route('verification.notice');
     }
 
 }

@@ -16,6 +16,7 @@ class BookingController extends Controller
     //To view the booking history of the client
     public function clientIndex()
     {
+        
         $bookings = Booking::with(['event', 'package.supplier'])
             ->where('user_id', auth()->id())
             ->latest()
@@ -26,7 +27,7 @@ class BookingController extends Controller
 
     // Timeline view for clients
     public function timeline()
-    {
+    {   
         $bookings = Booking::with([
             'event',
             'package.supplier'
@@ -55,7 +56,7 @@ class BookingController extends Controller
     // SUPPLIER: VIEW BOOKINGS
     // =========================
     public function supplierIndex()
-    {
+    {  
         $supplierId = auth()->user()->supplier->id;
 
         $bookings = Booking::with(['event', 'package'])

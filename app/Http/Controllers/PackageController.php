@@ -13,6 +13,7 @@ class PackageController extends Controller
 {
     public function index()
     {   
+       
         $eventcategories = Eventcategory::all();
 
         $packages = Package::with('supplier')
@@ -61,27 +62,39 @@ class PackageController extends Controller
             'event_type' => $request->event_type,
         ]);
 
-        // ✅ FIX: safe inclusions
-        if ($request->inclusions) {
-            foreach ($request->inclusions as $item) {
-                if (!empty($item)) {
-                    $package->inclusions()->create([
-                        'title' => $item
-                    ]);
-                }
+        $inclusions = $request->inclusions ?? [];
+        $types = $request->inclusion_types ?? [];
+
+        foreach ($inclusions as $key => $item) {
+
+            if (!empty($item)) {
+
+                $package->inclusions()->create([
+                    'title' => $item,
+                    'type'  => $types[$key] ?? null,
+                ]);
             }
         }
 
-        ActivityLogger::log('create_package', Auth::user(), [
-            'package_id' => $package->id,
-            'name' => $package->name, 
-            'price' => $package->price,
-        ]);
   
         return redirect()->route('supplier.package.index')
             ->with('success', 'Package created successfully');
     }
+    public function togglePublish($id)
+    {
+        $package = Package::findOrFail($id);
 
+        // 🔒 Security check
+        if ($package->supplier_id !== auth()->user()->supplier->id) {
+            abort(403);
+        }
+
+        $package->update([
+            'is_listed' => !$package->is_listed
+        ]);
+
+        return back()->with('success', 'Package visibility updated.');
+    }
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -115,17 +128,22 @@ class PackageController extends Controller
         ]);
 
         // ✅ FIX: update inclusions (delete + recreate)
-        $package->inclusions()->delete();
+       $inclusions = $request->inclusions ?? [];
+$types = $request->inclusion_types ?? [];
 
-        if ($request->inclusions) {
-            foreach ($request->inclusions as $item) {
-                if (!empty($item)) {
-                    $package->inclusions()->create([
-                        'title' => $item
-                    ]);
-                }
-            }
-        }
+// For update (only if needed)
+$package->inclusions()->delete();
+
+foreach ($inclusions as $key => $item) {
+
+    if (!empty($item)) {
+
+        $package->inclusions()->create([
+            'title' => $item,
+            'type'  => $types[$key] ?? null,
+        ]);
+    }
+}
 
         // ✅ FIX: sync teams with roles
         $syncData = [];
@@ -140,11 +158,6 @@ class PackageController extends Controller
 
         $package->teams()->sync($syncData);
 
-        ActivityLogger::log('update_package', Auth::user(), [
-            'package_id' => $package->id,
-            'old' => $oldData,
-            'new' => $package->toArray(),
-        ]);
 
         return back()->with('success', 'Package updated successfully!');
     }
@@ -174,46 +187,65 @@ class PackageController extends Controller
     }
     
     public function showAssignTeams($id)
-{
-    $package = Package::findOrFail($id);
+    {   
+        if (!auth()->user()->hasVerifiedEmail()) {
+            return redirect()->back()->with('error', 'Please verify your email before booking.');
+        }
+        $package = Package::findOrFail($id);
 
-    $teams = Team::where('supplier_id', auth()->user()->supplier->id)->get();
+        $teams = Team::where('supplier_id', auth()->user()->supplier->id)->get();
 
-    return view('supplier.packages.create', compact('package', 'teams'));
-}
+        return view('supplier.packages.create', compact('package', 'teams'));
+    }
     
     public function assignTeams(Request $request, $id)
-{
-    $request->validate([
-        'teams' => 'nullable|array'
-    ]);
-
-    $package = Package::findOrFail($id);
-
-    // 🔒 Security check
-    if ($package->supplier_id !== auth()->user()->supplier->id) {
-        abort(403);
-    }
-
-    $syncData = [];
-
-    if ($request->teams) {
-        foreach ($request->teams as $teamId) {
-            $syncData[$teamId] = [
-                'role_in_package' => $request->roles[$teamId] ?? null
-            ];
-        }
-    }
-
-    // ✅ THIS SAVES TO PIVOT
-    $package->teams()->sync($syncData);
-
-    return back()->with('success', 'Teams assigned successfully!');
-}
- 
-    public function list()
     {
-         $packages = Package::paginate(10);
+        $request->validate([
+            'teams' => 'nullable|array'
+        ]);
+
+        $package = Package::findOrFail($id);
+
+        // 🔒 Security check
+        if ($package->supplier_id !== auth()->user()->supplier->id) {
+            abort(403);
+        }
+
+        $syncData = [];
+
+        if ($request->teams) {
+            foreach ($request->teams as $teamId) {
+                $syncData[$teamId] = [
+                    'role_in_package' => $request->roles[$teamId] ?? null
+                ];
+            }
+        }
+
+        // ✅ THIS SAVES TO PIVOT
+        $package->teams()->sync($syncData);
+
+        return back()->with('success', 'Teams assigned successfully!');
+    }
+ 
+    public function list(Request $request)
+    {
+    $search = $request->input('search');
+    $status = $request->input('status'); // listed / unlisted
+
+    $packages = Package::with(['supplier', 'inclusions'])
+        ->when($search, function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('event_type', 'like', "%{$search}%")
+              ->orWhereHas('supplier', function ($s) use ($search) {
+                  $s->where('business_name', 'like', "%{$search}%");
+              });
+        })
+        ->when($status !== null, function ($q) use ($status) {
+            $q->where('is_listed', $status);
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
         return view('admin.packages.list', compact('packages'));
     }
 }

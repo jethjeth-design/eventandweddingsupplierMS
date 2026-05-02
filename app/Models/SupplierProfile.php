@@ -11,16 +11,16 @@ class SupplierProfile extends Model
         'first_name',
         'last_name',
         'photo',
+        'cover_photo', 
         'business_name',
         'tagline',
-        'phone',
         'city',
         'province',
-        'bio',
         'description',
         'address',
         'rating',
         'is_available',
+        'is_featured',
     ];
     
     public function portfolios()

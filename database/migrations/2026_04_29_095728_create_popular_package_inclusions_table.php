@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('package_inclusions', function (Blueprint $table) {
+        Schema::create('popular_package_inclusions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('package_id')->constrained()->cascadeOnDelete();
-            $table->string('title');
+            $table->foreignId('popular_package_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->string('title'); // Photo Coverage, Styling
             $table->string('type')->nullable();
             $table->timestamps();
         });
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('package_inclusions');
+        Schema::dropIfExists('popular_package_inclusions');
     }
 };

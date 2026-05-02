@@ -205,7 +205,6 @@
             background: var(--gold);
             border: none;
             padding: 0 1.4rem;
-            height: 100%;
             font-family: var(--font-body);
             font-size: 0.78rem;
             font-weight: 700;
@@ -500,7 +499,7 @@
             position: relative; z-index: 3;
         }
         .sp-logo {
-            width: 36px; height: 36px; border-radius: 50%;
+            width: 60px; height: 60px; border-radius: 50%;
             border: 2.5px solid var(--white);
             background: var(--charcoal);
             overflow: hidden; flex-shrink: 0;
@@ -1010,6 +1009,7 @@
                     $city     = $profile->city     ?? null;
                     $province = $profile->province ?? null;
                     $photo    = $profile->photo    ?? null;
+                    $cover_photo    = $profile->cover_photo    ?? null;
                     $tagline  = $profile->tagline  ?? null;
                     $initials = strtoupper(substr($bizName, 0, 2));
                     $cats     = $supplier->categories ?? collect();
@@ -1030,8 +1030,8 @@
 
                     {{-- Medium photo (4:3 ratio) --}}
                     <div class="sp-card-photo">
-                        @if($photo)
-                            <img src="{{ asset('storage/'.$photo) }}" alt="{{ $bizName }}" loading="lazy">
+                        @if($cover_photo)
+                            <img src="{{ asset('storage/'.$cover_photo) }}" alt="{{ $bizName }}" loading="lazy">
                         @else
                             <div class="sp-card-photo-placeholder">
                                 <span class="sp-card-photo-initials">{{ $initials }}</span>

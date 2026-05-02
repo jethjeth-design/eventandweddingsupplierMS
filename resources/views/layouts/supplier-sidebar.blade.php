@@ -25,7 +25,7 @@
             <span class="nav-tooltip">Dashboard</span>
         </a>
 
-        {{-- My Listings 
+        {{-- My Listings--}} 
         <a href="{{ route('supplier.package.mylistings') }}"
            class="nav-item {{ request()->is('supplier/listings*') || request()->routeIs('supplier.listings*') ? 'active' : '' }}">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
@@ -36,7 +36,7 @@
             </svg>
             <span>My Listings</span>
             <span class="nav-tooltip">My Listings</span>
-        </a>--}}
+        </a>
 
         {{-- Inquiries --}}
         <a href="{{ route('supplier.inquiries.inbox') }}"
@@ -209,7 +209,8 @@
                 </svg>
                 Account
             </a>
-            <a href="{{ url('/supplier/settings/notifications') }}"
+
+            {{--<a href="{{ url('/supplier/settings/notifications') }}"
                class="settings-drawer-item {{ request()->is('supplier/settings/notifications') ? 'active' : '' }}">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7">
                     <path d="M8 2a5 5 0 015 5v3l1.5 2h-13L3 10V7a5 5 0 015-5zM6.5 13a1.5 1.5 0 003 0"/>
@@ -230,7 +231,7 @@
                     <path d="M1 7h14M4 11h3"/>
                 </svg>
                 Billing
-            </a>
+            </a>--}}
             <a href="{{ route('roles.index') ?? '#' }}"
                class="settings-drawer-item {{ request()->routeIs('roles.*') ? 'active' : '' }}">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7">

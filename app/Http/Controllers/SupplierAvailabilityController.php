@@ -9,7 +9,10 @@ use Carbon\Carbon;
 class SupplierAvailabilityController extends Controller
 {
     public function index()
-    {
+    {   
+        if (!auth()->user()->hasVerifiedEmail()) {
+            return redirect()->back()->with('error', 'Please verify your email before booking.');
+        }
         return view('supplier.availability.calendar');
     }
 

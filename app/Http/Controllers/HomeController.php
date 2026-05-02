@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Banner;
 use App\Models\Section;
 use App\Models\Category;
+use App\Models\Package;
+use App\Models\PopularPackage;
 use App\Models\SupplierPortfolio;
 use App\Models\SupplierProfile;
 class HomeController extends Controller
@@ -19,6 +21,7 @@ class HomeController extends Controller
     {   
         $section = Section::first();
         $banner = Banner::first();
+        
         return view('welcomepage.welcome', compact('banner','section'));
     }
     
@@ -78,24 +81,70 @@ class HomeController extends Controller
 
     public function package(Request $request)
     {
-        $search = $request->search;
-        $eventType = $request->event_type;
+        // Admin curated packages
+    $curatedPackages = PopularPackage::with('inclusions')
+        ->where('is_active', true)
+        ->get();
 
-    $suppliers = SupplierProfile::with(['packages' => function ($query) use ($search, $eventType) {
+    
 
-        if ($eventType) {
-            $query->where('event_type', $eventType);
-        }
+    // Featured suppliers — only those marked as featured
+    $suppliers = SupplierProfile::where('is_featured', true)
+        ->with(['categories', 'ratings'])
+        ->latest()
+        ->get();
 
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-    }])->get();
-
-        return view('welcomepage.supplier.package', compact('suppliers', 'search', 'eventType'));
+        return view('welcomepage.supplier.package', compact('suppliers', 'curatedPackages'));
     }
-}               
+    
+public function showPopular($id)
+{
+        // ── 1. Load the popular package with its inclusions ──────────────────
+        $popular = PopularPackage::with('inclusions')->findOrFail($id);
+ 
+        // ── 2. Collect the distinct inclusion types of this popular package ──
+        //       Normalise to lowercase + trim so comparisons are reliable.
+        $targetTypes = $popular->inclusions
+            ->pluck('type')
+            ->filter()                          // drop nulls / empty strings
+            ->map(fn($t) => strtolower(trim($t)))
+            ->unique()
+            ->values()
+            ->toArray();
+ 
+        // ── 3. Find supplier packages whose inclusions share ≥1 type ─────────
+        //       We join through the inclusions table so we can filter by type,
+        //       then eager-load the full data we need for the view.
+        if (!empty($targetTypes)) {
+            $matchedPackages = Package::with([
+                    'inclusions',
+                    'supplier',         // adjust relationship name if needed
+                ])
+                ->whereHas('inclusions', function ($q) use ($targetTypes) {
+                    // Match any inclusion whose normalised type is in $targetTypes
+                    $q->whereRaw('LOWER(TRIM(type)) IN (?)', [implode("','", $targetTypes)])
+                      ->orWhereIn(\DB::raw('LOWER(TRIM(type))'), $targetTypes);
+                })
+                ->get()
+                // ── 4. Sort: packages with MORE matching types come first ────
+                ->sortByDesc(function ($package) use ($targetTypes) {
+                    return $package->inclusions
+                        ->filter(fn($inc) => in_array(
+                            strtolower(trim($inc->type ?? '')),
+                            $targetTypes
+                        ))
+                        ->count();
+                })
+                ->values();
+        } else {
+            // Popular package has no typed inclusions — return empty
+            $matchedPackages = collect();
+        }
+ 
+        return view('welcomepage.supplier.show', compact(
+            'popular',
+            'targetTypes',
+            'matchedPackages'
+        ));
+}
+}

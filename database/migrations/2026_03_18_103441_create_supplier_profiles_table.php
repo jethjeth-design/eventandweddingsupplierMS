@@ -17,7 +17,8 @@ return new class extends Migration
             // 🔗 relationship
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('photo')->nullable();        
+            $table->string('photo')->nullable();  
+            $table->string('cover_photo')->nullable();      
             $table->string('business_name')->nullable();
             $table->string('tagline')->nullable();
             $table->string('phone')->nullable();
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->decimal('rating', 3, 2)->default(0.00);
             $table->boolean('is_available')->default(true);
+            $table->boolean('is_featured')->default(false);
             $table->timestamps();
         });
     }

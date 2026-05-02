@@ -9,7 +9,7 @@ class RoleController extends Controller
 {
     // ✅ List all roles of supplier
     public function index()
-    {
+    {   
         $roles = Role::where('supplier_id', auth()->user()->supplier->id)->latest()->get();
 
         return view('supplier.roles.index', compact('roles'));

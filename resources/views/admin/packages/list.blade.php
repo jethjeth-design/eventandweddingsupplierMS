@@ -7,324 +7,608 @@
     --gold:#C9A84C; --gold-dark:#8A6A1F; --gold-light:rgba(201,168,76,0.12);
     --ivory:#FAF7F2; --charcoal:#1E1B18; --warm-grey:#706B65;
     --border:#E5DDD5; --border-md:#E0D8D0;
-    --white:#FFFFFF; --danger:#DC2626;
+    --white:#FFFFFF;
     --font-display:'Playfair Display',Georgia,serif;
     --font-body:'DM Sans',sans-serif;
 }
 
 /* ── TOP ROW ── */
-.pkg-top { display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:.75rem; margin-bottom:1.4rem; }
-.pkg-title { font-family:var(--font-display); font-size:1.65rem; font-weight:700; color:var(--charcoal); line-height:1.15; }
-.pkg-title em { font-style:italic; color:var(--gold-dark); }
-.pkg-subtitle { font-size:.76rem; color:var(--warm-grey); margin-top:.2rem; font-family:var(--font-body); }
-.pkg-badge { font-size:.65rem; font-weight:500; letter-spacing:.07em; text-transform:uppercase; color:var(--gold-dark); background:var(--gold-light); border:1px solid rgba(201,168,76,.3); padding:.28rem .75rem; border-radius:20px; white-space:nowrap; font-family:var(--font-body); }
+.pk-top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.75rem;margin-bottom:1.75rem;}
+.pk-title{font-family:var(--font-display);font-size:1.65rem;font-weight:700;color:var(--charcoal);line-height:1.15;}
+.pk-title em{font-style:italic;color:var(--gold-dark);}
+.pk-subtitle{font-size:.76rem;color:var(--warm-grey);margin-top:.2rem;font-family:var(--font-body);}
 
-/* ── SEARCH / FILTER BAR ── */
-.pkg-toolbar { display:flex; align-items:center; gap:.65rem; flex-wrap:wrap; margin-bottom:1rem; }
-.pkg-search-wrap { display:flex; align-items:center; gap:.5rem; flex:1; min-width:180px; background:var(--white); border:1.5px solid var(--border); border-radius:8px; padding:.42rem .85rem; transition:border-color .2s,box-shadow .2s; }
-.pkg-search-wrap:focus-within { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,.1); }
-.pkg-search-wrap svg { width:13px; height:13px; color:#C0B8B0; flex-shrink:0; }
-.pkg-search-wrap input { border:none; outline:none; background:transparent; font-family:var(--font-body); font-size:.8rem; color:var(--charcoal); width:100%; }
-.pkg-search-wrap input::placeholder { color:#C0B8B0; }
-.pkg-filter-select { padding:.42rem .85rem; border:1.5px solid var(--border); border-radius:8px; font-family:var(--font-body); font-size:.8rem; color:var(--charcoal); background:var(--white); outline:none; cursor:pointer; transition:border-color .2s; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%23C0B8B0' stroke-width='1.5'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .6rem center; padding-right:1.8rem; }
-.pkg-filter-select:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,.1); }
+/* ── FILTER BAR ── */
+.pk-filter-bar{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.pk-search-wrap{position:relative;flex:1;min-width:200px;max-width:320px;}
+.pk-search-ico{position:absolute;left:.8rem;top:50%;transform:translateY(-50%);width:14px;height:14px;color:#C0B8B0;pointer-events:none;transition:color .2s;}
+.pk-search-wrap:focus-within .pk-search-ico{color:var(--gold-dark);}
+.pk-search-input{width:100%;padding:.62rem .9rem .62rem 2.35rem;background:var(--white);border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.82rem;color:var(--charcoal);outline:none;transition:border-color .2s,box-shadow .2s;}
+.pk-search-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12);}
+.pk-search-input::placeholder{color:#C0B8B0;}
+.pk-sel-wrap{position:relative;}
+.pk-sel-wrap::after{content:'';position:absolute;right:.85rem;top:50%;transform:translateY(-50%);width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #C0B8B0;pointer-events:none;}
+.pk-select{padding:.62rem 2.2rem .62rem .9rem;background:var(--white);border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.82rem;color:var(--charcoal);outline:none;appearance:none;cursor:pointer;transition:border-color .2s,box-shadow .2s;}
+.pk-select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12);}
+.pk-count-badge{font-size:.72rem;color:var(--warm-grey);font-family:var(--font-body);white-space:nowrap;margin-left:auto;}
+.pk-count-badge span{font-weight:500;color:var(--gold-dark);}
+.pk-search-clear{position:absolute;right:.7rem;top:50%;transform:translateY(-50%);width:16px;height:16px;display:none;align-items:center;justify-content:center;cursor:pointer;color:#C0B8B0;border:none;background:transparent;padding:0;}
+.pk-search-clear:hover{color:var(--charcoal);}
+.pk-search-clear svg{width:10px;height:10px;}
+.pk-search-clear.visible{display:flex;}
 
-/* ── CARD SHELL ── */
-.pkg-card { background:var(--white); border:1.5px solid var(--border); border-radius:14px; overflow:hidden; }
+/* ── CARD + TABLE ── */
+.pk-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;}
+.scroll-hint{display:none;align-items:center;gap:.4rem;font-size:.68rem;color:var(--warm-grey);padding:.55rem 1rem .1rem;font-family:var(--font-body);}
+.scroll-hint svg{width:13px;height:13px;flex-shrink:0;}
+@media(max-width:640px){.scroll-hint{display:flex;}}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.4) transparent;}
+.tbl-wrap::-webkit-scrollbar{height:4px;}
+.tbl-wrap::-webkit-scrollbar-thumb{background:rgba(201,168,76,.45);border-radius:4px;}
 
-/* ── SCROLL HINT ── */
-.scroll-hint { display:none; align-items:center; gap:.4rem; font-size:.68rem; color:var(--warm-grey); padding:.55rem 1rem .1rem; font-family:var(--font-body); }
-.scroll-hint svg { width:13px; height:13px; flex-shrink:0; }
-@media(max-width:640px) { .scroll-hint { display:flex; } }
+.pk-table{width:100%;min-width:760px;border-collapse:collapse;font-family:var(--font-body);}
+.pk-table thead{background:var(--ivory);border-bottom:1.5px solid var(--border);}
+.pk-table thead th{padding:.8rem 1.1rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-grey);text-align:left;white-space:nowrap;}
+.pk-table thead th:first-child{border-left:3px solid var(--gold);}
+.pk-table tbody tr{border-bottom:1px solid #F0EBE5;transition:background .15s;}
+.pk-table tbody tr:last-child{border-bottom:none;}
+.pk-table tbody tr:hover{background:rgba(201,168,76,.04);}
+.pk-table tbody tr.pk-hidden{display:none;}
+.pk-table td{padding:.9rem 1.1rem;font-size:.83rem;color:var(--charcoal);vertical-align:middle;}
+.pk-table tbody td:first-child{border-left:3px solid transparent;}
+.pk-table tbody tr:hover td:first-child{border-left-color:rgba(201,168,76,.45);}
 
-.tbl-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; scrollbar-color:rgba(201,168,76,.4) transparent; }
-.tbl-wrap::-webkit-scrollbar { height:4px; }
-.tbl-wrap::-webkit-scrollbar-thumb { background:rgba(201,168,76,.45); border-radius:4px; }
+/* Cell types */
+.td-pkg-name{font-family:var(--font-display);font-weight:700;font-size:.9rem;color:var(--charcoal);}
+.td-supplier{font-size:.8rem;color:var(--warm-grey);}
+.td-price{font-weight:700;font-size:.86rem;color:var(--gold-dark);white-space:nowrap;}
+.td-type{display:inline-flex;align-items:center;padding:.22rem .62rem;border-radius:20px;font-size:.67rem;font-weight:500;letter-spacing:.04em;background:var(--gold-light);color:var(--gold-dark);border:1px solid rgba(201,168,76,.25);white-space:nowrap;}
+.td-inclusions{padding-left:1rem;margin:0;list-style:disc;}
+.td-inclusions li{font-size:.75rem;color:var(--warm-grey);line-height:1.55;}
+.td-inclusions li::marker{color:var(--gold);}
 
-/* ── TABLE ── */
-.pkg-table { width:100%; min-width:700px; border-collapse:collapse; font-family:var(--font-body); }
-.pkg-table thead { background:var(--ivory); border-bottom:1.5px solid var(--border); }
-.pkg-table thead th { padding:.8rem 1.1rem; font-size:.6rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--warm-grey); text-align:left; white-space:nowrap; }
-.pkg-table thead th:first-child { border-left:3px solid var(--gold); }
-.pkg-table tbody tr { border-bottom:1px solid #F0EBE5; transition:background .15s; }
-.pkg-table tbody tr:last-child { border-bottom:none; }
-.pkg-table tbody tr:hover { background:rgba(201,168,76,.04); }
-.pkg-table td { padding:.9rem 1.1rem; font-size:.83rem; color:var(--charcoal); vertical-align:middle; }
-.pkg-table tbody td:first-child { border-left:3px solid transparent; }
-.pkg-table tbody tr:hover td:first-child { border-left-color:rgba(201,168,76,.45); }
+/* View inclusions btn */
+.inc-view-btn{display:inline-flex;align-items:center;gap:.35rem;padding:.28rem .72rem;border-radius:6px;border:1.5px solid var(--border);background:transparent;font-family:var(--font-body);font-size:.7rem;font-weight:500;color:var(--warm-grey);cursor:pointer;transition:border-color .15s,color .15s,background .15s;white-space:nowrap;}
+.inc-view-btn svg{width:11px;height:11px;flex-shrink:0;}
+.inc-view-btn:hover{border-color:var(--gold);color:var(--gold-dark);background:var(--gold-light);}
 
-/* ── CELL TYPES ── */
-.td-name { font-family:var(--font-display); font-weight:700; font-size:.9rem; color:var(--charcoal); white-space:nowrap; }
-.td-supplier { font-size:.72rem; color:var(--warm-grey); margin-top:2px; white-space:nowrap; }
-.td-desc { color:var(--warm-grey); font-size:.78rem; line-height:1.45; min-width:140px; max-width:200px; }
-.td-price { font-weight:700; font-size:.9rem; color:var(--gold-dark); white-space:nowrap; }
-.td-price small { font-size:.66rem; color:var(--warm-grey); font-weight:400; margin-left:2px; }
-.td-cap { display:inline-flex; align-items:center; gap:.38rem; white-space:nowrap; }
-.td-cap svg { flex-shrink:0; }
-.td-event { display:inline-flex; align-items:center; padding:.25rem .65rem; border-radius:20px; font-size:.68rem; font-weight:500; letter-spacing:.04em; background:var(--gold-light); color:var(--gold-dark); border:1px solid rgba(201,168,76,.25); white-space:nowrap; }
+/* Status badges */
+.pk-status{display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .68rem;border-radius:20px;font-size:.67rem;font-weight:600;letter-spacing:.04em;white-space:nowrap;font-family:var(--font-body);}
+.pk-status::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.pk-status.published{background:rgba(16,185,129,.1);color:#065F46;border:1px solid rgba(16,185,129,.22);}
+.pk-status.published::before{background:#10B981;}
+.pk-status.hidden{background:rgba(239,68,68,.1);color:#991B1B;border:1px solid rgba(239,68,68,.22);}
+.pk-status.hidden::before{background:#EF4444;}
 
-/* Inclusions pill button */
-.incl-btn { display:inline-flex; align-items:center; gap:.3rem; padding:.25rem .7rem; border-radius:20px; font-size:.68rem; font-weight:600; background:rgba(201,168,76,.08); color:var(--gold-dark); border:1px solid rgba(201,168,76,.22); cursor:pointer; transition:background .15s,border-color .15s; white-space:nowrap; font-family:var(--font-body); }
-.incl-btn svg { width:10px; height:10px; }
-.incl-btn:hover { background:rgba(201,168,76,.16); border-color:var(--gold); }
-.incl-none { font-size:.75rem; color:#C0B8B0; }
+/* Empty state */
+.pk-empty{text-align:center;padding:4rem 1.5rem;}
+.pk-empty-icon{width:52px;height:52px;border-radius:50%;background:rgba(201,168,76,.08);display:flex;align-items:center;justify-content:center;margin:0 auto .9rem;color:var(--gold-dark);}
+.pk-empty-icon svg{width:24px;height:24px;}
+.pk-empty-title{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--charcoal);margin-bottom:.35rem;}
+.pk-empty-desc{font-size:.8rem;color:var(--warm-grey);line-height:1.6;}
 
-.empty-state { text-align:center; padding:3rem 1rem; color:var(--warm-grey); font-size:.83rem; }
+/* Live-search no-results row */
+.pk-no-results{display:none;text-align:center;padding:3rem 1.5rem;}
+.pk-no-results.visible{display:table-row;}
 
-/* ── MODAL BACKDROP ── */
-.bv-modal-backdrop { display:none; position:fixed; inset:0; background:rgba(30,27,24,.52); z-index:300; align-items:center; justify-content:center; padding:1.5rem; backdrop-filter:blur(3px); }
-.bv-modal-backdrop.open { display:flex; }
+/* Pagination */
+.pk-pagination{padding:1rem 1.25rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;}
 
-/* ── MODAL BOX ── */
-.bv-modal { background:var(--white); border-radius:12px; width:480px; max-width:100%; border-top:2px solid var(--gold); max-height:calc(100vh - 3rem); display:flex; flex-direction:column; overflow:hidden; margin:auto; flex-shrink:0; box-shadow:0 20px 60px rgba(30,27,24,.22); }
-.bv-modal-header { flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:1.1rem 1.4rem; border-bottom:1px solid var(--border); background:var(--white); }
-.bv-modal-title { font-family:var(--font-display); font-size:1.05rem; font-weight:700; color:var(--charcoal); }
-.bv-modal-title em { font-style:italic; color:var(--gold-dark); }
-.bv-modal-close { width:28px; height:28px; border:1px solid var(--border); background:var(--ivory); border-radius:6px; cursor:pointer; font-size:15px; color:var(--warm-grey); display:flex; align-items:center; justify-content:center; transition:border-color .18s,color .18s; }
-.bv-modal-close:hover { border-color:var(--gold); color:var(--gold-dark); }
-.bv-modal-body { padding:1.3rem 1.4rem; overflow-y:auto; flex:1; min-height:0; }
-.bv-modal-body::-webkit-scrollbar { width:4px; }
-.bv-modal-body::-webkit-scrollbar-thumb { background:var(--border-md); border-radius:99px; }
-.bv-modal-footer { flex-shrink:0; padding:.85rem 1.4rem; border-top:1px solid var(--border); display:flex; justify-content:flex-end; background:var(--white); }
-.bv-btn-close { padding:.55rem 1.2rem; border-radius:6px; border:1px solid var(--border-md); background:var(--white); font-size:.78rem; font-weight:500; color:var(--warm-grey); cursor:pointer; font-family:var(--font-body); transition:border-color .18s,color .18s; }
-.bv-btn-close:hover { border-color:var(--gold); color:var(--charcoal); }
+/* Highlight match */
+mark.pk-hl{background:rgba(201,168,76,.22);color:var(--gold-dark);border-radius:2px;padding:0 1px;}
 
-/* Inclusions inside modal */
-.incl-pkg-name { font-family:var(--font-display); font-size:.95rem; font-weight:700; color:var(--charcoal); margin-bottom:.25rem; }
-.incl-pkg-meta { font-size:.72rem; color:var(--warm-grey); margin-bottom:1.1rem; font-family:var(--font-body); }
-.incl-list { display:flex; flex-direction:column; gap:.45rem; }
-.incl-list-item { display:flex; align-items:flex-start; gap:.65rem; padding:.6rem .85rem; border-radius:6px; background:var(--ivory); border:1px solid var(--border); font-size:.82rem; color:var(--charcoal); font-family:var(--font-body); line-height:1.4; }
-.incl-num { width:20px; height:20px; border-radius:50%; background:rgba(201,168,76,.12); border:1px solid rgba(201,168,76,.25); display:flex; align-items:center; justify-content:center; font-size:.58rem; font-weight:700; color:var(--gold-dark); flex-shrink:0; margin-top:1px; }
-.incl-empty { text-align:center; padding:2rem; font-size:.82rem; color:#C0B8B0; font-family:var(--font-body); }
+/* ══════════════════════════════════════════
+   INCLUSIONS MODAL
+══════════════════════════════════════════ */
+.mo-overlay{
+    position:fixed;inset:0;z-index:8000;
+    background:rgba(30,27,24,.55);
+    display:none;align-items:center;justify-content:center;
+    padding:1rem;
+    backdrop-filter:blur(3px);
+    overflow-y:auto;
+}
+.mo-overlay.open{display:flex;}
 
-/* ── PAGINATION ── */
-.pkg-pagination { display:flex; justify-content:flex-end; margin-top:1rem; }
+.mo-box{
+    background:var(--white);border-radius:14px;border:1px solid var(--border);
+    box-shadow:0 8px 40px rgba(30,27,24,.18);
+    width:100%;max-width:480px;
+    animation:moSlide .22s ease;
+    margin:auto;flex-shrink:0;
+    display:flex;flex-direction:column;
+    max-height:calc(100vh - 2rem);
+    overflow:hidden;
+}
+@keyframes moSlide{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+.mo-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);
+    flex-shrink:0;
+}
+.mo-head-l{display:flex;align-items:center;gap:.65rem;}
+.mo-icon{width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);flex-shrink:0;}
+.mo-icon svg{width:15px;height:15px;}
+.mo-title{font-family:var(--font-display);font-size:.95rem;font-weight:700;color:var(--charcoal);}
+.mo-close{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--warm-grey);transition:border-color .15s,color .15s;}
+.mo-close:hover{border-color:var(--gold);color:var(--gold-dark);}
+.mo-close svg{width:12px;height:12px;}
+
+.mo-meta{
+    display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;
+    padding:.8rem 1.4rem;background:var(--ivory);border-bottom:1px solid var(--border);
+    flex-shrink:0;
+}
+.mo-meta-pill{
+    display:inline-flex;align-items:center;gap:.3rem;
+    padding:.2rem .6rem;border-radius:20px;
+    font-size:.67rem;font-weight:500;letter-spacing:.04em;
+    font-family:var(--font-body);white-space:nowrap;
+}
+.mo-meta-pill.price{background:var(--gold-light);color:var(--gold-dark);border:1px solid rgba(201,168,76,.25);}
+.mo-meta-pill.type{background:rgba(16,185,129,.08);color:#065F46;border:1px solid rgba(16,185,129,.2);}
+.mo-meta-pill.status-pub{background:rgba(16,185,129,.1);color:#065F46;border:1px solid rgba(16,185,129,.22);}
+.mo-meta-pill.status-hid{background:rgba(239,68,68,.1);color:#991B1B;border:1px solid rgba(239,68,68,.22);}
+.mo-meta-pill svg{width:10px;height:10px;flex-shrink:0;}
+.mo-meta-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+
+.mo-body{
+    padding:1.2rem 1.4rem;
+    overflow-y:auto;flex:1;min-height:0;
+}
+.mo-body::-webkit-scrollbar{width:4px;}
+.mo-body::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:99px;}
+.mo-body::-webkit-scrollbar-thumb:hover{background:var(--gold);}
+
+/* Supplier row */
+.mo-supplier-row{
+    display:flex;align-items:center;gap:.6rem;
+    padding:.65rem .9rem;background:var(--ivory);
+    border:1px solid var(--border);border-radius:8px;
+    margin-bottom:1.1rem;
+    font-family:var(--font-body);
+}
+.mo-supplier-row svg{width:14px;height:14px;color:var(--gold-dark);flex-shrink:0;}
+.mo-supplier-label{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--warm-grey);}
+.mo-supplier-name{font-size:.82rem;font-weight:500;color:var(--charcoal);}
+
+/* Inclusions section */
+.mo-inc-header{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:.7rem;
+}
+.mo-inc-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-grey);font-family:var(--font-body);}
+.mo-inc-count{font-size:.7rem;color:var(--gold-dark);font-weight:500;font-family:var(--font-body);}
+
+.mo-inc-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.55rem;}
+.mo-inc-item{
+    display:flex;align-items:flex-start;gap:.75rem;
+    padding:.7rem .9rem;
+    background:var(--ivory);
+    border:1px solid var(--border);
+    border-radius:8px;
+    transition:border-color .15s,background .15s;
+}
+.mo-inc-item:hover{border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.04);}
+.mo-inc-dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--gold);flex-shrink:0;margin-top:.38rem;
+}
+.mo-inc-text{font-size:.82rem;color:var(--charcoal);line-height:1.5;font-family:var(--font-body);}
+
+/* Empty inclusions */
+.mo-inc-empty{
+    text-align:center;padding:2rem 1rem;
+    background:var(--ivory);border:1.5px dashed var(--border);
+    border-radius:10px;
+}
+.mo-inc-empty svg{width:22px;height:22px;color:#C0B8B0;margin-bottom:.5rem;}
+.mo-inc-empty p{font-size:.78rem;color:var(--warm-grey);font-family:var(--font-body);}
+
+.mo-foot{
+    padding:.85rem 1.4rem;border-top:1px solid var(--border);
+    display:flex;align-items:center;justify-content:flex-end;
+    flex-shrink:0;background:var(--white);
+}
+.mo-btn-close{display:inline-flex;align-items:center;gap:.4rem;padding:.62rem 1.3rem;border-radius:6px;border:1.5px solid var(--border);background:var(--white);font-family:var(--font-body);font-size:.82rem;font-weight:500;color:var(--warm-grey);cursor:pointer;transition:border-color .2s,color .2s;}
+.mo-btn-close:hover{border-color:var(--gold);color:var(--charcoal);}
 </style>
 
-<div class="p-6">
+<div class="p-6" style="max-width:1100px;margin:auto;">
 
-    <div class="pkg-top">
+    {{-- ── TOP ROW ── --}}
+    <div class="pk-top">
         <div>
-            <h2 class="pkg-title">All <em>Packages</em></h2>
-            <p class="pkg-subtitle">Browse event packages with inclusions from all suppliers</p>
+            <h2 class="pk-title">Package <em>Management</em></h2>
+            <p class="pk-subtitle">Browse and manage all supplier packages</p>
         </div>
-         
- 
-        @if(isset($packages))
-            <span class="pkg-badge">{{ $packages->total() }} package{{ $packages->total() !== 1 ? 's' : '' }}</span>
-        @endif
     </div>
 
-    {{-- Toolbar: search + filter --}}
-    <form method="GET" action="{{ request()->url() }}" class="pkg-toolbar">
-        <div class="pkg-search-wrap">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
-                <circle cx="9" cy="9" r="6"/><path d="M15 15l3 3"/>
+    {{-- ── FILTER BAR ── --}}
+    <div class="pk-filter-bar">
+
+        <div class="pk-search-wrap">
+            <svg class="pk-search-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="8.5" cy="8.5" r="5.5"/><path d="M15 15l-3-3"/>
             </svg>
-            <input type="text" name="search" value="{{ request('search') }}"
-                   placeholder="Search packages by name…">
+            <input
+                id="pkSearch"
+                type="text"
+                class="pk-search-input"
+                placeholder="Search package or supplier…"
+                autocomplete="off"
+                value="{{ request('search') }}"
+            >
+            <button type="button" class="pk-search-clear" id="pkSearchClear" title="Clear search">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
+            </button>
         </div>
-        <select name="event_type" class="pkg-filter-select" onchange="this.form.submit()">
-            <option value="">All event types</option>
-            @foreach(['Wedding','Debut','Birthday','Corporate','Anniversary','Baptism','Other'] as $et)
-                <option value="{{ $et }}" {{ request('event_type') === $et ? 'selected' : '' }}>{{ $et }}</option>
-            @endforeach
-        </select>
-        <button type="submit" style="display:none;"></button>
-    </form>
 
-    <div class="pkg-card">
+        <div class="pk-sel-wrap">
+            <select id="pkStatus" class="pk-select">
+                <option value="">All Statuses</option>
+                <option value="published" {{ request('status') === '1' ? 'selected' : '' }}>Published</option>
+                <option value="hidden"    {{ request('status') === '0' ? 'selected' : '' }}>Hidden</option>
+            </select>
+        </div>
 
+        <div class="pk-sel-wrap">
+            <select id="pkType" class="pk-select">
+                <option value="">All Types</option>
+                @foreach($packages->pluck('event_type')->unique()->filter()->sort()->values() as $type)
+                    <option value="{{ $type }}">{{ $type }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="pk-count-badge" id="pkCount">
+            Showing <span id="pkCountNum">{{ $packages->count() }}</span> of {{ $packages->total() }} packages
+        </div>
+
+    </div>
+
+    {{-- ── TABLE CARD ── --}}
+    @if($packages->count())
+    <div class="pk-card">
         <div class="scroll-hint">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M4 10h12M10 4l6 6-6 6"/>
-            </svg>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10h12M10 4l6 6-6 6"/></svg>
             Scroll sideways to see more
         </div>
-
         <div class="tbl-wrap">
-            <table class="pkg-table">
+            <table class="pk-table" id="pkTable">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Package Name</th>
-                        <th>Description</th>
+                        <th>Package</th>
+                        <th>Supplier</th>
                         <th>Price</th>
-                        <th>Guests</th>
-                        <th>Event Type</th>
-                        <th>Inclusions</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th style="text-align:center;">Inclusions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($packages as $i => $package)
-                    @php
-                        $inclusions = $package->inclusions ?? collect();
-                        $inclCount  = count($inclusions);
-                    @endphp
-                    <tr>
-                        {{-- Row number --}}
-                        <td style="color:#C0B8B0;font-size:.72rem;width:40px;">
-                            {{ $packages->firstItem() + $i }}
+                <tbody id="pkTbody">
+                    @foreach($packages as $package)
+                    <tr
+                        data-name="{{ strtolower($package->name) }}"
+                        data-supplier="{{ strtolower($package->supplier->business_name ?? '') }}"
+                        data-status="{{ $package->is_listed ? 'published' : 'hidden' }}"
+                        data-type="{{ strtolower($package->event_type) }}"
+                    >
+                        <td style="color:#C0B8B0;font-size:.72rem;width:44px;">{{ $loop->iteration }}</td>
+
+                        <td>
+                            <div class="td-pkg-name" data-field="name">{{ $package->name }}</div>
                         </td>
 
-                        {{-- Name + supplier --}}
                         <td>
-                            <div class="td-name">{{ $package->name }}</div>
-                            @if($package->supplier)
-                                <div class="td-supplier">
-                                    {{ $package->supplier->business_name
-                                        ?? trim(($package->supplier->first_name ?? '') . ' ' . ($package->supplier->last_name ?? ''))
-                                        ?: 'Unknown Supplier' }}
-                                </div>
-                            @endif
-                        </td>
-
-                        {{-- Description --}}
-                        <td>
-                            <div class="td-desc">{{ Str::limit($package->description, 55) }}</div>
-                        </td>
-
-                        {{-- Price --}}
-                        <td>
-                            <div class="td-price">
-                                ₱{{ number_format($package->price, 2) }}
-                                <small>starting</small>
+                            <div class="td-supplier" data-field="supplier">
+                                {{ $package->supplier->business_name ?? 'N/A' }}
                             </div>
                         </td>
 
-                        {{-- Guest capacity --}}
                         <td>
-                            <div class="td-cap">
-                                <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="#706B65" stroke-width="1.6">
-                                    <circle cx="7" cy="6" r="3"/>
-                                    <path d="M1 17c0-3 2.7-5 6-5"/>
-                                    <circle cx="13" cy="6" r="3"/>
-                                    <path d="M19 17c0-3-2.7-5-6-5s-6 2-6 5"/>
-                                </svg>
-                                {{ number_format($package->guest_capacity) }}
-                            </div>
+                            <div class="td-price">₱{{ number_format($package->price) }}</div>
                         </td>
 
-                        {{-- Event type --}}
                         <td>
-                            <span class="td-event">{{ $package->event_type }}</span>
+                            <span class="td-type">{{ $package->event_type }}</span>
                         </td>
 
-                        {{-- Inclusions --}}
                         <td>
-                            @if($inclCount > 0)
-                                <button type="button" class="incl-btn"
-                                    onclick="openInclModal(
-                                        '{{ addslashes($package->name) }}',
-                                        '{{ addslashes($package->event_type ?? '') }}',
-                                        {{ json_encode($inclusions->pluck('title')->toArray()) }}
-                                    )">
-                                    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
-                                        <path d="M2 4h10M2 7h10M2 10h6"/>
-                                    </svg>
-                                    {{ $inclCount }} item{{ $inclCount !== 1 ? 's' : '' }}
-                                </button>
+                            @if($package->is_listed)
+                                <span class="pk-status published">Published</span>
                             @else
-                                <span class="incl-none">None</span>
+                                <span class="pk-status hidden">Hidden</span>
                             @endif
                         </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            No packages found
-                            @if(request('search') || request('event_type'))
-                                for your current filters.
-                            @endif
+
+                        <td style="text-align:center;">
+                            {{-- View Inclusions button — passes all data via data attributes --}}
+                            <button
+                                type="button"
+                                class="inc-view-btn"
+                                onclick="openIncModal(this)"
+                                data-pkg-name="{{ $package->name }}"
+                                data-pkg-price="₱{{ number_format($package->price) }}"
+                                data-pkg-type="{{ $package->event_type }}"
+                                data-pkg-status="{{ $package->is_listed ? 'published' : 'hidden' }}"
+                                data-pkg-supplier="{{ $package->supplier->business_name ?? 'N/A' }}"
+                                data-pkg-count="{{ $package->inclusions->count() }}"
+                                data-pkg-inclusions="{{ $package->inclusions->pluck('title')->toJson() }}"
+                            >
+                                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <circle cx="7" cy="7" r="5.5"/>
+                                    <path d="M7 5v4M7 9.5v.5"/>
+                                </svg>
+                                {{ $package->inclusions->count() }}
+                                {{ Str::plural('item', $package->inclusions->count()) }}
+                            </button>
                         </td>
                     </tr>
-                    @endforelse
+                    @endforeach
+
+                    {{-- Live-search no-results row --}}
+                    <tr class="pk-no-results" id="pkNoResults">
+                        <td colspan="7" style="padding:3rem 1.5rem;">
+                            <div style="text-align:center;">
+                                <div class="pk-empty-icon" style="margin:0 auto .9rem;">
+                                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <circle cx="8.5" cy="8.5" r="5.5"/><path d="M15 15l-3-3"/>
+                                    </svg>
+                                </div>
+                                <div class="pk-empty-title">No packages match your search</div>
+                                <div class="pk-empty-desc">Try a different name or clear the filters.</div>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
+
+        <div class="pk-pagination">
+            {{ $packages->appends(request()->query())->links() }}
+        </div>
     </div>
 
-    {{-- Pagination --}}
-    @if(isset($packages) && $packages->hasPages())
-    <div class="pkg-pagination">
-        {{ $packages->withQueryString()->links() }}
+    @else
+    <div class="pk-card">
+        <div class="pk-empty">
+            <div class="pk-empty-icon">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 8h6M7 11h4"/>
+                </svg>
+            </div>
+            <div class="pk-empty-title">No Packages Found</div>
+            <div class="pk-empty-desc">There are no packages matching your current filters.</div>
+        </div>
     </div>
     @endif
 
 </div>
 
-{{-- ════════════════════════════════
+{{-- ══════════════════════════════════════════
      INCLUSIONS MODAL
-════════════════════════════════ --}}
-<div id="inclModal" class="bv-modal-backdrop">
-    <div class="bv-modal">
-        <div class="bv-modal-header">
-            <span class="bv-modal-title"><em>Package</em> Inclusions</span>
-            <button class="bv-modal-close" onclick="closeInclModal()">✕</button>
+══════════════════════════════════════════ --}}
+<div class="mo-overlay" id="incOverlay" onclick="if(event.target===this)closeIncModal()">
+    <div class="mo-box">
+
+        {{-- Header --}}
+        <div class="mo-head">
+            <div class="mo-head-l">
+                <div class="mo-icon">
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                        <rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 8h6M7 11h4"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="mo-title" id="moTitle">Package Inclusions</div>
+                </div>
+            </div>
+            <button type="button" class="mo-close" onclick="closeIncModal()">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
+            </button>
         </div>
-        <div class="bv-modal-body">
-            <div class="incl-pkg-name" id="modal-pkg-name"></div>
-            <div class="incl-pkg-meta" id="modal-pkg-meta"></div>
-            <div class="incl-list" id="modal-incl-list"></div>
+
+        {{-- Meta strip --}}
+        <div class="mo-meta" id="moMeta">
+            {{-- Populated by JS --}}
         </div>
-        <div class="bv-modal-footer">
-            <button type="button" class="bv-btn-close" onclick="closeInclModal()">Close</button>
+
+        {{-- Body --}}
+        <div class="mo-body">
+
+            {{-- Supplier --}}
+            <div class="mo-supplier-row" id="moSupplierRow">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path d="M3 9l7-7 7 7v9a1 1 0 01-1 1H4a1 1 0 01-1-1z"/>
+                    <rect x="7" y="13" width="6" height="6" rx="1"/>
+                </svg>
+                <div>
+                    <div class="mo-supplier-label">Supplier</div>
+                    <div class="mo-supplier-name" id="moSupplierName"></div>
+                </div>
+            </div>
+
+            {{-- Inclusions list --}}
+            <div class="mo-inc-header">
+                <div class="mo-inc-label">Inclusions</div>
+                <div class="mo-inc-count" id="moIncCount"></div>
+            </div>
+
+            <ul class="mo-inc-list" id="moIncList">
+                {{-- Populated by JS --}}
+            </ul>
+
         </div>
+
+        {{-- Footer --}}
+        <div class="mo-foot">
+            <button type="button" class="mo-btn-close" onclick="closeIncModal()">Close</button>
+        </div>
+
     </div>
 </div>
 
 <script>
-function openInclModal(name, eventType, inclusions) {
-    document.getElementById('modal-pkg-name').textContent = name;
-    document.getElementById('modal-pkg-meta').textContent = eventType ? eventType + ' package' : 'Package';
+/* ═══════════════════════════════════════
+   INCLUSIONS MODAL
+═══════════════════════════════════════ */
+function openIncModal(btn) {
+    var name        = btn.dataset.pkgName;
+    var price       = btn.dataset.pkgPrice;
+    var type        = btn.dataset.pkgType;
+    var status      = btn.dataset.pkgStatus;
+    var supplier    = btn.dataset.pkgSupplier;
+    var count       = parseInt(btn.dataset.pkgCount, 10);
+    var inclusions  = JSON.parse(btn.dataset.pkgInclusions || '[]');
 
-    const list = document.getElementById('modal-incl-list');
+    /* Title */
+    document.getElementById('moTitle').textContent = name;
+
+    /* Meta strip */
+    var statusClass = status === 'published' ? 'status-pub' : 'status-hid';
+    var statusDot   = status === 'published' ? '#10B981' : '#EF4444';
+    var statusLabel = status === 'published' ? 'Published' : 'Hidden';
+    document.getElementById('moMeta').innerHTML =
+        '<span class="mo-meta-pill price">' +
+            '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="7"/><path d="M10 6v8M7.5 8.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3H13"/></svg>' +
+            price +
+        '</span>' +
+        '<span class="mo-meta-pill type">' +
+            '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="14" height="13" rx="2"/><path d="M3 8h14M8 4V2M12 4V2"/></svg>' +
+            type +
+        '</span>' +
+        '<span class="mo-meta-pill ' + statusClass + '">' +
+            '<span class="mo-meta-dot" style="background:' + statusDot + '"></span>' +
+            statusLabel +
+        '</span>';
+
+    /* Supplier */
+    document.getElementById('moSupplierName').textContent = supplier;
+
+    /* Count */
+    document.getElementById('moIncCount').textContent =
+        count + (count === 1 ? ' inclusion' : ' inclusions');
+
+    /* List */
+    var list = document.getElementById('moIncList');
     list.innerHTML = '';
 
-    const items = Array.isArray(inclusions) ? inclusions.filter(Boolean) : [];
-
-    if (items.length === 0) {
-        list.innerHTML = '<div class="incl-empty">No inclusions listed for this package.</div>';
+    if (inclusions.length === 0) {
+        list.innerHTML =
+            '<li><div class="mo-inc-empty">' +
+                '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 8h6M7 11h4"/></svg>' +
+                '<p>No inclusions added for this package.</p>' +
+            '</div></li>';
     } else {
-        items.forEach(function(item, idx) {
-            const el = document.createElement('div');
-            el.className = 'incl-list-item';
-            el.innerHTML =
-                '<span class="incl-num">' + (idx + 1) + '</span>' +
-                '<span>' + escHtml(item) + '</span>';
-            list.appendChild(el);
+        inclusions.forEach(function(title, idx) {
+            var li = document.createElement('li');
+            li.className = 'mo-inc-item';
+            li.innerHTML =
+                '<div class="mo-inc-dot"></div>' +
+                '<div class="mo-inc-text">' + escHtml(title) + '</div>';
+            list.appendChild(li);
         });
     }
 
-    document.getElementById('inclModal').classList.add('open');
+    /* Open */
+    document.getElementById('incOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
 }
 
-function closeInclModal() {
-    document.getElementById('inclModal').classList.remove('open');
+function closeIncModal() {
+    document.getElementById('incOverlay').classList.remove('open');
     document.body.style.overflow = '';
 }
 
-document.getElementById('inclModal').addEventListener('click', function(e) {
-    if (e.target === this) closeInclModal();
-});
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeInclModal();
-});
-
+/* Escape HTML to prevent XSS */
 function escHtml(str) {
     return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
 }
 
-/* Live search on keyup — optional enhancement */
-document.querySelector('.pkg-search-wrap input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') this.closest('form').submit();
+/* Close on Escape */
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeIncModal();
 });
+
+/* ═══════════════════════════════════════
+   LIVE SEARCH + FILTERS
+═══════════════════════════════════════ */
+(function () {
+    var searchInput  = document.getElementById('pkSearch');
+    var clearBtn     = document.getElementById('pkSearchClear');
+    var statusSelect = document.getElementById('pkStatus');
+    var typeSelect   = document.getElementById('pkType');
+    var tbody        = document.getElementById('pkTbody');
+    var noResults    = document.getElementById('pkNoResults');
+    var countNum     = document.getElementById('pkCountNum');
+
+    if (!tbody) return;
+
+    var rows = Array.from(tbody.querySelectorAll('tr[data-name]'));
+
+    rows.forEach(function (row) {
+        row.querySelectorAll('[data-field]').forEach(function (el) {
+            el.dataset.original = el.textContent.trim();
+        });
+    });
+
+    function highlight(el, term) {
+        var orig = el.dataset.original;
+        if (!term) { el.innerHTML = orig; return; }
+        var escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        el.innerHTML = orig.replace(new RegExp('(' + escaped + ')', 'gi'),
+            '<mark class="pk-hl">$1</mark>');
+    }
+
+    function applyFilters() {
+        var term    = searchInput.value.trim().toLowerCase();
+        var status  = statusSelect.value;
+        var type    = typeSelect.value.toLowerCase();
+        var visible = 0;
+
+        rows.forEach(function (row) {
+            var matchSearch = !term ||
+                row.dataset.name.includes(term) ||
+                row.dataset.supplier.includes(term);
+            var matchStatus = !status || row.dataset.status === status;
+            var matchType   = !type   || row.dataset.type   === type;
+            var show = matchSearch && matchStatus && matchType;
+
+            row.classList.toggle('pk-hidden', !show);
+            if (show) {
+                visible++;
+                row.querySelectorAll('[data-field]').forEach(function (el) {
+                    highlight(el, term);
+                });
+            }
+        });
+
+        noResults.classList.toggle('visible', visible === 0);
+        if (countNum) countNum.textContent = visible;
+        clearBtn.classList.toggle('visible', searchInput.value.length > 0);
+    }
+
+    var _timer;
+    searchInput.addEventListener('input', function () {
+        clearTimeout(_timer);
+        _timer = setTimeout(applyFilters, 180);
+    });
+    clearBtn.addEventListener('click', function () {
+        searchInput.value = '';
+        applyFilters();
+        searchInput.focus();
+    });
+    statusSelect.addEventListener('change', applyFilters);
+    typeSelect.addEventListener('change', applyFilters);
+    applyFilters();
+})();
 </script>
 
 </x-app-layout>

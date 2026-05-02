@@ -555,22 +555,21 @@
             <div class="progress-bar" id="progressBar"></div>
         </section>
 
-        <!-- STATS BAR -->
-        <div class="stats-bar">
-            <div class="stat-item">
-                <span class="stat-num">2,400+</span>
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-item" data-target="2400" data-suffix="+" data-prefix="">
+                <span class="stat-num">0</span>
                 <div class="stat-label">Verified Suppliers</div>
             </div>
-            <div class="stat-item">
-                <span class="stat-num">18,000+</span>
+            <div class="stat-item" data-target="18000" data-suffix="+" data-prefix="">
+                <span class="stat-num">0</span>
                 <div class="stat-label">Events Managed</div>
             </div>
-            <div class="stat-item">
-                <span class="stat-num">98%</span>
+            <div class="stat-item" data-target="98" data-suffix="%" data-prefix="">
+                <span class="stat-num">0</span>
                 <div class="stat-label">Client Satisfaction</div>
             </div>
-            <div class="stat-item">
-                <span class="stat-num">150+</span>
+            <div class="stat-item" data-target="150" data-suffix="+" data-prefix="">
+                <span class="stat-num">0</span>
                 <div class="stat-label">Cities Covered</div>
             </div>
         </div>
@@ -829,6 +828,8 @@
             document.addEventListener('click', (e) => {
                 if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) closeMenu();
             });
+
+            
         </script>
     </body>
 </html>

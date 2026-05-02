@@ -69,12 +69,12 @@
                 <path d="M2 17c0-3.3 3.1-6 7-6"/>
                 <path d="M17 14l-3-3-3 3M14 11v6"/>
             </svg>
-            <span>Browse Suppliers</span>
-            <span class="nav-tooltip">Browse Suppliers</span>
+            <span>Explore</span>
+            <span class="nav-tooltip">Explore</span>
         </a>
         
 
-        {{-- AI Recommendations --}}
+        {{-- AI Recommendations 
         <a href="#"
            class="nav-item {{ request()->is('client/shows*') || request()->is('client/recommendations*') ? 'active' : '' }}">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
@@ -84,9 +84,9 @@
             </svg>
             <span>AI Recommendations</span>
             <span class="nav-tooltip">AI Recommendations</span>
-        </a>
+        </a>--}}
 
-        {{-- Shortlist --}}
+        {{-- Shortlist 
         <a href="#"
            class="nav-item {{ request()->is('client/shortlist*') ? 'active' : '' }}">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
@@ -94,9 +94,9 @@
             </svg>
             <span>Shortlist</span>
             <span class="nav-tooltip">Shortlist</span>
-        </a>
+        </a>--}}
 
-        {{-- Budget Tracker --}}
+        {{-- Budget Tracker 
         <a href="#"
            class="nav-item {{ request()->is('client/budget*') ? 'active' : '' }}">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
@@ -105,7 +105,7 @@
             </svg>
             <span>Budget Tracker</span>
             <span class="nav-tooltip">Budget Tracker</span>
-        </a>
+        </a>--}}
 
         {{-- Timeline --}}
         <a href="{{ route('client.timeline') }}"

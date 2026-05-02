@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Packages — Bikol's Craft</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
+<x-client-layout>
     <style>
         :root {
             --gold:         #C9A84C;
@@ -27,47 +17,6 @@
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: var(--font-body); background: var(--ivory); color: var(--charcoal); }
-
-        /* ── NAVBAR ── */
-        nav.main-nav {
-            position: sticky; top: 0; z-index: 100;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 1.1rem 3rem;
-            background: rgba(255,255,255,0.94); backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(201,168,76,0.18);
-        }
-        .nav-logo { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--charcoal); text-decoration: none; }
-        .nav-logo span { color: var(--gold); font-style: italic; }
-        .nav-links { display: flex; gap: 0.25rem; align-items: center; }
-        .nav-links a { font-size: 0.85rem; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; color: var(--warm-grey); text-decoration: none; padding: 0.45rem 0.85rem; border-radius: 3px; border-bottom: 2px solid transparent; transition: color 0.2s, background 0.2s, border-color 0.2s; }
-        .nav-links a:hover { color: var(--gold-dark); background: rgba(201,168,76,0.07); }
-        .nav-links a.nav-active { color: var(--gold-dark); background: rgba(201,168,76,0.12); border-bottom: 2px solid var(--gold); font-weight: 500; }
-        .nav-cta { background: var(--charcoal); color: var(--white) !important; padding: 0.5rem 1.3rem; border-radius: 2px; font-size: 0.78rem !important; letter-spacing: 0.06em !important; border-bottom: 2px solid transparent !important; transition: background 0.2s !important; }
-        .nav-cta:hover { background: var(--gold-dark) !important; }
-
-        /* ── HAMBURGER ── */
-        .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 4px; z-index: 200; }
-        .hamburger span { display: block; width: 100%; height: 2px; background: var(--charcoal); border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease; transform-origin: center; }
-        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-        .hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
-        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-        /* ── MOBILE DRAWER ── */
-        .mobile-menu { display: none; position: fixed; top: 62px; left: 0; right: 0; background: var(--white); z-index: 99; padding: 1.5rem 2rem 2.5rem; flex-direction: column; gap: 0; box-shadow: 0 8px 32px rgba(30,27,24,0.1); transform: translateY(-110%); transition: transform 0.38s cubic-bezier(0.4,0,0.2,1); border-top: 2px solid rgba(201,168,76,0.2); }
-        .mobile-menu.open { transform: translateY(0); }
-        .mobile-menu a { font-size: 1.05rem; font-weight: 400; letter-spacing: 0.05em; text-transform: uppercase; color: var(--charcoal); text-decoration: none; padding: 1rem 0.75rem; border-bottom: 1px solid rgba(201,168,76,0.15); border-left: 3px solid transparent; transition: color 0.2s, background 0.2s, border-color 0.2s; }
-        .mobile-menu a:last-child { border-bottom: none; }
-        .mobile-menu a:hover { color: var(--gold-dark); background: rgba(201,168,76,0.05); }
-        .mobile-menu a.mob-active { color: var(--gold-dark); background: rgba(201,168,76,0.10); border-left: 3px solid var(--gold); padding-left: calc(0.75rem + 2px); font-weight: 500; }
-        .mobile-menu .mob-cta { margin-top: 1.5rem; background: var(--charcoal) !important; color: var(--white) !important; text-align: center; padding: 0.85rem 1.4rem; border-radius: 2px; font-size: 0.85rem !important; letter-spacing: 0.08em !important; border-bottom: none !important; border-left: 3px solid transparent !important; }
-        .mobile-menu .mob-cta:hover { background: var(--gold-dark) !important; }
-
-        @media (max-width: 768px) {
-            .hamburger { display: flex; }
-            .mobile-menu { display: flex; }
-            .nav-links { display: none; }
-            nav.main-nav { padding: 1rem 1.25rem; }
-        }
 
         /* ── PAGE HERO ── */
         .page-hero { background: var(--charcoal); padding: 3rem 3rem 2.75rem; position: relative; overflow: hidden; }
@@ -100,19 +49,9 @@
         /* ── DIVIDER ── */
         .section-divider { border: none; border-top: 1px solid var(--border); margin: 2.75rem 0; }
 
-        /* ── FEATURED BADGE ── */
-        .featured-badge {
-            position: absolute; top: 0.55rem; left: 0.55rem; z-index: 2;
-            display: inline-flex; align-items: center; gap: 0.25rem;
-            font-size: 0.56rem; font-weight: 700; letter-spacing: 0.08em;
-            text-transform: uppercase; padding: 0.2rem 0.55rem;
-            border-radius: 20px;
-            background: var(--gold); color: var(--charcoal);
-        }
-        .featured-badge svg { width: 8px; height: 8px; fill: var(--charcoal); }
-
         /* ════════════════════════════════════════
-           SUPPLIER GRID
+           SUPPLIER GRID  — full styles including
+           the FIX: logo centered on cover line
         ════════════════════════════════════════ */
         .sp-grid-section { margin-bottom: 0; }
         .sp-section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
@@ -185,7 +124,10 @@
             backdrop-filter: blur(4px);
         }
 
-        /* Logo row */
+        /* ────────────────────────────────────────
+           FIX: Logo row — logo perfectly centered
+           on the cover/body dividing line
+        ──────────────────────────────────────── */
         .sp-card-logo-row {
             display: flex; align-items: flex-end; justify-content: space-between;
             padding: 0 1rem;
@@ -194,25 +136,45 @@
         }
 
         .sp-logo {
-            width: 60px; height: 60px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             border: 3px solid var(--white);
             box-shadow: 0 2px 10px rgba(30,27,24,0.18);
             background: var(--charcoal);
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: var(--font-display);
-            font-size: 1rem; font-weight: 700; color: var(--gold);
-            overflow: hidden; flex-shrink: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--gold);
+            overflow: hidden;
+            flex-shrink: 0;
         }
-        .sp-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .sp-logo img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block;
+        }
 
+        /* Rating badge — sits on the right side of the logo row */
+        .sp-card-rating {
+            position: absolute;
+            right: 1rem;
+             background: var(--white); border: 1px solid var(--border);
+            padding: 2px 7px; border-radius: 999px;
+            box-shadow: 0 1px 4px rgba(30,27,24,0.08);
+        }
         .sp-card-rating {
             display: flex; align-items: center; gap: 3px;
             background: var(--white); border: 1px solid var(--border);
             padding: 2px 7px; border-radius: 999px;
             box-shadow: 0 1px 4px rgba(30,27,24,0.08);
         }
-        .sp-card-rating svg { width: 11px; height: 11px; fill: var(--gold); stroke: var(--gold-dark); stroke-width: 1; }
+        .sp-card-rating svg {
+            width: 11px; height: 11px;
+            fill: var(--gold); stroke: var(--gold-dark); stroke-width: 1;
+        }
         .sp-card-rating-val { font-size: 0.72rem; font-weight: 700; }
         .sp-card-rating-ct  { font-size: 0.63rem; color: var(--warm-grey); font-weight: 400; }
 
@@ -229,7 +191,17 @@
         .sp-location svg { width: 9px; height: 9px; flex-shrink: 0; color: var(--gold-dark); }
         .sp-card-divider { border: none; border-top: 1px solid var(--border); margin-top: 0.5rem; }
 
-        /* Empty state */
+        /* Empty / no-results states */
+        .sp-no-results {
+            display: none; grid-column: 1 / -1; text-align: center;
+            padding: 3rem 1rem; background: var(--white);
+            border: 1px solid var(--border); border-radius: 12px;
+        }
+        .sp-no-results.visible { display: block; }
+        .sp-no-results svg { width: 36px; height: 36px; color: rgba(201,168,76,0.4); margin-bottom: 0.75rem; }
+        .sp-no-results-title { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--charcoal); margin-bottom: 0.3rem; }
+        .sp-no-results-sub { font-size: 0.8rem; color: var(--warm-grey); }
+
         .sp-empty { text-align: center; padding: 4rem 1rem; }
         .sp-empty svg { width: 40px; height: 40px; color: rgba(201,168,76,0.35); margin-bottom: 0.75rem; }
         .sp-empty-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--charcoal); margin-bottom: 0.35rem; }
@@ -297,71 +269,6 @@
         .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.28); }
         @media (max-width: 640px) { footer { padding: 2rem 1.25rem; } }
     </style>
-</head>
-<body>
-
-    {{-- ── NAVBAR ── --}}
-    <nav class="main-nav">
-        <a href="{{ route('welcomepage.welcome') }}" class="nav-logo">Bikol's<span>Craft</span></a>
-        <div class="nav-links">
-            <a href="{{ route('welcomepage.welcome') }}"
-               class="{{ request()->routeIs('welcomepage.welcome') ? 'nav-active' : '' }}">Home</a>
-
-            <a href="{{ route('welcomepage.profile') }}"
-               class="{{ request()->routeIs('welcomepage.profile') ? 'nav-active' : '' }}">Suppliers</a>
-
-            <a href="#"
-               class="{{ request()->routeIs('events*') ? 'nav-active' : '' }}">Events</a>
-
-            <a href="{{ route('welcomepage.package') }}"
-               class="{{ request()->routeIs('welcomepage.package') ? 'nav-active' : '' }}">Packages</a>
-
-            @if (Route::has('login'))
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="nav-cta">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}"
-                       class="{{ request()->routeIs('login') ? 'nav-active' : '' }}">Sign In</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="nav-cta">Get Started</a>
-                    @endif
-                @endauth
-            @endif
-        </div>
-        <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
-            <span></span><span></span><span></span>
-        </button>
-    </nav>
-
-    {{-- ── MOBILE DRAWER ── --}}
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="{{ route('welcomepage.welcome') }}"
-           class="{{ request()->routeIs('welcomepage.welcome') ? 'mob-active' : '' }}"
-           onclick="closeMenu()">Home</a>
-
-        <a href="{{ route('welcomepage.profile') }}"
-           class="{{ request()->routeIs('welcomepage.profile') ? 'mob-active' : '' }}"
-           onclick="closeMenu()">Suppliers</a>
-
-        <a href="#"
-           class="{{ request()->routeIs('events*') ? 'mob-active' : '' }}"
-           onclick="closeMenu()">Events</a>
-
-        <a href="{{ route('welcomepage.package') }}"
-           class="{{ request()->routeIs('welcomepage.package') ? 'mob-active' : '' }}"
-           onclick="closeMenu()">Packages</a>
-
-        @if (Route::has('login'))
-            @auth
-                <a href="{{ url('/dashboard') }}" class="mob-cta">Dashboard</a>
-            @else
-                <a href="{{ route('login') }}" class="mob-cta">Sign In</a>
-                @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="mob-cta" style="margin-top:0.5rem;">Get Started</a>
-                @endif
-            @endauth
-        @endif
-    </div>
 
     {{-- ── PAGE HERO ── --}}
     <div class="page-hero">
@@ -387,10 +294,10 @@
                 </div>
                 <div>
                     <div class="hs-title">Featured <em>Suppliers</em></div>
-                    <div class="hs-sub">Hand-picked trusted suppliers for your special events</div>
+                    <div class="hs-sub">Trusted suppliers for your special events</div>
                 </div>
             </div>
-            <a href="{{ route('welcomepage.profile') }}" class="hs-link">
+            <a href="{{ route('client.all.suppliers') }}" class="hs-link">
                 View all suppliers
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 8h10M9 4l4 4-4 4"/>
@@ -400,32 +307,39 @@
 
         <div class="sp-grid-section">
             <div class="sp-section-head">
-                <span class="sp-section-label">Featured Suppliers</span>
+                <span class="sp-section-label">All Suppliers</span>
             </div>
 
             @if($suppliers->count())
-            <div class="sp-grid">
+            <div class="sp-grid" id="spGrid">
                 @foreach($suppliers as $supplier)
                 @php
-                    {{-- SupplierProfile is the model directly, so $supplier IS the profile --}}
-                    $bizName     = $supplier->business_name ?? trim(($supplier->first_name ?? '') . ' ' . ($supplier->last_name ?? ''));
-                    $fullName    = trim(($supplier->first_name ?? '') . ' ' . ($supplier->last_name ?? ''));
-                    $city        = $supplier->city        ?? null;
-                    $province    = $supplier->province    ?? null;
-                    $photo       = $supplier->photo       ?? null;
-                    $cover_photo = $supplier->cover_photo ?? null;
-                    $tagline     = $supplier->tagline     ?? null;
+                    $profile     = $supplier->supplierProfile ?? $supplier;
+                    $bizName     = $profile->business_name ?? trim(($profile->first_name ?? '') . ' ' . ($profile->last_name ?? '')) ?: $supplier->name;
+                    $fullName    = trim(($profile->first_name ?? '') . ' ' . ($profile->last_name ?? ''));
+                    $city        = $profile->city        ?? null;
+                    $province    = $profile->province    ?? null;
+                    $photo       = $profile->photo       ?? null;
+                    $cover_photo = $profile->cover_photo ?? null;
+                    $tagline     = $profile->tagline     ?? null;
                     $initials    = strtoupper(substr($bizName, 0, 2));
-                    $cats        = $supplier->categories  ?? collect();
+                    $cats        = $supplier->categories ?? collect();
+                    $catNames    = $cats->pluck('name')->map(fn($c) => strtolower($c))->implode(' ');
                     $location    = implode(', ', array_filter([$city, $province]));
-                    $avg         = $supplier->ratings ? $supplier->ratings->avg('rating') : 0;
-                    $rCount      = $supplier->ratings ? $supplier->ratings->count() : 0;
+                    $avg         = $supplier->ratings->avg('rating');
+                    $rCount      = $supplier->ratings->count();
                     $avgR        = $avg ? round($avg, 1) : 0;
                 @endphp
 
-                <div class="sp-card">
+                <div class="sp-card reveal"
+                     data-name="{{ strtolower($bizName) }} {{ strtolower($fullName) }}"
+                     data-city="{{ strtolower($city ?? '') }}"
+                     data-cat="{{ $catNames }}"
+                     data-rating="{{ $avgR }}"
+                     data-reviews="{{ $rCount }}"
+                     data-bizname="{{ strtolower($bizName) }}">
 
-                    {{-- Cover photo --}}
+                    {{-- Cover photo (4:3 ratio) --}}
                     <div class="sp-card-photo">
                         @if($cover_photo)
                             <img src="{{ asset('storage/'.$cover_photo) }}" alt="{{ $bizName }}" loading="lazy">
@@ -434,12 +348,6 @@
                                 <span class="sp-card-photo-initials">{{ $initials }}</span>
                             </div>
                         @endif
-
-                        {{-- Featured badge --}}
-                        <div class="featured-badge">
-                            <svg viewBox="0 0 10 10"><polygon points="5,1 6.2,3.7 9,4.1 7,6.1 7.5,9 5,7.6 2.5,9 3,6.1 1,4.1 3.8,3.7"/></svg>
-                            Featured
-                        </div>
 
                         {{-- Category badges --}}
                         @if($cats->count())
@@ -454,7 +362,7 @@
                         @endif
                     </div>
 
-                    {{-- Logo row --}}
+                    {{-- ── Logo row: profile logo centered on the cover/body dividing line ── --}}
                     <div class="sp-card-logo-row">
                         <div class="sp-logo">
                             @if($photo)
@@ -493,19 +401,23 @@
                         @endif
 
                         <div class="sp-card-divider"></div>
+
                     </div>
                 </div>
                 @endforeach
+
+                <div class="sp-no-results" id="spNoResults">
+                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="22" cy="22" r="14"/><path d="M34 34l8 8M18 22h8M22 18v8"/></svg>
+                    <div class="sp-no-results-title">No suppliers found</div>
+                    <p class="sp-no-results-sub">Try adjusting your search or filters.</p>
+                </div>
             </div>
 
             @else
-            <div class="sp-empty">
-                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
-                    <circle cx="24" cy="20" r="10"/>
-                    <path d="M4 44c0-8 9-14 20-14s20 6 20 14"/>
-                </svg>
-                <div class="sp-empty-title">No featured suppliers yet</div>
-                <p class="sp-empty-sub">No featured suppliers have been added yet.<br>Check back soon.</p>
+            <div class="sp-empty reveal">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="24" cy="20" r="10"/><path d="M4 44c0-8 9-14 20-14s20 6 20 14"/></svg>
+                <div class="sp-empty-title">No suppliers yet</div>
+                <p class="sp-empty-sub">No verified suppliers in the directory yet.<br>Check back soon.</p>
             </div>
             @endif
         </div>
@@ -558,7 +470,9 @@
                         <div class="pp-body">
                             <div class="pp-title-row">
                                 <div class="pp-pkg-name">{{ $package->name }}</div>
-                                <div class="pp-price">₱{{ number_format($package->price, 0) }}</div>
+                                <div class="pp-price">
+                                    ₱{{ number_format($package->price, 0) }}
+                                </div>
                             </div>
 
                             <div class="pp-meta">
@@ -625,7 +539,7 @@
                                 <span></span>
                             @endif
 
-                            <a href="#" class="pp-view-btn">
+                            <a href="{{ route('popular.packages.show', $package->id) }}" class="pp-view-btn">
                                 View
                                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M2 6h8M7 3l3 3-3 3"/>
@@ -656,18 +570,6 @@
         </div>{{-- /pp-section --}}
 
     </div>{{-- /main-wrap --}}
-
-    {{-- ── FOOTER ── --}}
-    <footer>
-        <div class="footer-brand">Bikol's<span>Craft</span></div>
-        <div class="footer-links">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Support</a>
-            <a href="#">Blog</a>
-        </div>
-        <div class="footer-copy">© {{ date('Y') }} Bikol'sCraft. All rights reserved.</div>
-    </footer>
 
     <script>
         /* ── HAMBURGER / MOBILE DRAWER ── */
@@ -713,5 +615,4 @@
         }
     </script>
 
-</body>
-</html>
+</x-client-layout>
