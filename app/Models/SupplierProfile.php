@@ -12,20 +12,29 @@ class SupplierProfile extends Model
         'last_name',
         'photo',
         'cover_photo', 
+        'phone',
+        'bio',
         'business_name',
         'tagline',
         'city',
         'province',
         'description',
         'address',
+        'starting_price',
         'rating',
         'is_available',
         'is_featured',
+        
     ];
     
     public function portfolios()
     {
         return $this->hasMany(SupplierPortfolio::class, 'supplier_id');
+    }
+
+    public function popularPackageItems()
+    {
+        return $this->hasMany(PopularPackageItem::class, 'supplier_id');
     }
     
     public function packages()

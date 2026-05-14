@@ -21,7 +21,11 @@ class ClientBrowseController extends Controller
         ->where('is_active', true)
         ->get();
 
-    $suppliers = SupplierProfile::paginate(4);
+    // Featured suppliers — only those marked as featured
+    $suppliers = SupplierProfile::where('is_featured', true)
+        ->with(['categories', 'ratings'])
+        ->latest()
+        ->get();
 
         return view('client.browse.package', compact('suppliers', 'curatedPackages'));
     }

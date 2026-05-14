@@ -11,9 +11,11 @@ class Booking extends Model
         'event_id',
         'package_id',
         'supplier_id', 
+        'popular_package_id',
         'event_date',
         'total_price',
         'status',
+        'booking_type',
     ];
 
     public function package()
@@ -35,5 +37,10 @@ class Booking extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function popularPackage()
+{
+    return $this->belongsTo(PopularPackage::class);
+}
     
 }

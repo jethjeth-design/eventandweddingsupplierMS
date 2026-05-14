@@ -986,7 +986,7 @@
 ══════════════════════════════ --}}
 <div class="sp-fab-group">
     {{-- Only allow messaging if user's email is verified, otherwise show an alert prompting verification--}}
-    @if(auth()->user()->hasVerifiedEmail())
+    {{--@if(auth()->user()->hasVerifiedEmail())--}}
     <div class="sp-fab-item" style="position:relative;">
         <span class="sp-fab-note">Send a message</span>
         <a href="{{ route('chat', [$supplier->user_id, $supplier->id]) }}"
@@ -996,7 +996,7 @@
             </svg>
         </a>
     </div>
-    @else
+    {{--@else
     <div class="sp-fab-item" style="position:relative;">
         <span class="sp-fab-note">Send a message</span>
         <a href="javascript:void(0)" onclick="openEmailVerificationModal()"
@@ -1006,7 +1006,7 @@
             </svg>
         </a>
     </div>
-    @endif
+    @endif--}}
     <div class="sp-fab-item" style="position:relative;">
         <span class="sp-fab-note">Check availability</span>
         <a href="{{ route('client.supplier.calendar', $supplier->id) }}"

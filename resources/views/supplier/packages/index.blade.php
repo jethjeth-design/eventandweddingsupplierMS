@@ -79,7 +79,7 @@
         .bv-cap-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 500; color: var(--warm-grey); background: var(--ivory); border: 1px solid var(--border-md); padding: 3px 9px; border-radius: 2px; }
         .bv-cap-badge svg { width: 11px; height: 11px; color: var(--gold-dark); opacity: 0.7; }
         .bv-event-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gold-dark); background: rgba(201,168,76,0.09); border: 1px solid rgba(201,168,76,0.22); padding: 3px 9px; border-radius: 2px; font-family: var(--font-body); }
-
+  
         .bv-incl-pill {
             display: inline-flex; align-items: center; gap: 0.3rem;
             padding: 3px 9px; border-radius: 2px;
@@ -118,7 +118,54 @@
         .bv-table-wrap { overflow-x: auto; }
         .reveal { opacity: 0; transform: translateY(12px); transition: opacity 0.45s ease, transform 0.45s ease; }
         .reveal.visible { opacity: 1; transform: none; }
+        
+        /* ── NEGOTIABLE TOGGLE ── */
+        .bv-negotiable-toggle {
+            display: flex; align-items: flex-start; gap: 0.85rem;
+            padding: 0.85rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            background: var(--ivory);
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .bv-negotiable-toggle:hover {
+            border-color: var(--gold);
+            background: rgba(201,168,76,0.04);
+        }
 
+        .bv-toggle-track {
+            position: relative; width: 36px; height: 20px; flex-shrink: 0; margin-top: 2px;
+        }
+        .bv-toggle-track input {
+            opacity: 0; width: 0; height: 0; position: absolute;
+        }
+        .bv-toggle-knob {
+            position: absolute; inset: 0;
+            background: var(--border-md); border-radius: 999px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        .bv-toggle-knob::after {
+            content: ''; position: absolute;
+            left: 3px; top: 3px;
+            width: 14px; height: 14px;
+            background: var(--white); border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+        }
+        .bv-toggle-track input:checked + .bv-toggle-knob { background: var(--gold); }
+        .bv-toggle-track input:checked + .bv-toggle-knob::after { transform: translateX(16px); }
+
+        .bv-toggle-label { display: flex; flex-direction: column; gap: 0.2rem; }
+        .bv-toggle-label-main {
+            font-size: 0.82rem; font-weight: 600; color: var(--charcoal);
+            font-family: var(--font-body);
+        }
+        .bv-toggle-label-sub {
+            font-size: 0.7rem; color: var(--warm-grey);
+            font-family: var(--font-body); line-height: 1.5;
+        }
         /* ════════════════════════
            SHARED MODAL STYLES
         ════════════════════════ */
@@ -594,6 +641,62 @@
                             <span id="desc-count" style="font-size:0.62rem;color:#C0B8B0;font-family:var(--font-body);">0 / 1000</span>
                         </div>
                         @error('description')<div class="bv-error">{{ $message }}</div>@enderror
+                    </div>
+                    
+                    {{-- ── Section: Negotiation Settings ── --}}
+                    <div class="bv-modal-section" style="margin-top:1.25rem;">
+                        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M2 10l4-4 2 2 4-5"/><circle cx="12" cy="3" r="1.5"/>
+                        </svg>
+                        Negotiation Settings
+                        <span style="font-size:0.58rem;color:#C0B8B0;margin-left:0.25rem;">— Optional</span>
+                    </div>
+
+                    <div class="bv-field-row" style="margin-bottom:0.85rem;">
+                        <div class="bv-field" style="margin-bottom:0;">
+                            <label class="bv-label" for="pkg_min_price">
+                                Min Price (₱) <span class="bv-label-opt">Optional</span>
+                            </label>
+                            <div class="bv-input-wrap">
+                                <svg class="bv-input-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <line x1="10" y1="2" x2="10" y2="18"/>
+                                    <path d="M14 6H8a2 2 0 000 4h4a2 2 0 010 4H6"/>
+                                </svg>
+                                <input id="pkg_min_price" name="min_price" type="number"
+                                    step="0.01" min="0" class="bv-input" placeholder="e.g. 15000"
+                                    value="{{ old('min_price') }}">
+                            </div>
+                            @error('min_price')<div class="bv-error">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="bv-field" style="margin-bottom:0;">
+                            <label class="bv-label" for="pkg_max_price">
+                                Max Price (₱) <span class="bv-label-opt">Optional</span>
+                            </label>
+                            <div class="bv-input-wrap">
+                                <svg class="bv-input-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <line x1="10" y1="2" x2="10" y2="18"/>
+                                    <path d="M14 6H8a2 2 0 000 4h4a2 2 0 010 4H6"/>
+                                </svg>
+                                <input id="pkg_max_price" name="max_price" type="number"
+                                    step="0.01" min="0" class="bv-input" placeholder="e.g. 50000"
+                                    value="{{ old('max_price') }}">
+                            </div>
+                            @error('max_price')<div class="bv-error">{{ $message }}</div>@enderror
+                        </div>
+                    </div>
+
+                    <div class="bv-field">
+                        <label class="bv-negotiable-toggle" for="pkg_is_negotiable">
+                            <div class="bv-toggle-track">
+                                <input type="checkbox" id="pkg_is_negotiable" name="is_negotiable" value="1"
+                                    {{ old('is_negotiable') ? 'checked' : '' }}>
+                                <span class="bv-toggle-knob"></span>
+                            </div>
+                            <div class="bv-toggle-label">
+                                <span class="bv-toggle-label-main">Allow Negotiation</span>
+                                <span class="bv-toggle-label-sub">Clients can submit offers within your min–max price range (Pool System)</span>
+                            </div>
+                        </label>
                     </div>
 
                     {{-- ── Section: Inclusions ── --}}

@@ -20,6 +20,18 @@ return new class extends Migration
 
             $table->text('message');
             $table->boolean('is_read')->default(false);
+
+            $table->decimal('offer_price', 10, 2)->nullable();
+            $table->enum('type', ['message', 'offer', 'counter', 'accept', 'reject'])
+                ->default('message');
+
+            $table->foreignId('package_id')->nullable()
+                ->constrained()->nullOnDelete();
+
+            $table->foreignId('event_id')->nullable()
+                ->constrained()->nullOnDelete();
+
+            $table->boolean('is_final_offer')->default(false);
             $table->timestamps();
         });
     }

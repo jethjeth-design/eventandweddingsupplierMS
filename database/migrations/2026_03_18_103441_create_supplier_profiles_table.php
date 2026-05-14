@@ -30,6 +30,9 @@ return new class extends Migration
             $table->decimal('rating', 3, 2)->default(0.00);
             $table->boolean('is_available')->default(true);
             $table->boolean('is_featured')->default(false);
+            $table->decimal('starting_price', 10, 2)->nullable();
+            $table->string('price_type')->default('range'); 
+            // fixed | range | negotiable
             $table->timestamps();
         });
     }

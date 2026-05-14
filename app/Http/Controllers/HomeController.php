@@ -27,38 +27,14 @@ class HomeController extends Controller
     
     public function showprofile(Request $request)
     {
-        $query = SupplierProfile::with('categories');
+        $suppliers = SupplierProfile::with('user')
+            ->latest()
+            ->get();
 
-        if ($request->filled('search')) {
-            $search = $request->search;
-
-            $query->where(function ($q) use ($search) {
-                $q->where('business_name', 'like', "%{$search}%")
-                ->orWhere('first_name', 'like', "%{$search}%")
-                ->orWhere('last_name', 'like', "%{$search}%")
-                ->orWhere('city', 'like', "%{$search}%")
-                
-                // ✅ FIX FOR PIVOT
-                ->orWhereHas('categories', function ($q2) use ($search) {
-                    $q2->where('name', 'like', "%{$search}%");
-                });
-            });
-        }
-
-
-        $suppliers = $query->get();
-
-        // Filters
-        $allSuppliers = SupplierProfile::with('categories')->get();
-
-        $cities = $allSuppliers->pluck('city')->filter()->unique()->values();
-
-        $categories = Category::all(); // ✅ best
 
         return view('welcomepage.supplier.profile', compact(
             'suppliers',
-            'cities',
-            'categories'
+
         ));
     }
 

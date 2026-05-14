@@ -15,8 +15,8 @@
         <div class="nav-group-label">Main</div>
 
         {{-- Dashboard --}}
-        <a href="{{ route('dashboard') }}"
-           class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+        <a href="{{ route('admin.dashboard') }}"
+           class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="7" height="7" rx="1"/>
                 <rect x="14" y="3" width="7" height="7" rx="1"/>
@@ -105,6 +105,17 @@
         {{-- Calendar --}}
         <a href="{{ route('admin.calendar.index') }}"
            class="nav-item {{ request()->routeIs('admin.calendar.*') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18"/>
+                <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+            </svg>
+            <span>Calendar</span>
+            <span class="nav-tooltip">Calendar</span>
+        </a>
+
+        <a href="{{ route('admin.popular.tracking') }}"
+           class="nav-item {{ request()->routeIs('dmin.popular.tracking') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2"/>
                 <path d="M16 2v4M8 2v4M3 10h18"/>
@@ -249,6 +260,15 @@
 
                 <a href="{{ route('admin.categories.list') }}"
                    class="nav-subitem {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 6h16M4 10h10M4 14h7"/>
+                        <circle cx="19" cy="14" r="3"/>
+                    </svg>
+                    Supplier Categories
+                </a>
+
+                <a href="{{ route('subcategories.list') }}"
+                   class="nav-subitem {{ request()->routeIs('categories.*') ? 'active' : '' }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 6h16M4 10h10M4 14h7"/>
                         <circle cx="19" cy="14" r="3"/>

@@ -311,29 +311,6 @@
 @endphp
 
 {{-- PAGE HEADER --}}
-<div class="chat-page-header">
-    <div class="cph-inner">
-        <a href="javascript:history.back()" class="cph-back">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 12H5M12 5l-7 7 7 7"/>
-            </svg>
-        </a>
-        <div class="cph-text">
-            <div class="cph-eyebrow">
-                {{ $isSupplierView ? 'Supplier Dashboard' : 'Client Dashboard' }}
-            </div>
-            <div class="cph-title">
-                Chat with <em>{{ $otherUserName }}</em>
-            </div>
-            <div class="cph-sub">
-                {{ $isSupplierView ? 'Replying as supplier' : 'Conversation with your supplier' }}
-            </div>
-        </div>
-        <span class="cwh-badge">
-            {{ $isSupplierView ? 'Supplier View' : 'Client View' }}
-        </span>
-    </div>
-</div>
 
 {{-- CHAT WINDOW --}}
 <div class="chat-window">

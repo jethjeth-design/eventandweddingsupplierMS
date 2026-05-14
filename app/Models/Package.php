@@ -14,11 +14,20 @@ class Package extends Model
         'guest_capacity',
         'event_type',
         'is_listed',
+        'min_price',
+        'max_price',
+        'is_negotiable',
+        'is_featured',
     ];
      
     protected $casts = [
         'inclusion' => 'array',
     ];
+
+    public function popularPackageItems()
+    {
+        return $this->hasMany(PopularPackageItem::class);
+    }
 
     public function featured()
     {

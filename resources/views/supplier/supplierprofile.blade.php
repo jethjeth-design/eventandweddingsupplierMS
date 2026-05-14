@@ -47,7 +47,6 @@
         .bv-id-card-banner{height:200px;background:linear-gradient(135deg,var(--charcoal) 0%,#2a2016 60%,#3d2f14 100%);position:relative;overflow:hidden;}
         .bv-id-card-banner-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
         .bv-id-card-banner-overlay{position:absolute;inset:0;background:rgba(30,27,24,0.18);pointer-events:none;}
-        /* ── Cover Photo Button ── */
         .bv-cover-btn{position:absolute;bottom:10px;right:12px;display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.85rem;border-radius:8px;background:rgba(30,27,24,0.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border:1.5px solid rgba(255,255,255,0.22);font-family:var(--font-body);font-size:0.72rem;font-weight:500;color:rgba(255,255,255,0.9);cursor:pointer;transition:background 0.2s,border-color 0.2s,transform 0.15s;z-index:3;}
         .bv-cover-btn svg{width:13px;height:13px;flex-shrink:0;}
         .bv-cover-btn:hover{background:rgba(201,168,76,0.75);border-color:rgba(201,168,76,0.5);transform:translateY(-1px);}
@@ -115,51 +114,32 @@
         .bv-empty-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--charcoal);margin-bottom:0.4rem;}
         .bv-empty-desc{font-size:0.82rem;color:var(--warm-grey);margin-bottom:1.25rem;line-height:1.6;}
 
-        /* ══ PORTFOLIO ══ */
-        .pf-card{background:var(--white);border-radius:12px;border:1px solid #F0EBE5;box-shadow:0 1px 4px rgba(30,27,24,0.05);overflow:hidden;}
-        .pf-card-header{padding:1.1rem 1.5rem;border-bottom:1px solid #F7F3EF;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;}
-        .pf-card-header-l{display:flex;align-items:center;gap:0.75rem;}
-        .pf-card-icon{width:34px;height:34px;border-radius:8px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);flex-shrink:0;}
-        .pf-card-icon svg{width:16px;height:16px;}
-        .pf-card-title{font-family:var(--font-display);font-size:0.95rem;font-weight:700;color:var(--charcoal);}
-        .pf-card-desc{font-size:0.72rem;color:var(--warm-grey);margin-top:0.1rem;}
-        .pf-card-body{padding:1.5rem;}
-        .pf-portfolio-list{display:flex;flex-direction:column;gap:1.25rem;}
-        .pf-post{border-radius:12px;border:1px solid #F0EBE5;overflow:hidden;background:var(--white);box-shadow:0 1px 4px rgba(30,27,24,0.05);}
-        .pf-post-head{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.1rem 0.6rem;}
-        .pf-post-head-l{display:flex;align-items:center;gap:0.65rem;}
-        .pf-post-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:0.95rem;font-weight:700;color:var(--white);flex-shrink:0;overflow:hidden;}
-        .pf-post-avatar img{width:100%;height:100%;object-fit:cover;}
-        .pf-post-title{font-family:var(--font-display);font-size:0.88rem;font-weight:700;color:var(--charcoal);line-height:1.2;}
-        .pf-post-date{font-size:0.65rem;color:#C0B8B0;margin-top:0.06rem;}
-        .pf-post-delete-btn{display:inline-flex;align-items:center;gap:0.3rem;padding:0.32rem 0.7rem;border-radius:6px;border:1.5px solid #FADBD8;background:transparent;font-family:var(--font-body);font-size:0.7rem;font-weight:500;color:#C0392B;cursor:pointer;transition:background 0.15s,border-color 0.15s;}
-        .pf-post-delete-btn svg{width:10px;height:10px;}
-        .pf-post-delete-btn:hover{background:#FFF5F5;border-color:#C0392B;}
-        .pf-post-desc{padding:0 1.1rem 0.75rem;font-size:0.82rem;color:var(--warm-grey);line-height:1.6;}
-        .pf-mosaic{overflow:hidden;background:#F5F0EB;cursor:pointer;}
-        .pf-mosaic.count-1{aspect-ratio:16/9;}
-        .pf-mosaic.count-1 img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s;}
-        .pf-mosaic.count-1:hover img{transform:scale(1.03);}
-        .pf-mosaic.count-2{display:grid;grid-template-columns:1fr 1fr;gap:2px;height:280px;}
-        .pf-mosaic.count-3{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:2px;height:300px;}
-        .pf-mosaic.count-3 .pf-mos-cell:first-child{grid-row:1/3;}
-        .pf-mosaic.count-4{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;height:320px;}
-        .pf-mosaic.count-5plus{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;height:320px;}
-        .pf-mosaic.count-5plus .pf-mos-cell:first-child{grid-column:1/3;}
-        .pf-mos-cell{overflow:hidden;position:relative;}
-        .pf-mos-cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.25s;}
-        .pf-mos-cell:hover img{transform:scale(1.04);}
-        .pf-mos-more{position:absolute;inset:0;background:rgba(30,27,24,0.55);display:flex;align-items:center;justify-content:center;color:var(--white);font-family:var(--font-display);font-size:1.5rem;font-weight:700;pointer-events:none;}
-        .pf-post-video{background:#000;}
-        .pf-post-video video{width:100%;max-height:400px;display:block;object-fit:contain;}
-        .pf-post-foot{padding:0.6rem 1.1rem;border-top:1px solid #F7F3EF;display:flex;align-items:center;gap:0.4rem;}
-        .pf-post-tag{display:inline-flex;align-items:center;gap:0.25rem;padding:0.16rem 0.55rem;border-radius:999px;background:rgba(201,168,76,0.1);color:var(--gold-dark);font-size:0.63rem;font-weight:600;}
-        .pf-post-tag::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold);}
-        .pf-gallery-empty{text-align:center;padding:2.5rem 1.5rem;}
-        .pf-gallery-empty-icon{width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.08);display:flex;align-items:center;justify-content:margin:0 auto 0.75rem;color:var(--gold-dark);}
-        .pf-gallery-empty-icon{width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;color:var(--gold-dark);}
-        .pf-gallery-empty-icon svg{width:22px;height:22px;}
-        .pf-gallery-empty p{font-size:0.8rem;color:var(--warm-grey);line-height:1.6;}
+        /* ══ PRICING SECTION — simplified, starting_price only ══ */
+        .pr-price-hero{
+            display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;
+            padding:1.5rem;
+            background:linear-gradient(135deg,rgba(201,168,76,0.06) 0%,rgba(201,168,76,0.02) 100%);
+            border-radius:10px;
+            border:1px solid rgba(201,168,76,0.18);
+            margin-bottom:1.1rem;
+        }
+        .pr-price-icon{
+            width:52px;height:52px;border-radius:12px;flex-shrink:0;
+            background:rgba(201,168,76,0.12);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold-dark);
+        }
+        .pr-price-icon svg{width:24px;height:24px;}
+        .pr-price-body{}
+        .pr-price-label{font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C0B8B0;margin-bottom:0.3rem;}
+        .pr-price-display{display:flex;align-items:baseline;gap:0.3rem;}
+        .pr-currency{font-size:1.05rem;font-weight:700;color:var(--gold-dark);font-family:var(--font-display);}
+        .pr-amount{font-size:1.8rem;font-weight:700;color:var(--charcoal);font-family:var(--font-display);line-height:1;}
+        .pr-price-note{font-size:0.72rem;color:var(--warm-grey);margin-top:0.25rem;}
+
+        .pr-nil{display:flex;align-items:center;gap:0.5rem;padding:1rem 1.1rem;background:#F9F7F4;border-radius:8px;border:1px dashed #E5DDD5;}
+        .pr-nil svg{width:16px;height:16px;color:#C0B8B0;flex-shrink:0;}
+        .pr-nil span{font-size:0.8rem;color:#C0B8B0;font-style:italic;}
 
         /* ══ TEAMS PANEL ══ */
         .tm-card{background:var(--white);border-radius:12px;border:1px solid #F0EBE5;overflow:hidden;box-shadow:0 1px 4px rgba(30,27,24,0.04);}
@@ -242,7 +222,6 @@
         .cp-modal-close svg{width:12px;height:12px;}
         .cp-modal-body{padding:1.35rem 1.4rem;display:flex;flex-direction:column;gap:1rem;}
         .cp-modal-foot{padding:0.85rem 1.4rem;border-top:1px solid #F7F3EF;display:flex;align-items:center;justify-content:flex-end;gap:0.55rem;}
-        /* Drop zone */
         .cp-dropzone{border:2px dashed #E5DDD5;border-radius:10px;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;background:rgba(201,168,76,0.02);position:relative;}
         .cp-dropzone:hover,.cp-dropzone.drag-over{border-color:var(--gold);background:rgba(201,168,76,0.06);}
         .cp-dropzone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
@@ -250,20 +229,17 @@
         .cp-dropzone-icon svg{width:20px;height:20px;}
         .cp-dropzone-label{font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.25rem;}
         .cp-dropzone-sub{font-size:0.72rem;color:#C0B8B0;line-height:1.5;}
-        /* Preview */
         .cp-preview-wrap{display:none;border-radius:10px;overflow:hidden;border:1.5px solid #F0EBE5;position:relative;}
         .cp-preview-wrap.visible{display:block;}
         .cp-preview-wrap img{width:100%;height:160px;object-fit:cover;display:block;}
         .cp-preview-remove{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(30,27,24,0.65);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--white);transition:background 0.2s;}
         .cp-preview-remove:hover{background:rgba(192,57,43,0.8);}
         .cp-preview-remove svg{width:12px;height:12px;}
-        /* Remove cover */
         .cp-remove-row{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;background:#FFF5F5;border:1px solid #FADBD8;border-radius:8px;}
         .cp-remove-row span{font-size:0.78rem;color:#C0392B;}
         .cp-remove-btn{display:inline-flex;align-items:center;gap:0.3rem;padding:0.3rem 0.75rem;border-radius:6px;border:1.5px solid #FADBD8;background:transparent;font-family:var(--font-body);font-size:0.72rem;font-weight:500;color:#C0392B;cursor:pointer;transition:background 0.15s,border-color 0.15s;}
         .cp-remove-btn svg{width:11px;height:11px;}
         .cp-remove-btn:hover{background:#FFF5F5;border-color:#C0392B;}
-        /* Save btn */
         .cp-btn-save{display:inline-flex;align-items:center;gap:0.45rem;padding:0.62rem 1.5rem;border-radius:6px;border:none;background:var(--charcoal);font-family:var(--font-body);font-size:0.82rem;font-weight:500;color:var(--white);cursor:pointer;transition:background 0.2s,box-shadow 0.2s,transform 0.15s;}
         .cp-btn-save svg{width:13px;height:13px;}
         .cp-btn-save:hover{background:var(--gold-dark);box-shadow:0 4px 12px rgba(201,168,76,0.2);transform:translateY(-1px);}
@@ -290,7 +266,6 @@
         .fb-lb-nav.lb-prev{left:14px;}
         .fb-lb-nav.lb-next{right:14px;}
         .fb-lb-bottom{background:rgba(0,0,0,0.65);flex-shrink:0;}
-        .fb-lb-counter{text-align:center;font-size:0.7rem;color:rgba(255,255,255,0.45);padding:0.4rem 0 0;}
         .fb-lb-strip{display:flex;align-items:center;justify-content:center;gap:0.35rem;padding:0.55rem 1rem;overflow-x:auto;}
         .fb-lb-strip::-webkit-scrollbar{height:3px;}
         .fb-lb-strip::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.2);border-radius:2px;}
@@ -364,18 +339,25 @@
 
         @php
             $filled = collect([
-                $supplierProfile->first_name, $supplierProfile->last_name,
-                $supplierProfile->phone,      $supplierProfile->city,
+                $supplierProfile->first_name,
+                $supplierProfile->last_name,
+                $supplierProfile->phone,
+                $supplierProfile->city,
                 $supplierProfile->categories->isNotEmpty() ? true : null,
-                $supplierProfile->bio,        $supplierProfile->description,
-                $supplierProfile->photo
+                $supplierProfile->bio,
+                $supplierProfile->description,
+                $supplierProfile->photo,
+                $supplierProfile->starting_price,   // ← only starting_price now
             ])->filter()->count();
-            $pct = round(($filled / 8) * 100);
+            $pct = round(($filled / 9) * 100);
+
+            // ── Only starting_price used now ──
+            $startingPrice = $supplierProfile->starting_price ?? null;
         @endphp
 
         <div class="bv-outer-layout">
 
-            {{-- ══ LEFT: TAB SIDEBAR — only 2 tabs now ══ --}}
+            {{-- ══ LEFT: TAB SIDEBAR ══ --}}
             <div class="bv-profile-sidebar">
                 <div class="bv-sidebar-label">Navigation</div>
 
@@ -384,6 +366,16 @@
                         <circle cx="10" cy="7" r="4"/><path d="M2 17c0-4 3.6-7 8-7s8 3 8 7"/>
                     </svg>
                     Profile Info
+                </button>
+
+                <div class="bv-sidebar-divider"></div>
+
+                <button class="bv-tab" onclick="switchTab('pricing', this)">
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                        <circle cx="10" cy="10" r="7"/>
+                        <path d="M10 6v8M7.5 8.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3H13"/>
+                    </svg>
+                    Pricing
                 </button>
 
                 <div class="bv-sidebar-divider"></div>
@@ -405,7 +397,6 @@
 
                     {{-- Identity Hero Card --}}
                     <div class="bv-id-card">
-                        {{-- ══ COVER PHOTO BANNER ══ --}}
                         <div class="bv-id-card-banner">
                             @if(!empty($supplierProfile->cover_photo))
                                 <img class="bv-id-card-banner-img"
@@ -421,7 +412,6 @@
                                 {{ empty($supplierProfile->cover_photo) ? 'Add Cover Photo' : 'Change Cover' }}
                             </button>
                         </div>
-                        {{-- END COVER PHOTO BANNER --}}
                         <div class="bv-id-card-inner">
                             <div class="bv-id-avatar-wrap">
                                 <div class="bv-id-avatar {{ $supplierProfile->photo ? 'has-photo' : '' }}">
@@ -457,6 +447,16 @@
                                     <div class="bv-id-meta-row">
                                         <svg class="bv-id-meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 1C5.8 1 4 2.8 4 5c0 3.5 4 9 4 9s4-5.5 4-9c0-2.2-1.8-4-4-4z"/><circle cx="8" cy="5" r="1.5"/></svg>
                                         <div class="bv-id-meta-text"><strong>Location</strong>{{ implode(', ', array_filter([$supplierProfile->city, $supplierProfile->province])) }}</div>
+                                    </div>
+                                    @endif
+                                    {{-- ── Simplified price pill — starting_price only ── --}}
+                                    @if($startingPrice)
+                                    <div class="bv-id-meta-row">
+                                        <svg class="bv-id-meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="6"/><path d="M8 5v6M6 7h3a1 1 0 010 2H7a1 1 0 000 2h3"/></svg>
+                                        <div class="bv-id-meta-text">
+                                            <strong>Starting Price</strong>
+                                            ₱{{ number_format($startingPrice) }}
+                                        </div>
                                     </div>
                                     @endif
                                 </div>
@@ -559,6 +559,86 @@
                     </div>
 
                 </div>{{-- /panel-info --}}
+
+
+                {{-- ════════════════════════════════════════════
+                     PANEL: Pricing  — starting_price ONLY
+                     price_type / base_price_min / base_price_max
+                     have been fully removed.
+                ════════════════════════════════════════════ --}}
+                <div id="panel-pricing" class="bv-tab-panel">
+
+                    <div class="bv-sc">
+                        <div class="bv-sc-head">
+                            <div class="bv-sc-head-l">
+                                <div class="bv-sc-icon">
+                                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                                        <circle cx="10" cy="10" r="7"/>
+                                        <path d="M10 6v8M7.5 8.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3H13"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="bv-sc-title">Pricing</div>
+                                    <div class="bv-sc-desc">Your starting price visible to clients</div>
+                                </div>
+                            </div>
+                            <a href="{{ route('supplier.editPricing', $supplierProfile->id) }}" class="bv-btn-edit">
+                                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>Edit
+                            </a>
+                        </div>
+
+                        <div class="bv-sc-body">
+
+                            @if($startingPrice)
+                            {{-- ── Price hero display ── --}}
+                            <div class="pr-price-hero">
+                                <div class="pr-price-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <circle cx="12" cy="12" r="9"/>
+                                        <path d="M12 7v10M9.5 10h4a2 2 0 010 4h-3a2 2 0 000 4H14"/>
+                                    </svg>
+                                </div>
+                                <div class="pr-price-body">
+                                    <div class="pr-price-label">Starting Price</div>
+                                    <div class="pr-price-display">
+                                        <span class="pr-currency">₱</span>
+                                        <span class="pr-amount">{{ number_format($startingPrice) }}</span>
+                                    </div>
+                                    <div class="pr-price-note">Clients will see this as your base rate</div>
+                                </div>
+                            </div>
+
+                            @else
+                            {{-- ── No price set ── --}}
+                            <div class="pr-nil">
+                                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                                    <circle cx="10" cy="10" r="7"/>
+                                    <path d="M10 6v8M7.5 8.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3H13"/>
+                                </svg>
+                                <span>No starting price set yet. Click <strong>Edit</strong> to add your pricing.</span>
+                            </div>
+                            @endif
+
+                        </div>
+                    </div>
+
+                    {{-- Tip card --}}
+                    <div class="bv-sc" style="border-color:rgba(201,168,76,0.25);background:rgba(201,168,76,0.03);">
+                        <div class="bv-sc-body" style="display:flex;gap:1rem;align-items:flex-start;padding:1.1rem 1.4rem;">
+                            <div style="width:34px;height:34px;border-radius:8px;background:rgba(201,168,76,0.12);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);flex-shrink:0;">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="7"/><path d="M10 9v5M10 7v.5"/></svg>
+                            </div>
+                            <div>
+                                <div style="font-size:0.8rem;font-weight:700;color:var(--charcoal);margin-bottom:0.25rem;font-family:var(--font-display);">Pricing Tip</div>
+                                <div style="font-size:0.76rem;color:var(--warm-grey);line-height:1.65;">
+                                    Setting a starting price helps clients understand your value before reaching out. It sets clear expectations and attracts more qualified inquiries.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>{{-- /panel-pricing --}}
+
 
                 {{-- ── PANEL: Teams ── --}}
                 <div id="panel-teams" class="bv-tab-panel">
@@ -746,18 +826,11 @@
                     <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
                 </button>
             </div>
-
-            {{-- Upload form --}}
             <form id="cpUploadForm" action="{{ route('supplier.cover.store') }}" method="POST" enctype="multipart/form-data">
-
                 @csrf
                 <div class="cp-modal-body">
-
-                    {{-- Drop zone --}}
                     <div class="cp-dropzone" id="cpDropzone">
-                        <input type="file"
-                               id="cpFileInput"
-                               name="cover_photo"
+                        <input type="file" id="cpFileInput" name="cover_photo"
                                accept="image/jpeg,image/png,image/webp,image/gif"
                                onchange="cpHandleFile(this)">
                         <div class="cp-dropzone-icon">
@@ -768,18 +841,14 @@
                             </svg>
                         </div>
                         <div class="cp-dropzone-label">Click to upload or drag & drop</div>
-                        <div class="cp-dropzone-sub">JPG, PNG, WEBP or GIF &nbsp;·&nbsp; Max 5 MB<br>Recommended: 1200 × 300 px</div>
+                        <div class="cp-dropzone-sub">JPG, PNG, WEBP or GIF · Max 5 MB<br>Recommended: 1200 × 300 px</div>
                     </div>
-
-                    {{-- Preview --}}
                     <div class="cp-preview-wrap" id="cpPreviewWrap">
                         <img id="cpPreviewImg" src="" alt="Preview">
                         <button type="button" class="cp-preview-remove" onclick="cpClearPreview()" title="Remove">
                             <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
                         </button>
                     </div>
-
-                    {{-- Remove existing cover --}}
                     @if(!empty($supplierProfile->cover_photo))
                     <div class="cp-remove-row" id="cpRemoveRow">
                         <span>Remove current cover photo</span>
@@ -789,7 +858,6 @@
                         </button>
                     </div>
                     @endif
-
                 </div>
                 <div class="cp-modal-foot">
                     <button type="button" class="cp-btn-cancel" onclick="cpModalClose()">Cancel</button>
@@ -799,18 +867,11 @@
                     </button>
                 </div>
             </form>
-
-            {{-- Separate form to remove cover --}}
-            <form id="cpRemoveForm"
-                  action="{{route('supplier.cover.delete')}}"
-                  method="POST"
-                  style="display:none;">
-                @csrf
-                @method('DELETE')
+            <form id="cpRemoveForm" action="{{ route('supplier.cover.delete') }}" method="POST" style="display:none;">
+                @csrf @method('DELETE')
             </form>
         </div>
     </div>
-    {{-- END COVER PHOTO MODAL --}}
 
     {{-- ══ LIGHTBOX ══ --}}
     <div id="fbLb" class="fb-lb" onclick="if(event.target===this)fbLbClose()">
@@ -861,6 +922,7 @@
             document.getElementById('tmModalOverlay').classList.remove('open');
             document.body.style.overflow = '';
         }
+
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') { tmModalClose(); cpModalClose(); fbLbClose(); }
         });
@@ -877,11 +939,7 @@
         function cpHandleFile(input) {
             if (!input.files || !input.files[0]) return;
             var file = input.files[0];
-            if (file.size > 5 * 1024 * 1024) {
-                alert('File size must be under 5 MB.');
-                input.value = '';
-                return;
-            }
+            if (file.size > 5 * 1024 * 1024) { alert('File size must be under 5 MB.'); input.value = ''; return; }
             var reader = new FileReader();
             reader.onload = function(e) {
                 document.getElementById('cpPreviewImg').src = e.target.result;
@@ -903,20 +961,15 @@
                 document.getElementById('cpRemoveForm').submit();
             }
         }
-        /* Drag & drop on dropzone */
         (function() {
             var dz = document.getElementById('cpDropzone');
             if (!dz) return;
             dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('drag-over'); });
             dz.addEventListener('dragleave', function() { dz.classList.remove('drag-over'); });
             dz.addEventListener('drop', function(e) {
-                e.preventDefault();
-                dz.classList.remove('drag-over');
+                e.preventDefault(); dz.classList.remove('drag-over');
                 var fi = document.getElementById('cpFileInput');
-                if (e.dataTransfer.files.length) {
-                    fi.files = e.dataTransfer.files;
-                    cpHandleFile(fi);
-                }
+                if (e.dataTransfer.files.length) { fi.files = e.dataTransfer.files; cpHandleFile(fi); }
             });
         })();
 
@@ -929,8 +982,7 @@
             if(urls.length>1){
                 for(var i=0;i<urls.length;i++){
                     var th=document.createElement('img');
-                    th.src=urls[i];
-                    th.className='fb-lb-thumb'+(i===idx?' lb-active':'');
+                    th.src=urls[i]; th.className='fb-lb-thumb'+(i===idx?' lb-active':'');
                     th.onclick=(function(ii){return function(){fbLbGo(ii);};})(i);
                     strip.appendChild(th);
                 }
@@ -964,8 +1016,7 @@
         function fbLbClose(){
             document.getElementById('fbLb').classList.remove('open');
             document.body.style.overflow='';
-            var vid=document.getElementById('fbLbVideo');
-            vid.pause();vid.src='';
+            var vid=document.getElementById('fbLbVideo'); vid.pause(); vid.src='';
         }
         document.addEventListener('keydown',function(e){
             if(!document.getElementById('fbLb').classList.contains('open'))return;

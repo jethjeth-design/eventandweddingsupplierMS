@@ -160,6 +160,14 @@
     .bv-field-row .bv-field { margin-bottom: 0; }
     @media (max-width: 560px) { .bv-field-row { grid-template-columns: 1fr; } }
 
+    /* ── Field row 3-col ── */
+    .bv-field-row-3 {
+        display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;
+        margin-bottom: 1.25rem;
+    }
+    .bv-field-row-3 .bv-field { margin-bottom: 0; }
+    @media (max-width: 640px) { .bv-field-row-3 { grid-template-columns: 1fr; } }
+
     /* ── Input ── */
     .bv-input-wrap { position: relative; display: flex; align-items: center; }
     .bv-input-icon {
@@ -181,6 +189,22 @@
         background: var(--white);
     }
     .bv-input::placeholder { color: #B0A89E; }
+
+    /* ── Input no-icon variant ── */
+    .bv-input-plain {
+        width: 100%; padding: 0.62rem 0.9rem;
+        border: 1px solid var(--border-md); border-radius: 4px;
+        font-size: 0.875rem; font-family: var(--font-body);
+        color: var(--charcoal); background: var(--ivory);
+        outline: none; transition: border-color .18s, box-shadow .18s, background .18s;
+        line-height: 1.5;
+    }
+    .bv-input-plain:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+        background: var(--white);
+    }
+    .bv-input-plain::placeholder { color: #B0A89E; }
 
     /* ── Select ── */
     .bv-select-wrap { position: relative; }
@@ -254,16 +278,13 @@
     .bv-btn-upload svg { width: 13px; height: 13px; }
 
     /* ══════════════════════════════
-       CATEGORY CHIPS  ← NEW
+       CATEGORY CHIPS
     ══════════════════════════════ */
     .bv-cat-grid {
         display: flex; flex-wrap: wrap; gap: 0.5rem;
         margin-top: 0.1rem;
     }
-    /* The real checkbox — visually hidden */
     .bv-cat-check { display: none; }
-
-    /* The visible pill/card */
     .bv-cat-label {
         display: inline-flex; align-items: center; gap: 0.4rem;
         padding: 0.45rem 0.9rem;
@@ -282,7 +303,6 @@
         color: var(--gold-dark);
         background: rgba(201,168,76,0.06);
     }
-    /* Checked state */
     .bv-cat-check:checked + .bv-cat-label {
         border-color: var(--gold);
         background: rgba(201,168,76,0.12);
@@ -290,7 +310,6 @@
         box-shadow: 0 0 0 2px rgba(201,168,76,0.18);
         font-weight: 600;
     }
-    /* Tick icon inside checked pill */
     .bv-cat-label .bv-cat-tick {
         width: 13px; height: 13px;
         display: none;
@@ -298,36 +317,27 @@
         flex-shrink: 0;
     }
     .bv-cat-check:checked + .bv-cat-label .bv-cat-tick { display: block; }
-    /* "None selected" error highlight */
     .bv-cat-grid.error .bv-cat-label { border-color: var(--danger); }
     .bv-cat-grid.error .bv-cat-check:checked + .bv-cat-label { border-color: var(--gold); }
 
-    /* ── Availability toggle ── */
-    .bv-avail-row {
-        display: flex; align-items: center; gap: 0.75rem;
-        padding: 0.85rem 1rem;
-        background: var(--ivory); border: 1px solid var(--border); border-radius: 4px;
+    /* ══════════════════════════════
+       PRICING BLOCK
+    ══════════════════════════════ */
+    .bv-pricing-block {
+        background: rgba(201,168,76,0.03);
+        border: 1px solid rgba(201,168,76,0.15);
+        border-radius: 5px;
+        padding: 1.1rem 1.1rem 0.9rem;
+        margin-bottom: 1.25rem;
     }
-    .bv-toggle-track {
-        width: 38px; height: 22px; border-radius: 99px;
-        background: var(--border-md); position: relative;
-        flex-shrink: 0; cursor: pointer; transition: background .2s;
+    .bv-pricing-title {
+        font-family: var(--font-display);
+        font-size: 0.88rem; font-weight: 600;
+        color: var(--charcoal);
+        margin-bottom: 0.9rem;
+        display: flex; align-items: center; gap: 0.45rem;
     }
-    .bv-toggle-track.on { background: var(--gold); }
-    .bv-toggle-thumb {
-        position: absolute; top: 3px; left: 3px;
-        width: 16px; height: 16px; border-radius: 50%;
-        background: var(--white); transition: left .2s;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-    }
-    .bv-toggle-track.on .bv-toggle-thumb { left: 19px; }
-    .bv-avail-label { font-size: 0.82rem; font-family: var(--font-body); color: var(--charcoal); flex: 1; }
-    .bv-avail-chip {
-        font-size: 0.58rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
-        padding: 2px 8px; border-radius: 2px;
-    }
-    .bv-avail-chip.yes { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
-    .bv-avail-chip.no  { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
+    .bv-pricing-title svg { width: 14px; height: 14px; color: var(--gold-dark); opacity: .8; }
 
     /* ── Divider ── */
     .bv-divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
@@ -432,11 +442,13 @@
         .bv-step-tab .bv-step-num { font-size: 0.65rem; margin: 0 auto; }
     }
 </style>
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Registration') }}
         </h2>
     </x-slot>
+
 {{-- ── PAGE HEADER ── --}}
 <div class="bv-page-header">
     <div class="bv-ph-inner">
@@ -647,7 +659,6 @@
                             value="{{ $category->id }}"
                             {{ $isChecked ? 'checked' : '' }}>
                         <label class="bv-cat-label" for="cat_{{ $category->id }}">
-                            {{-- tick appears when checked --}}
                             <svg class="bv-cat-tick" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2">
                                 <path d="M2 7l3.5 3.5L12 3"/>
                             </svg>
@@ -660,18 +671,57 @@
                     @error('category_id')<div class="bv-error">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Availability toggle --}}
+                <hr class="bv-divider">
+
+                {{-- ══ PRICING INFORMATION ══ --}}
                 <div class="bv-field">
-                    <label class="bv-label">Availability</label>
-                    <div class="bv-avail-row">
-                        <div class="bv-toggle-track {{ old('is_available', 1) ? 'on' : '' }}" id="availToggle" onclick="toggleAvail()">
-                            <div class="bv-toggle-thumb"></div>
+                    <div class="bv-pricing-block">
+                        <div class="bv-pricing-title">
+                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <circle cx="8" cy="8" r="6.5"/>
+                                <path d="M8 4.5v7M5.5 6.5a2.5 2.5 0 015 0c0 1.4-1 2-2.5 2.5s-2.5 1.1-2.5 2.5a2.5 2.5 0 005 0"/>
+                            </svg>
+                            Pricing Information
                         </div>
-                        <input type="hidden" name="is_available" id="availInput" value="{{ old('is_available', 1) }}">
-                        <span class="bv-avail-label">I am currently accepting bookings</span>
-                        <span class="bv-avail-chip {{ old('is_available', 1) ? 'yes' : 'no' }}" id="availChip">
-                            {{ old('is_available', 1) ? 'Available' : 'Unavailable' }}
-                        </span>
+
+                        <div class="bv-field-row-3">
+                            <div class="bv-field">
+                                <label class="bv-label" for="base_price_min">Min Price <span class="bv-label-opt">Optional</span></label>
+                                <div class="bv-input-wrap">
+                                    <svg class="bv-input-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 3v14M6 6.5a4 4 0 018 0c0 2.2-1.6 3.2-4 4s-4 1.8-4 4a4 4 0 008 0"/></svg>
+                                    <input id="base_price_min" name="base_price_min" type="number" class="bv-input" placeholder="0.00" step="0.01" min="0" value="{{ old('base_price_min') }}">
+                                </div>
+                                @error('base_price_min')<div class="bv-error">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="bv-field">
+                                <label class="bv-label" for="base_price_max">Max Price <span class="bv-label-opt">Optional</span></label>
+                                <div class="bv-input-wrap">
+                                    <svg class="bv-input-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 3v14M6 6.5a4 4 0 018 0c0 2.2-1.6 3.2-4 4s-4 1.8-4 4a4 4 0 008 0"/></svg>
+                                    <input id="base_price_max" name="base_price_max" type="number" class="bv-input" placeholder="0.00" step="0.01" min="0" value="{{ old('base_price_max') }}">
+                                </div>
+                                @error('base_price_max')<div class="bv-error">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="bv-field">
+                                <label class="bv-label" for="starting_price">Starting Price <span class="bv-label-opt">Optional</span></label>
+                                <div class="bv-input-wrap">
+                                    <svg class="bv-input-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 3v14M6 6.5a4 4 0 018 0c0 2.2-1.6 3.2-4 4s-4 1.8-4 4a4 4 0 008 0"/></svg>
+                                    <input id="starting_price" name="starting_price" type="number" class="bv-input" placeholder="0.00" step="0.01" min="0" value="{{ old('starting_price') }}">
+                                </div>
+                                @error('starting_price')<div class="bv-error">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        <div class="bv-field" style="margin-bottom:0;">
+                            <label class="bv-label" for="price_type">Price Type <span class="bv-label-opt">Optional</span></label>
+                            <div class="bv-select-wrap">
+                                <select id="price_type" name="price_type" class="bv-select">
+                                    <option value="range"      {{ old('price_type') === 'range'      ? 'selected' : '' }}>Range</option>
+                                    <option value="fixed"      {{ old('price_type') === 'fixed'      ? 'selected' : '' }}>Fixed</option>
+                                    <option value="negotiable" {{ old('price_type') === 'negotiable' ? 'selected' : '' }}>Negotiable</option>
+                                </select>
+                            </div>
+                            @error('price_type')<div class="bv-error">{{ $message }}</div>@enderror
+                        </div>
                     </div>
                 </div>
 
@@ -782,6 +832,34 @@
                             <div style="font-size:0.82rem;color:var(--charcoal);font-family:var(--font-body);font-style:italic;" id="r-tagline">—</div>
                         </div>
                     </div>
+
+                    {{-- Pricing --}}
+                    <div style="padding:0.75rem 1rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--white);">
+                        <div style="font-size:0.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dark);font-family:var(--font-body);display:flex;align-items:center;gap:0.4rem;">
+                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5v7M5.5 6.5a2.5 2.5 0 015 0c0 1.4-1 2-2.5 2.5s-2.5 1.1-2.5 2.5a2.5 2.5 0 005 0"/></svg>
+                            Pricing Info
+                        </div>
+                        <button type="button" onclick="goTo(3)" style="font-size:0.65rem;color:var(--gold-dark);background:none;border:none;cursor:pointer;font-family:var(--font-body);text-decoration:underline;text-underline-offset:2px;">Edit</button>
+                    </div>
+                    <div style="padding:0.85rem 1rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem 1.5rem;">
+                        <div>
+                            <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--warm-grey);font-family:var(--font-body);margin-bottom:2px;">Min Price</div>
+                            <div style="font-size:0.82rem;color:var(--charcoal);font-family:var(--font-body);" id="r-price_min">—</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--warm-grey);font-family:var(--font-body);margin-bottom:2px;">Max Price</div>
+                            <div style="font-size:0.82rem;color:var(--charcoal);font-family:var(--font-body);" id="r-price_max">—</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--warm-grey);font-family:var(--font-body);margin-bottom:2px;">Starting Price</div>
+                            <div style="font-size:0.82rem;color:var(--charcoal);font-family:var(--font-body);" id="r-starting_price">—</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--warm-grey);font-family:var(--font-body);margin-bottom:2px;">Price Type</div>
+                            <div style="font-size:0.82rem;color:var(--charcoal);font-family:var(--font-body);text-transform:capitalize;" id="r-price_type">—</div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <label style="display:flex;align-items:flex-start;gap:0.6rem;cursor:pointer;">
@@ -856,7 +934,7 @@
     }
 
     /* Remove error highlight on change */
-    document.querySelectorAll('.bv-input, .bv-select, .bv-textarea').forEach(el => {
+    document.querySelectorAll('.bv-input, .bv-input-plain, .bv-select, .bv-textarea').forEach(el => {
         el.addEventListener('input',  () => el.style.borderColor = '');
         el.addEventListener('change', () => el.style.borderColor = '');
     });
@@ -879,6 +957,13 @@
         document.getElementById('r-tagline').textContent       = get('tagline') || '—';
         document.getElementById('r-city').textContent          = get('city') || '—';
         document.getElementById('r-province').textContent      = get('province') || '—';
+
+        /* Pricing */
+        const fmt = val => val ? '₱' + parseFloat(val).toLocaleString('en-PH', { minimumFractionDigits: 2 }) : '—';
+        document.getElementById('r-price_min').textContent     = fmt(document.getElementById('base_price_min')?.value);
+        document.getElementById('r-price_max').textContent     = fmt(document.getElementById('base_price_max')?.value);
+        document.getElementById('r-starting_price').textContent= fmt(document.getElementById('starting_price')?.value);
+        document.getElementById('r-price_type').textContent    = get('price_type') || '—';
 
         /* Collect checked category names */
         const checkedCats = [...document.querySelectorAll('input[name="category_id[]"]:checked')]
@@ -916,22 +1001,11 @@
         }
     });
 
-    /* ── AVAILABILITY TOGGLE ── */
-    function toggleAvail() {
-        const track = document.getElementById('availToggle');
-        const input = document.getElementById('availInput');
-        const chip  = document.getElementById('availChip');
-        const isOn  = track.classList.toggle('on');
-        input.value = isOn ? 1 : 0;
-        chip.textContent  = isOn ? 'Available' : 'Unavailable';
-        chip.className    = 'bv-avail-chip ' + (isOn ? 'yes' : 'no');
-    }
-
     /* ── RESTORE STEP ON ERROR ── */
     @if($errors->any())
         @php
             $step2Fields = ['first_name', 'last_name', 'phone', 'photo'];
-            $step3Fields = ['business_name', 'tagline', 'city', 'province', 'address', 'category_id', 'bio', 'description'];
+            $step3Fields = ['business_name', 'tagline', 'city', 'province', 'address', 'category_id', 'bio', 'description', 'base_price_min', 'base_price_max', 'starting_price', 'price_type'];
             $targetStep  = 4;
             foreach ($step2Fields as $f) { if ($errors->has($f)) { $targetStep = 2; break; } }
             if ($targetStep === 4) foreach ($step3Fields as $f) { if ($errors->has($f)) { $targetStep = 3; break; } }

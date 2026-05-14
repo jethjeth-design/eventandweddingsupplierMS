@@ -24,4 +24,14 @@ class PopularPackage extends Model
     {
         return $this->belongsTo(SupplierProfile::class, 'supplier_id');
     }
+
+    public function bookings()
+    {
+        return $this->hasMany(\App\Models\Booking::class, 'popular_package_id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(\App\Models\PopularPackageItem::class);
+    }
 }

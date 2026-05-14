@@ -17,6 +17,11 @@ class Category extends Model
             $category->slug = Str::slug($category->name);
         });
     }
+
+    public function subcategories()
+    {
+        return $this->hasMany(Subcategory::class);
+    }
     
     // 🤖 Recommendations
     public function recommendations()
