@@ -23,7 +23,7 @@ class SupplierProfileController extends Controller
 
         $supplier = $user->supplier;
 
-        $portfolios = SupplierPortfolio::where('supplier_id', auth()->user()->supplier->id)->get();
+        //$portfolios = SupplierPortfolio::where('supplier_id', auth()->user()->supplier->id)->get();
 
         $roles = $supplier
             ? Role::where('supplier_id', $supplier->id)->latest()->get()
@@ -37,7 +37,7 @@ class SupplierProfileController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        return view('supplier.supplierprofile', compact('supplierProfile', 'portfolios','teams', 'roles'));
+        return view('supplier.supplierprofile', compact('supplierProfile','teams', 'roles'));
     }
 
     /**
@@ -68,16 +68,28 @@ class SupplierProfileController extends Controller
             'city' => 'required|string|max:255',
             'province' => 'required|string|max:255',
             'bio' => 'nullable|string',
-            'category_id' => 'required|array',
-            'category_id.*' => 'exists:categories,id',
             'description' => 'nullable|string',
             'address' => 'nullable|string',
-            
+
+            // categories
+            'category_id' => 'required|array',
+            'category_id.*' => 'exists:categories,id',
+
+            // 💰 NEW (if you added pricing fields)
+            'base_price_min' => 'nullable|numeric|min:0',
+            'base_price_max' => 'nullable|numeric|min:0|gte:base_price_min',
+            'starting_price' => 'nullable|numeric|min:0',
+            'price_type' => 'nullable|in:fixed,range,negotiable',
         ]);
-            $photoPath = null;
-            if ($request->hasFile('photo')) {
-                $photoPath = $request->file('photo')->store('supplier_photos', 'public');
-            }
+
+        // 📸 Upload photo safely
+        $photoPath = null;
+
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('supplier_photos', 'public');
+        }
+
+        // 🏗️ Create supplier profile
         $supplier = SupplierProfile::create([
             'user_id' => auth()->id(),
             'first_name' => $request->first_name,
@@ -91,13 +103,20 @@ class SupplierProfileController extends Controller
             'bio' => $request->bio,
             'description' => $request->description,
             'address' => $request->address,
-            
+
+            // 💰 pricing (IMPORTANT FOR YOUR UPDATED SYSTEM)
+            'base_price_min' => $request->base_price_min,
+            'base_price_max' => $request->base_price_max,
+            'starting_price' => $request->starting_price,
+            'price_type' => $request->price_type ?? 'range',
         ]);
 
-        // ✅ FIXED
+        // 🔗 attach categories
         $supplier->categories()->sync($request->category_id);
-        
-          return redirect()->route('supplier.supplierprofile')->with('success', 'Profile created successfully.');
+
+        return redirect()
+            ->route('supplier.supplierprofile')
+            ->with('success', 'Profile created successfully.');
     }
 
     public function storeCoverPhoto(Request $request)
@@ -149,6 +168,14 @@ class SupplierProfileController extends Controller
         $categories = Category::all();
         return view('supplier.editidentity', compact('supplierProfile', 'categories'));
     }
+    
+    //Edit Pricing 
+    public function editPricing(SupplierProfile $supplierProfile)
+    {
+        return view('supplier.editpricing', [
+            'supplier' => $supplierProfile
+        ]);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -163,15 +190,17 @@ class SupplierProfileController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'business_name' => 'required|string|max:255',
             'tagline' => 'nullable|string|max:255',
+       
+            'category_id' => 'required|array',
+            'category_id.*' => 'exists:categories,id',
+
             'phone' => 'nullable|string|max:20',
             'city' => 'required|string|max:255',
             'province' => 'required|string|max:255',
             'bio' => 'nullable|string',
-            'experience' => 'nullable|string',
-            'category_id' => 'required|array',
-            'category_id.*' => 'exists:categories,id',
             'description' => 'nullable|string',
             'address' => 'nullable|string',
+
         ]);
 
         // ✅ Prepare data for update
@@ -196,7 +225,25 @@ class SupplierProfileController extends Controller
         return redirect()->route('supplier.supplierprofile')->with('success', 'Profile updated successfully.');
 
     }
+    
+    public function updatePricing(Request $request, SupplierProfile $supplierProfile)
+{
+    $request->validate([
 
+        'starting_price' => 'nullable|numeric|min:0',
+
+    ]);
+
+    $supplierProfile->update([
+        'starting_price' => $request->starting_price,
+
+    ]);
+
+    return redirect()->route('supplier.supplierprofile')->with(
+        'success',
+        'Pricing updated successfully.'
+    );
+}
 
     //Separated Update
     public function updateidentity(Request $request, SupplierProfile $supplierProfile)
@@ -233,7 +280,7 @@ class SupplierProfileController extends Controller
         $supplierProfile->update($data);
 
         // ✅ IMPORTANT FIX
-    $supplierProfile->categories()->sync($request->category_id);
+        $supplierProfile->categories()->sync($request->category_id);
              
         return redirect()->route('supplier.supplierprofile')->with('success', 'Profile updated successfully.');
 

@@ -13,7 +13,6 @@ class PackageController extends Controller
 {
     public function index()
     {   
-       
         $eventcategories = Eventcategory::all();
 
         $packages = Package::with('supplier')
@@ -39,36 +38,55 @@ class PackageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'guest_capacity' => 'required|numeric',
-            'description' => 'required',
-            'event_type' => 'required',
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'guest_capacity' => 'required|numeric|min:1',
+            'description' => 'required|string',
+            'event_type' => 'required|string|max:255',
 
-            // ✅ FIX: inclusions validation
+            // inclusions
             'inclusions' => 'nullable|array',
-            'inclusions.*' => 'nullable|string',
+            'inclusions.*' => 'nullable|string|max:255',
 
-            // ✅ FIX: teams validation
-            'teams' => 'nullable|array',
+            'inclusion_types' => 'nullable|array',
+            'inclusion_types.*' => 'nullable|string|max:100',
+
+            // optional (for future bidding system)
+            'is_listed' => 'nullable|boolean',
+            'is_negotiable' => 'nullable|boolean',
+            'min_price' => 'nullable|numeric|min:0',
+            'max_price' => 'nullable|numeric|gte:min_price',
         ]);
 
+        // 🧠 SAFETY: ensure supplier exists
+        $supplier = auth()->user()->supplier;
+
+        if (!$supplier) {
+            return back()->withErrors(['error' => 'Supplier profile not found.']);
+        }
+
+        // 🏗️ Create package
         $package = Package::create([
-            'supplier_id' => auth()->user()->supplier->id,
+            'supplier_id' => $supplier->id,
             'name' => $request->name,
             'price' => $request->price,
             'guest_capacity' => $request->guest_capacity,
             'description' => $request->description,
             'event_type' => $request->event_type,
+
+            // optional improvements for bidding system
+            'is_listed' => $request->is_listed ?? false,
+            'is_negotiable' => $request->is_negotiable ?? false,
+            'min_price' => $request->min_price,
+            'max_price' => $request->max_price,
         ]);
 
+        // 📦 Inclusions handling (clean + safe)
         $inclusions = $request->inclusions ?? [];
         $types = $request->inclusion_types ?? [];
 
         foreach ($inclusions as $key => $item) {
-
             if (!empty($item)) {
-
                 $package->inclusions()->create([
                     'title' => $item,
                     'type'  => $types[$key] ?? null,
@@ -76,8 +94,8 @@ class PackageController extends Controller
             }
         }
 
-  
-        return redirect()->route('supplier.package.index')
+        return redirect()
+            ->route('supplier.package.index')
             ->with('success', 'Package created successfully');
     }
     public function togglePublish($id)
@@ -108,6 +126,12 @@ class PackageController extends Controller
             'inclusions.*' => 'nullable|string',
 
             'teams' => 'nullable|array',
+
+            // optional (for future bidding system)
+            'is_listed' => 'nullable|boolean',
+            'is_negotiable' => 'nullable|boolean',
+            'min_price' => 'nullable|numeric|min:0',
+            'max_price' => 'nullable|numeric|gte:min_price',
         ]);
 
         $package = Package::findOrFail($id);
@@ -125,25 +149,31 @@ class PackageController extends Controller
             'guest_capacity' => $request->guest_capacity,
             'description' => $request->description,
             'event_type' => $request->event_type,
+
+            // optional improvements for bidding system
+            'is_listed' => $request->is_listed ?? false,
+            'is_negotiable' => $request->is_negotiable ?? false,
+            'min_price' => $request->min_price,
+            'max_price' => $request->max_price,
         ]);
 
         // ✅ FIX: update inclusions (delete + recreate)
-       $inclusions = $request->inclusions ?? [];
-$types = $request->inclusion_types ?? [];
+        $inclusions = $request->inclusions ?? [];
+        $types = $request->inclusion_types ?? [];
 
-// For update (only if needed)
-$package->inclusions()->delete();
+        // For update (only if needed)
+        $package->inclusions()->delete();
 
-foreach ($inclusions as $key => $item) {
+        foreach ($inclusions as $key => $item) {
 
-    if (!empty($item)) {
+            if (!empty($item)) {
 
-        $package->inclusions()->create([
-            'title' => $item,
-            'type'  => $types[$key] ?? null,
-        ]);
-    }
-}
+                $package->inclusions()->create([
+                    'title' => $item,
+                    'type'  => $types[$key] ?? null,
+                ]);
+            }
+        }
 
         // ✅ FIX: sync teams with roles
         $syncData = [];
@@ -172,14 +202,6 @@ foreach ($inclusions as $key => $item) {
         }
 
         $data = $package->toArray();
-
-        ActivityLogger::log('delete_package', Auth::user(), [
-            'package_id' => $package->id,
-            'name' => $package->name,
-            'price' => $package->price,
-            'snapshot' => $data,
-        ]);
-
         $package->delete();
 
         return redirect()->route('supplier.package.index')

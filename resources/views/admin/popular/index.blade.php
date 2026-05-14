@@ -94,7 +94,7 @@
 /* ══ SHARED MODAL STYLES ══ */
 .mo-overlay { position: fixed; inset: 0; z-index: 8000; background: rgba(30,27,24,.55); display: none; align-items: flex-start; justify-content: center; padding: 1rem; backdrop-filter: blur(3px); overflow-y: auto; }
 .mo-overlay.open { display: flex; }
-.mo-box { background: var(--white); border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-modal); width: 100%; max-width: 580px; margin: auto; flex-shrink: 0; animation: moSlide .22s ease; display: flex; flex-direction: column; max-height: calc(100vh - 2rem); overflow: hidden; }
+.mo-box { background: var(--white); border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-modal); width: 100%; max-width: 620px; margin: auto; flex-shrink: 0; animation: moSlide .22s ease; display: flex; flex-direction: column; max-height: calc(100vh - 2rem); overflow: hidden; }
 .mo-box.mo-sm { max-width: 420px; }
 @keyframes moSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -160,6 +160,58 @@
 .inc-del svg { width: 11px; height: 11px; }
 .inc-del:disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
 
+/* ── BUNDLE ROWS (FIXED LAYOUT) ── */
+.bundle-list { display: flex; flex-direction: column; gap: .55rem; margin-bottom: .65rem; }
+
+.bundle-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 32px;
+    gap: .5rem;
+    align-items: center;
+    background: var(--ivory);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: .55rem .65rem;
+}
+
+.bundle-row .mo-sw::after { top: 50%; }
+.bundle-row .mo-sw .mo-sel {
+    background: var(--white);
+    font-size: .78rem;
+    padding: .52rem .85rem .52rem .7rem;
+    border-color: var(--border-md);
+}
+.bundle-row .mo-sw .mo-sel:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,.12); }
+
+.bundle-col-label {
+    font-size: .6rem;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--warm-grey);
+    margin-bottom: .28rem;
+    font-family: var(--font-body);
+}
+
+.bundle-col { display: flex; flex-direction: column; }
+
+.bundle-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 32px;
+    gap: .5rem;
+    margin-bottom: .3rem;
+    padding: 0 .65rem;
+}
+
+.bundle-header span {
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--warm-grey);
+    font-family: var(--font-body);
+}
+
 .btn-add-inc { display: inline-flex; align-items: center; gap: .4rem; padding: .45rem .9rem; border-radius: var(--radius-btn); border: 1.5px dashed rgba(201,168,76,.4); background: var(--gold-light); font-family: var(--font-body); font-size: .75rem; font-weight: 500; color: var(--gold-dark); cursor: pointer; transition: border-color .2s, background .2s; }
 .btn-add-inc:hover { border-color: var(--gold); background: rgba(201,168,76,.18); }
 .btn-add-inc svg { width: 12px; height: 12px; }
@@ -190,6 +242,10 @@
     .pp-count { margin-left: 0; }
     .mo-box { max-height: calc(100vh - 1rem); }
     .inc-row .mo-sw { flex: 0 0 110px; }
+    .bundle-row { grid-template-columns: 1fr 32px; }
+    .bundle-row .mo-sw:last-of-type { display: none; }
+    .bundle-header { grid-template-columns: 1fr 32px; }
+    .bundle-header span:nth-child(2) { display: none; }
 }
 @media(min-width:641px) and (max-width:900px) {
     .pp-grid { grid-template-columns: repeat(2,1fr); }
@@ -252,45 +308,46 @@
     {{-- ── PACKAGE GRID ── --}}
     @if($packages->count())
     <div class="pp-grid" id="pkgGrid">
-        @foreach($packages as $package)
+        @foreach($popularPackages as $popular)
         @php
-            $inclusions  = $package->inclusions ?? collect();
+            $inclusions  = $popular->inclusions ?? collect();
             $displayInc  = $inclusions->take(4);
             $moreCount   = max(0, $inclusions->count() - 4);
+            $bundleItems = $popular->bundleItems ?? collect();
         @endphp
         <div class="pp-card"
-             data-id="{{ $package->id }}"
-             data-name="{{ strtolower($package->name) }}"
-             data-type="{{ strtolower($package->event_type) }}">
+             data-id="{{ $popular->id }}"
+             data-name="{{ strtolower($popular->name) }}"
+             data-type="{{ strtolower($popular->event_type) }}">
 
             {{-- Head --}}
             <div class="pp-card-head">
                 <div class="pp-card-accent"></div>
-                <div class="pp-card-name">{{ $package->name }}</div>
-                @if($package->event_type)
-                    <span class="pp-card-type">{{ $package->event_type }}</span>
+                <div class="pp-card-name">{{ $popular->name }}</div>
+                @if($popular->event_type)
+                    <span class="pp-card-type">{{ $popular->event_type }}</span>
                 @endif
             </div>
 
             {{-- Body --}}
             <div class="pp-card-body">
                 <div class="pp-card-meta">
-                    @if($package->price)
+                    @if($popular->price)
                     <div class="pp-card-meta-item">
                         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="7"/><path d="M10 6v8M7.5 8.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3H13"/></svg>
-                        ₱{{ number_format($package->price) }}
+                        ₱{{ number_format($popular->price) }}
                     </div>
                     @endif
-                    @if($package->guest_capacity)
+                    @if($popular->guest_capacity)
                     <div class="pp-card-meta-item">
                         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="7" cy="6" r="3"/><path d="M1 17c0-3 2.7-5 6-5"/><circle cx="13" cy="6" r="3"/><path d="M19 17c0-3-2.7-5-6-5s-6 2-6 5"/></svg>
-                        Up to {{ number_format($package->guest_capacity) }} guests
+                        Up to {{ number_format($popular->guest_capacity) }} guests
                     </div>
                     @endif
-                    @if($package->duration_hours)
+                    @if($popular->duration_hours)
                     <div class="pp-card-meta-item">
                         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="7"/><path d="M10 7v3.5l2.5 1.5"/></svg>
-                        {{ $package->duration_hours }}h
+                        {{ $popular->duration_hours }}h
                     </div>
                     @endif
                 </div>
@@ -308,17 +365,18 @@
                 @endif
             </div>
 
-            {{-- Card Footer: Edit / Delete ── --}}
+            {{-- Card Footer: Edit / Delete --}}
             <div class="pp-card-foot">
                 <button type="button" class="pp-action-btn"
                     onclick="openEditPkg({
-                        id: {{ $package->id }},
-                        name: {{ json_encode($package->name) }},
-                        event_type: {{ json_encode($package->event_type) }},
-                        price: {{ json_encode($package->price) }},
-                        guest_capacity: {{ json_encode($package->guest_capacity) }},
-                        duration_hours: {{ json_encode($package->duration_hours) }},
-                        inclusions: {{ json_encode($inclusions->map(fn($i) => ['id' => $i->id, 'title' => $i->title, 'type' => $i->type ?? ''])) }}
+                        id: {{ $popular->id }},
+                        name: {{ json_encode($popular->name) }},
+                        event_type: {{ json_encode($popular->event_type) }},
+                        price: {{ json_encode($popular->price) }},
+                        guest_capacity: {{ json_encode($popular->guest_capacity) }},
+                        duration_hours: {{ json_encode($popular->duration_hours) }},
+                        inclusions: {{ json_encode($inclusions->map(fn($i) => ['id' => $i->id, 'title' => $i->title, 'type' => $i->type ?? ''])) }},
+                        bundles: {{ json_encode($bundleItems->map(fn($b) => ['supplier_id' => $b->supplier_id ?? '', 'package_id' => $b->package_id ?? ''])) }}
                     })">
                     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
                         <path d="M9.5 1.5l3 3L4 13H1v-3L9.5 1.5z"/>
@@ -326,7 +384,7 @@
                     Edit
                 </button>
                 <button type="button" class="pp-action-btn danger"
-                    onclick="openDeletePkg({{ $package->id }}, {{ json_encode($package->name) }})">
+                    onclick="openDeletePkg({{ $popular->id }}, {{ json_encode($popular->name) }})">
                     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
                         <path d="M2 3.5h10M5 3.5V2h4v1.5M5.5 6v4.5M8.5 6v4.5M3 3.5l.7 8.5h6.6L11 3.5H3z"/>
                     </svg>
@@ -447,7 +505,6 @@
                 <div class="mo-section">
                     <div class="mo-section-label">Inclusions</div>
                     <div class="inc-list" id="addIncList">
-                        {{-- First row (non-deletable) --}}
                         <div class="inc-row">
                             <input type="text" name="inclusions[]" class="mo-inp"
                                    placeholder="e.g. Floral centrepiece">
@@ -472,6 +529,48 @@
                     <button type="button" class="btn-add-inc" onclick="addIncRow('addIncList')">
                         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 1v10M1 6h10"/></svg>
                         Add Inclusion
+                    </button>
+                </div>
+
+                {{-- Bundle Supplier Packages --}}
+                <div class="mo-section">
+                    <div class="mo-section-label">Bundle Supplier Packages</div>
+
+                    {{-- Column headers --}}
+                    <div class="bundle-header">
+                        <span>Supplier</span>
+                        <span>Package</span>
+                        <span></span>
+                    </div>
+
+                    <div class="bundle-list" id="addBundleList">
+                        {{-- First Row --}}
+                        <div class="bundle-row">
+                            <div class="mo-sw">
+                                <select name="supplier_ids[]" class="mo-sel">
+                                    <option value="">Select Supplier…</option>
+                                    @foreach($suppliers as $supplier)
+                                        <option value="{{ $supplier->id }}">{{ $supplier->business_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mo-sw">
+                                <select name="package_ids[]" class="mo-sel">
+                                    <option value="">Select Package…</option>
+                                    @foreach($packages as $package)
+                                        <option value="{{ $package->id }}">{{ $package->name }} (₱{{ number_format($package->price, 2) }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button type="button" class="inc-del" onclick="removeBundleRow(this,'addBundleList')" disabled title="Remove">
+                                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-add-inc" onclick="addBundleRow('addBundleList')">
+                        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 1v10M1 6h10"/></svg>
+                        Add Supplier Package
                     </button>
                 </div>
 
@@ -567,6 +666,27 @@
                     </button>
                 </div>
 
+                {{-- Bundle Supplier Packages --}}
+                <div class="mo-section">
+                    <div class="mo-section-label">Bundle Supplier Packages</div>
+
+                    {{-- Column headers --}}
+                    <div class="bundle-header">
+                        <span>Supplier</span>
+                        <span>Package</span>
+                        <span></span>
+                    </div>
+
+                    <div class="bundle-list" id="editBundleList">
+                        {{-- Populated dynamically by JS --}}
+                    </div>
+
+                    <button type="button" class="btn-add-inc" onclick="addBundleRow('editBundleList')">
+                        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 1v10M1 6h10"/></svg>
+                        Add Supplier Package
+                    </button>
+                </div>
+
             </div>{{-- /mo-body --}}
 
             <div class="mo-foot">
@@ -612,14 +732,16 @@
                 </div>
                 <div class="del-confirm-text">
                     <h4>Are you sure?</h4>
-                    <p>You're about to permanently delete <span class="del-pkg-name" id="delPkgName">"Package"</span>. This will also remove all its inclusions and cannot be undone.</p>
+                    <p>You're about to permanently delete <span class="del-pkg-name" id="delPkgName">"Package"</span>. This will also remove all its inclusions and bundle items. This cannot be undone.</p>
                 </div>
             </div>
         </div>
 
         <div class="mo-foot">
             <button type="button" class="mo-btn-cancel" onclick="closeDeletePkg()">Cancel</button>
-            <form id="deletePkgForm" method="POST" style="display:contents;">
+            @foreach($popularPackages as $popular)
+            <form id="deletePkgForm" action="{{ route('admin.popular.delete', $package->id) }}"
+            method="POST" style="display:contents;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="mo-btn-danger">
@@ -629,12 +751,19 @@
                     Yes, Delete
                 </button>
             </form>
+            @endforeach
         </div>
 
     </div>
 </div>
 
 <script>
+/* ══════════════════════════════════════════
+   SHARED DATA (passed from Blade)
+══════════════════════════════════════════ */
+var SUPPLIERS = @json($suppliers->map(fn($s) => ['id' => $s->id, 'name' => $s->business_name]));
+var SUPPLIER_PACKAGES = @json($packages->map(fn($p) => ['id' => $p->id, 'name' => $p->name, 'price' => $p->price]));
+
 /* ══════════════════════════════════════════
    INCLUSION HELPERS
 ══════════════════════════════════════════ */
@@ -652,8 +781,7 @@ var TYPE_OPTIONS = [
 
 function buildTypeOptions(selected) {
     return TYPE_OPTIONS.map(function(o) {
-        var s = (o.value === selected) ? ' selected' : '';
-        return '<option value="' + o.value + '"' + s + '>' + o.label + '</option>';
+        return '<option value="' + o.value + '"' + (o.value === selected ? ' selected' : '') + '>' + o.label + '</option>';
     }).join('');
 }
 
@@ -675,30 +803,84 @@ function addIncRow(listId) {
     var list = document.getElementById(listId);
     var row  = makeIncRow(listId, '', '');
     list.appendChild(row);
-    syncDeleteBtns(listId);
+    syncDeleteBtns(listId, '.inc-row', '.inc-del');
     row.querySelector('input').focus();
 }
 
 function removeIncRow(btn, listId) {
     btn.closest('.inc-row').remove();
-    syncDeleteBtns(listId);
+    syncDeleteBtns(listId, '.inc-row', '.inc-del');
 }
 
-function syncDeleteBtns(listId) {
-    var rows = document.querySelectorAll('#' + listId + ' .inc-row');
+function syncDeleteBtns(listId, rowSel, btnSel) {
+    var rows = document.querySelectorAll('#' + listId + ' ' + rowSel);
     rows.forEach(function(r) {
-        r.querySelector('.inc-del').disabled = (rows.length === 1);
+        r.querySelector(btnSel).disabled = (rows.length === 1);
     });
+}
+
+/* ══════════════════════════════════════════
+   BUNDLE HELPERS
+══════════════════════════════════════════ */
+function buildSupplierOptions(selected) {
+    var opts = '<option value="">Select Supplier…</option>';
+    SUPPLIERS.forEach(function(s) {
+        opts += '<option value="' + s.id + '"' + (String(s.id) === String(selected) ? ' selected' : '') + '>' + escHtml(s.name) + '</option>';
+    });
+    return opts;
+}
+
+function buildSpOptions(selected) {
+    var opts = '<option value="">Select Package…</option>';
+    SUPPLIER_PACKAGES.forEach(function(p) {
+        opts += '<option value="' + p.id + '"' + (String(p.id) === String(selected) ? ' selected' : '') + '>' +
+            escHtml(p.name) + ' (₱' + Number(p.price).toLocaleString('en-PH', {minimumFractionDigits:2}) + ')' +
+            '</option>';
+    });
+    return opts;
+}
+
+function makeBundleRow(listId, supplierId, packageId) {
+    var row = document.createElement('div');
+    row.className = 'bundle-row';
+    row.innerHTML =
+        '<div class="mo-sw"><select name="supplier_ids[]" class="mo-sel">' + buildSupplierOptions(supplierId) + '</select></div>' +
+        '<div class="mo-sw"><select name="package_ids[]" class="mo-sel">' + buildSpOptions(packageId) + '</select></div>' +
+        '<button type="button" class="inc-del" onclick="removeBundleRow(this,\'' + listId + '\')" title="Remove">' +
+            '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>' +
+        '</button>';
+    return row;
+}
+
+function addBundleRow(listId) {
+    var list = document.getElementById(listId);
+    var row  = makeBundleRow(listId, '', '');
+    list.appendChild(row);
+    syncDeleteBtns(listId, '.bundle-row', '.inc-del');
+}
+
+function removeBundleRow(btn, listId) {
+    btn.closest('.bundle-row').remove();
+    syncDeleteBtns(listId, '.bundle-row', '.inc-del');
 }
 
 function escAttr(str) {
     return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 /* ══════════════════════════════════════════
    ADD MODAL
 ══════════════════════════════════════════ */
 function openAddPkg() {
+    /* Reset bundle list to one blank row */
+    var bl = document.getElementById('addBundleList');
+    bl.innerHTML = '';
+    bl.appendChild(makeBundleRow('addBundleList','',''));
+    syncDeleteBtns('addBundleList', '.bundle-row', '.inc-del');
+
     document.getElementById('addPkgOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
     setTimeout(function() { document.getElementById('add_name').focus(); }, 80);
@@ -708,7 +890,6 @@ function closeAddPkg() {
     document.body.style.overflow = '';
 }
 
-/* Re-open on validation errors */
 @if($errors->any())
     openAddPkg();
 @endif
@@ -717,36 +898,44 @@ function closeAddPkg() {
    EDIT MODAL
 ══════════════════════════════════════════ */
 function openEditPkg(pkg) {
-    /* Populate basic fields */
-    document.getElementById('edit_name').value        = pkg.name        || '';
-    document.getElementById('edit_price').value       = pkg.price       || '';
-    document.getElementById('edit_guests').value      = pkg.guest_capacity || '';
-    document.getElementById('edit_hours').value       = pkg.duration_hours || '';
+    document.getElementById('edit_name').value           = pkg.name             || '';
+    document.getElementById('edit_price').value          = pkg.price            || '';
+    document.getElementById('edit_guests').value         = pkg.guest_capacity   || '';
+    document.getElementById('edit_hours').value          = pkg.duration_hours   || '';
 
-    /* Event type select */
     var sel = document.getElementById('edit_event_type');
     for (var i = 0; i < sel.options.length; i++) {
         sel.options[i].selected = (sel.options[i].value === pkg.event_type);
     }
 
-    /* Set form action */
     document.getElementById('editPkgForm').action = '/admin/popular/' + pkg.id;
 
-    /* Rebuild inclusions list */
-    var list = document.getElementById('editIncList');
-    list.innerHTML = '';
+    /* Rebuild inclusions */
+    var incList = document.getElementById('editIncList');
+    incList.innerHTML = '';
     var incs = pkg.inclusions || [];
     if (incs.length === 0) {
-        /* Add one blank row */
-        list.appendChild(makeIncRow('editIncList', '', ''));
+        incList.appendChild(makeIncRow('editIncList', '', ''));
     } else {
         incs.forEach(function(inc) {
-            list.appendChild(makeIncRow('editIncList', inc.title, inc.type));
+            incList.appendChild(makeIncRow('editIncList', inc.title, inc.type));
         });
     }
-    syncDeleteBtns('editIncList');
+    syncDeleteBtns('editIncList', '.inc-row', '.inc-del');
 
-    /* Open overlay */
+    /* Rebuild bundles */
+    var bundleList = document.getElementById('editBundleList');
+    bundleList.innerHTML = '';
+    var bundles = pkg.bundles || [];
+    if (bundles.length === 0) {
+        bundleList.appendChild(makeBundleRow('editBundleList', '', ''));
+    } else {
+        bundles.forEach(function(b) {
+            bundleList.appendChild(makeBundleRow('editBundleList', b.supplier_id, b.package_id));
+        });
+    }
+    syncDeleteBtns('editBundleList', '.bundle-row', '.inc-del');
+
     document.getElementById('editPkgOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
     setTimeout(function() { document.getElementById('edit_name').focus(); }, 80);
@@ -761,7 +950,7 @@ function closeEditPkg() {
 ══════════════════════════════════════════ */
 function openDeletePkg(id, name) {
     document.getElementById('delPkgName').textContent = '"' + name + '"';
-    document.getElementById('deletePkgForm').action = '/admin/popular/' + id;
+    document.getElementById('deletePkgForm').action   = '/admin/popular/' + id;
     document.getElementById('deletePkgOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
 }
@@ -771,7 +960,7 @@ function closeDeletePkg() {
 }
 
 /* ══════════════════════════════════════════
-   GLOBAL ESC KEY
+   ESC KEY
 ══════════════════════════════════════════ */
 document.addEventListener('keydown', function(e) {
     if (e.key !== 'Escape') return;

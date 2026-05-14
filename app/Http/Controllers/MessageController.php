@@ -40,7 +40,7 @@ class MessageController extends Controller
                 : $msg->sender_id;
         });
 
-    return view('client.inbox.list', compact('conversations', 'messages'));
+     return view('client.inbox.list', compact('conversations', 'messages'));
     }
 
     // ✅ Open Chat (Client or Supplier)

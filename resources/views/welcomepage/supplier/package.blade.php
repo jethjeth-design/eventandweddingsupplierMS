@@ -407,7 +407,7 @@
             <div class="sp-grid">
                 @foreach($suppliers as $supplier)
                 @php
-                    {{-- SupplierProfile is the model directly, so $supplier IS the profile --}}
+                    
                     $bizName     = $supplier->business_name ?? trim(($supplier->first_name ?? '') . ' ' . ($supplier->last_name ?? ''));
                     $fullName    = trim(($supplier->first_name ?? '') . ' ' . ($supplier->last_name ?? ''));
                     $city        = $supplier->city        ?? null;
@@ -625,7 +625,7 @@
                                 <span></span>
                             @endif
 
-                            <a href="#" class="pp-view-btn">
+                            <a href="{{route('popular.show', $package->id )}}" class="pp-view-btn">
                                 View
                                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M2 6h8M7 3l3 3-3 3"/>
@@ -651,8 +651,9 @@
                     <h3>No packages found</h3>
                     <p>Try selecting a different event type.</p>
                 </div>
-            </div>
 
+            </div>
+            
         </div>{{-- /pp-section --}}
 
     </div>{{-- /main-wrap --}}

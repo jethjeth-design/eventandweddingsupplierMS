@@ -15,10 +15,24 @@ class Event extends Model
         'description',
         'guest_count',
         'venue',
+
+        // 🧠 recommendation tracking
+        'is_recommended',
+        'recommended_at',
+
+        // 📌 event status (VERY IMPORTANT for system flow)
+        'status',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+    
+    
 }

@@ -1,485 +1,610 @@
+{{-- resources/views/client/recommendations/index.blade.php --}}
 <x-client-layout>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
 
     :root {
-        --gold:        #C9A84C;
-        --gold-light:  #E8C97A;
-        --gold-dark:   #8A6A1F;
-        --blush-deep:  #D4A090;
-        --ivory:       #FAF7F2;
-        --charcoal:    #1E1B18;
-        --warm-grey:   #6B6560;
-        --white:       #FFFFFF;
-        --border:      #F0EBE5;
-        --border-md:   #E0D8D0;
-        --font-display:'Playfair Display', Georgia, serif;
-        --font-body:   'DM Sans', sans-serif;
+        --gold:       #C9A84C;
+        --gold-dark:  #A8842A;
+        --gold-light: rgba(201,168,76,.11);
+        --charcoal:   #1E1B18;
+        --warm-grey:  #8C8178;
+        --border:     #EDE8E2;
+        --soft:       #F7F4F0;
+        --white:      #FFFFFF;
+        --ivory:      #FAF8F5;
+        --danger:     #C0392B;
+        --font-d:     'Playfair Display', Georgia, serif;
+        --font-b:     'DM Sans', sans-serif;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font-body); background: var(--ivory); color: var(--charcoal); }
+    body { font-family: var(--font-b); color: var(--charcoal); background: #F4F0EA; }
 
-    .rec-wrap { max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
-
-    .rec-banner {
-        background: var(--charcoal);
-        border-radius: 14px;
-        padding: 1.6rem 1.85rem;
-        margin-bottom: 1.75rem;
-        position: relative; overflow: hidden;
-    }
-    .rec-banner::before {
-        content: '';
-        position: absolute; inset: 0;
-        background-image: radial-gradient(rgba(201,168,76,0.07) 1px, transparent 1px);
-        background-size: 20px 20px; pointer-events: none;
-    }
-    .rec-banner::after {
-        content: '';
-        position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-        background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-    .rec-banner-inner { position: relative; z-index: 1; }
-    .rec-eyebrow {
-        font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
-        color: var(--gold); font-weight: 500; margin-bottom: 0.35rem;
-        display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-body);
-    }
-    .rec-eyebrow::before { content: ''; width: 14px; height: 1px; background: var(--gold); }
-    .rec-banner h1 {
-        font-family: var(--font-display);
-        font-size: clamp(1.3rem, 2.5vw, 1.85rem);
-        font-weight: 700; color: var(--white); line-height: 1.15;
-    }
-    .rec-banner h1 em { color: var(--gold-light); font-style: italic; }
-    .rec-banner-meta {
-        display: flex; align-items: center; gap: 0.75rem;
-        margin-top: 0.75rem; flex-wrap: wrap;
-    }
-    .rec-meta-chip {
-        display: inline-flex; align-items: center; gap: 0.35rem;
-        padding: 4px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 500;
-        background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.72);
-        border: 1px solid rgba(255,255,255,0.14); font-family: var(--font-body);
-    }
-    .rec-meta-chip svg { width: 12px; height: 12px; }
-    .rec-ai-badge {
-        display: inline-flex; align-items: center; gap: 0.3rem;
-        padding: 3px 10px; border-radius: 999px;
-        font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
-        background: rgba(201,168,76,0.15); color: var(--gold-light);
-        border: 1px solid rgba(201,168,76,0.3); font-family: var(--font-body);
-    }
-    .rec-ai-badge svg { width: 11px; height: 11px; }
-
-    .rec-list { display: flex; flex-direction: column; gap: 1.1rem; }
-
-    .rec-card {
-        background: var(--white);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        overflow: hidden;
-        position: relative;
-        animation: fadeUp 0.3s ease both;
-    }
-    .rec-card:nth-child(1) { animation-delay: 0s; }
-    .rec-card:nth-child(2) { animation-delay: .07s; }
-    .rec-card:nth-child(3) { animation-delay: .14s; }
-    .rec-card:nth-child(4) { animation-delay: .21s; }
-    .rec-card:nth-child(5) { animation-delay: .28s; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-    .rec-card-accent {
-        position: absolute; top: 0; left: 0; right: 0; height: 2px;
-        background: linear-gradient(90deg, var(--gold), var(--gold-light));
-    }
-    .rec-card.top-pick { border: 2px solid var(--gold); }
-    .rec-card.top-pick .rec-card-accent { display: none; }
-
-    .rec-card-main { padding: 1.2rem 1.35rem; display: flex; align-items: flex-start; gap: 1rem; }
-
-    .rec-rank {
-        width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
-        display: flex; align-items: center; justify-content: center;
-        font-family: var(--font-display); font-size: 1rem; font-weight: 700;
-    }
-    .rank-1 { background: rgba(201,168,76,0.15); color: var(--gold-dark); border: 1.5px solid rgba(201,168,76,0.4); }
-    .rank-2 { background: rgba(107,101,96,0.08); color: var(--warm-grey); border: 1.5px solid var(--border-md); }
-    .rank-other { background: rgba(107,101,96,0.05); color: #C0B8B0; border: 1.5px solid var(--border); }
-
-    .rec-info { flex: 1; min-width: 0; }
-
-    .rec-top-row {
-        display: flex; align-items: flex-start; justify-content: space-between;
-        gap: 0.75rem; margin-bottom: 0.35rem; flex-wrap: wrap;
-    }
-    .rec-name {
-        font-family: var(--font-display); font-size: 1rem; font-weight: 700;
-        color: var(--charcoal); line-height: 1.2;
-    }
-    .rec-price {
-        font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
-        color: var(--gold-dark); white-space: nowrap;
-    }
-
-    /* ── SUPPLIER NAME ROW ── (only new CSS added) */
-    .rec-supplier-row {
-        display: flex; align-items: center; gap: 0.4rem;
-        margin-bottom: 0.45rem;
-    }
-    .rec-supplier-avatar {
-        width: 40px; height: 40px; border-radius: 50%;
-        background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-        display: flex; align-items: center; justify-content: center;
-        font-family: var(--font-display); font-size: 0.55rem; font-weight: 700;
-        color: var(--white); flex-shrink: 0; overflow: hidden;
-    }
-    .rec-supplier-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .rec-supplier-name {
-        font-size: 0.72rem; color: var(--warm-grey);
-        font-family: var(--font-body); font-weight: 500;
-    }
-    .rec-supplier-name strong {
-        color: var(--charcoal); font-weight: 600;
-    }
-    .rec-supplier-sep {
-        width: 3px; height: 3px; border-radius: 50%;
-        background: var(--border-md); flex-shrink: 0;
-    }
-    .rec-supplier-category {
-        font-size: 0.65rem; color: var(--gold-dark);
-        font-family: var(--font-body); font-weight: 500;
-    }
-
-    .rec-desc {
-        font-size: 0.78rem; color: var(--warm-grey); line-height: 1.55;
-        margin-bottom: 0.65rem;
-        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
-
-    .rec-score-row { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.65rem; }
-    .score-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #C0B8B0; white-space: nowrap; font-family: var(--font-body); }
-    .score-track { flex: 1; height: 5px; background: var(--border); border-radius: 999px; overflow: hidden; min-width: 60px; }
-    .score-fill { height: 100%; border-radius: 999px; background: var(--gold); transition: width .5s ease; }
-    .score-fill.high { background: var(--gold); }
-    .score-fill.mid  { background: var(--gold-light); }
-    .score-fill.low  { background: var(--border-md); }
-    .score-val { font-size: 0.72rem; font-weight: 700; color: var(--gold-dark); min-width: 32px; text-align: right; font-family: var(--font-display); }
-
-    .rec-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.65rem; }
-    .pill {
-        display: inline-flex; align-items: center; gap: 0.25rem;
-        padding: 2px 8px; border-radius: 999px; font-size: 0.62rem; font-weight: 600;
-        letter-spacing: 0.03em; font-family: var(--font-body);
-    }
-    .pill svg { width: 9px; height: 9px; }
-    .pill-type  { background: rgba(201,168,76,0.1); color: var(--gold-dark); border: 1px solid rgba(201,168,76,0.25); }
-    .pill-guest { background: var(--ivory); color: var(--warm-grey); border: 1px solid var(--border-md); }
-
-    .rec-inclusions {
-        border-top: 1px solid var(--border);
-        padding: 0.85rem 1.35rem;
-        background: rgba(201,168,76,0.02);
-    }
-    .incl-head {
-        font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-        color: #C0B8B0; margin-bottom: 0.55rem; font-family: var(--font-body);
-        display: flex; align-items: center; gap: 0.4rem;
-    }
-    .incl-head svg { width: 10px; height: 10px; color: var(--gold-dark); }
-    .incl-grid {
+    .ai-wrap {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 4rem;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 0.4rem;
-    }
-    .incl-item {
-        display: flex; align-items: center; gap: 0.45rem;
-        font-size: 0.75rem; color: var(--charcoal); font-family: var(--font-body); line-height: 1.35;
-    }
-    .incl-dot {
-        width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
-        flex-shrink: 0; box-shadow: 0 0 0 2px rgba(201,168,76,0.18);
+        grid-template-columns: 260px 1fr;
+        gap: 1.75rem;
+        align-items: start;
     }
 
-    .rec-card-foot {
-        border-top: 1px solid var(--border);
-        padding: 0.75rem 1.35rem;
-        display: flex; align-items: center; justify-content: space-between;
-        gap: 0.75rem; flex-wrap: wrap;
-        background: var(--white);
+    /* ── ALERTS ── */
+    .ai-alert {
+        display: flex; align-items: center; gap: .65rem;
+        padding: .9rem 1.15rem; border-radius: 10px;
+        font-size: .8rem; font-weight: 500;
+        margin-bottom: 1.25rem; border: 1.5px solid;
+        grid-column: 1/-1;
+        animation: aiFade .3s ease;
     }
-    .foot-left { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    @keyframes aiFade{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+    .ai-alert svg { width:15px; height:15px; flex-shrink:0; }
+    .ai-alert.success { background:#F0FBF4; border-color:#A8D5B5; color:#1E6B3C; }
+    .ai-alert.error   { background:#FFF5F5; border-color:#FADBD8; color:var(--danger); }
 
-    .top-pick-badge {
-        display: inline-flex; align-items: center; gap: 0.3rem;
-        padding: 3px 9px; border-radius: 999px;
-        font-size: 0.6rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
-        background: rgba(201,168,76,0.12); color: var(--gold-dark);
-        border: 1px solid rgba(201,168,76,0.3); font-family: var(--font-body);
-    }
-    .top-pick-badge svg { width: 10px; height: 10px; }
+    /* ══════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════ */
+    .ai-sidebar { display: flex; flex-direction: column; gap: 1.1rem; position: sticky; top: 1.5rem; }
 
-    .btn-book {
-        display: inline-flex; align-items: center; gap: 0.4rem;
-        padding: 0.55rem 1.35rem;
-        background: var(--charcoal); color: var(--white);
-        border: none; border-radius: 6px;
-        font-family: var(--font-body); font-size: 0.78rem; font-weight: 600;
-        letter-spacing: 0.04em; text-transform: uppercase;
-        cursor: pointer;
+    /* Event card */
+    .ai-event-card {
+        background: linear-gradient(135deg, var(--charcoal) 0%, #2a2016 55%, #3d2f14 100%);
+        border-radius: 14px;
+        padding: 1.5rem 1.35rem;
         position: relative; overflow: hidden;
-        transition: transform 0.15s;
+        box-shadow: 0 4px 18px rgba(30,27,24,.16);
     }
-    .btn-book::after {
-        content: '';
-        position: absolute; inset: 0;
-        background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-        opacity: 0; transition: opacity 0.25s;
+    .ai-event-card::before {
+        content:'';
+        position:absolute;inset:0;
+        background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C9A84C' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+        pointer-events:none;
     }
-    .btn-book:hover::after { opacity: 1; }
-    .btn-book:hover { transform: translateY(-1px); }
-    .btn-book span, .btn-book svg { position: relative; z-index: 1; }
-    .btn-book svg { width: 13px; height: 13px; }
+    .ai-event-badge {
+        display: inline-flex; align-items: center; gap: .38rem;
+        padding: .22rem .72rem; border-radius: 999px;
+        background: rgba(201,168,76,.18);
+        border: 1px solid rgba(201,168,76,.3);
+        font-size: .62rem; font-weight: 700;
+        letter-spacing: .08em; text-transform: uppercase;
+        color: var(--gold); margin-bottom: .75rem;
+    }
+    .ai-event-badge::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--gold); animation:aiPulse 2s ease-in-out infinite; }
+    @keyframes aiPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.75);}}
+    .ai-event-name {
+        font-family: var(--font-d);
+        font-size: 1.1rem; font-weight: 700; color: var(--white);
+        line-height: 1.25; margin-bottom: .35rem;
+    }
+    .ai-event-type {
+        font-size: .72rem; color: rgba(255,255,255,.58);
+        font-weight: 500; letter-spacing: .04em;
+    }
+    .ai-event-divider { border: none; border-top: 1px solid rgba(255,255,255,.1); margin: 1rem 0; }
+    .ai-event-meta { display: flex; flex-direction: column; gap: .5rem; }
+    .ai-event-meta-row {
+        display: flex; align-items: center; gap: .5rem;
+        font-size: .72rem; color: rgba(255,255,255,.65);
+    }
+    .ai-event-meta-row svg { width: 12px; height: 12px; color: var(--gold); flex-shrink: 0; }
 
-    .rec-empty {
-        text-align: center; padding: 4rem 2rem;
-        background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+    /* Stat cards */
+    .ai-stat-card {
+        background: var(--white);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.25rem;
+        box-shadow: 0 1px 4px rgba(30,27,24,.05);
+        display: flex; align-items: center; gap: .9rem;
+        cursor: pointer;
+        transition: border-color .2s, box-shadow .2s, transform .15s;
+        text-decoration: none;
     }
-    .rec-empty-icon {
-        width: 56px; height: 56px; border-radius: 50%;
-        background: rgba(201,168,76,0.08);
+    .ai-stat-card:hover {
+        border-color: var(--gold);
+        box-shadow: 0 4px 14px rgba(201,168,76,.14);
+        transform: translateY(-1px);
+    }
+    .ai-stat-card.active { border-color: var(--gold); background: rgba(201,168,76,.05); }
+    .ai-stat-icon {
+        width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+        background: var(--gold-light);
         display: flex; align-items: center; justify-content: center;
-        margin: 0 auto 0.9rem; color: var(--gold-dark);
+        color: var(--gold-dark);
     }
-    .rec-empty-icon svg { width: 26px; height: 26px; }
-    .rec-empty h3 {
-        font-family: var(--font-display); font-size: 1.05rem; font-weight: 700;
-        color: var(--charcoal); margin-bottom: 0.3rem;
+    .ai-stat-icon svg { width: 18px; height: 18px; }
+    .ai-stat-info { flex: 1; min-width: 0; }
+    .ai-stat-label { font-size: .68rem; color: var(--warm-grey); font-weight: 500; margin-bottom: .18rem; }
+    .ai-stat-count {
+        font-family: var(--font-d);
+        font-size: 1.5rem; font-weight: 700; color: var(--charcoal); line-height: 1;
     }
-    .rec-empty p { font-size: 0.8rem; color: var(--warm-grey); line-height: 1.6; }
+    .ai-stat-sub { font-size: .64rem; color: var(--warm-grey); margin-top: .18rem; }
 
-    @media (max-width: 560px) {
-        .rec-wrap { padding: 1rem 0.75rem 3rem; }
-        .rec-card-main { gap: 0.65rem; }
-        .rec-rank { width: 32px; height: 32px; font-size: 0.85rem; }
-        .incl-grid { grid-template-columns: 1fr; }
+    /* AI badge */
+    .ai-powered-badge {
+        display: flex; align-items: center; gap: .55rem;
+        padding: .75rem 1rem;
+        background: var(--white);
+        border-radius: 10px; border: 1px solid var(--border);
+        font-size: .7rem; color: var(--warm-grey); line-height: 1.45;
+        box-shadow: 0 1px 4px rgba(30,27,24,.04);
+    }
+    .ai-powered-badge-icon {
+        width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+        background: linear-gradient(135deg, #6B3FA0, #A0522D);
+        display: flex; align-items: center; justify-content: center;
+    }
+    .ai-powered-badge-icon svg { width: 15px; height: 15px; color: var(--white); }
+
+    /* ══════════════════════════════════
+       MAIN CONTENT
+    ══════════════════════════════════ */
+    .ai-main { display: flex; flex-direction: column; gap: 2rem; }
+
+    /* Section header */
+    .ai-sec-head {
+        display: flex; align-items: flex-end; justify-content: space-between;
+        margin-bottom: 1.15rem; flex-wrap: wrap; gap: .65rem;
+    }
+    .ai-sec-title { font-family: var(--font-d); font-size: 1.25rem; font-weight: 700; color: var(--charcoal); }
+    .ai-sec-title em { font-style: italic; color: var(--gold-dark); }
+    .ai-sec-sub { font-size: .74rem; color: var(--warm-grey); margin-top: .18rem; }
+    .ai-count-pill {
+        display: inline-flex; align-items: center; gap: .35rem;
+        padding: .26rem .82rem; border-radius: 999px;
+        background: var(--gold-light); color: var(--gold-dark);
+        font-size: .7rem; font-weight: 700;
+    }
+    .ai-count-pill::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--gold); }
+
+    /* Section anchor target offset */
+    .ai-sec-anchor { scroll-margin-top: 1.5rem; }
+
+    /* ── CARD GRID ── */
+    .ai-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.1rem;
+    }
+
+    /* ── PACKAGE CARD ── */
+    .ai-card {
+        background: var(--white);
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+        display: flex; flex-direction: column;
+        box-shadow: 0 1px 6px rgba(30,27,24,.06);
+        transition: border-color .2s, box-shadow .2s, transform .18s;
+    }
+    .ai-card:hover {
+        border-color: rgba(201,168,76,.4);
+        box-shadow: 0 6px 22px rgba(30,27,24,.1);
+        transform: translateY(-2px);
+    }
+
+    /* Card top */
+    .ai-card-top {
+        padding: 1.15rem 1.2rem .85rem;
+        flex: 1;
+    }
+    .ai-card-supplier {
+        font-size: .62rem; font-weight: 700;
+        letter-spacing: .09em; text-transform: uppercase;
+        color: var(--gold-dark); margin-bottom: .3rem;
+    }
+    .ai-card-name {
+        font-family: var(--font-d);
+        font-size: .98rem; font-weight: 700; color: var(--charcoal);
+        line-height: 1.25; margin-bottom: .65rem;
+    }
+
+    /* Score badge */
+    .ai-score {
+        display: inline-flex; align-items: center; gap: .38rem;
+        padding: .22rem .7rem; border-radius: 999px;
+        background: rgba(39,174,96,.1);
+        border: 1px solid rgba(39,174,96,.2);
+        font-size: .64rem; font-weight: 700; color: #1E6B3C;
+        margin-bottom: .85rem;
+    }
+    .ai-score svg { width: 10px; height: 10px; color: #27AE60; }
+
+    /* Inclusions */
+    .ai-inc { list-style: none; display: flex; flex-direction: column; gap: .3rem; margin-bottom: .85rem; }
+    .ai-inc li {
+        display: flex; align-items: flex-start; gap: .4rem;
+        font-size: .74rem; color: var(--charcoal); line-height: 1.4;
+    }
+    .ai-inc li::before {
+        content:'';
+        width:14px; height:14px; border-radius:50%; flex-shrink:0;
+        background: var(--gold-light)
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 10 10' fill='none' stroke='%23A8842A' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='2 5 4.5 7.5 8 3'/%3E%3C/svg%3E")
+            center / 9px no-repeat;
+        border:1px solid rgba(201,168,76,.28);
+        margin-top:.1rem;
+    }
+
+    /* Bundle items */
+    .ai-bundle-item {
+        display: flex; align-items: flex-start; gap: .5rem;
+        font-size: .74rem; color: var(--charcoal); line-height: 1.4;
+        padding: .35rem 0;
+        border-bottom: 1px solid var(--soft);
+    }
+    .ai-bundle-item:last-child { border-bottom: none; }
+    .ai-bundle-dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--gold); flex-shrink: 0; margin-top: .35rem;
+    }
+    .ai-bundle-supplier { font-size: .63rem; color: var(--warm-grey); }
+
+    .ai-bundle-list { margin-bottom: .85rem; }
+
+    /* Card footer */
+    .ai-card-foot {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: .85rem 1.2rem;
+        border-top: 1px solid var(--soft);
+        background: var(--ivory);
+    }
+    .ai-price {
+        font-family: var(--font-d);
+        font-size: 1.05rem; font-weight: 700; color: var(--charcoal);
+    }
+    .ai-price small { font-family:var(--font-b); font-size:.68rem; font-weight:400; color:var(--warm-grey); margin-left:.25rem; }
+
+    .ai-book-btn {
+        display: inline-flex; align-items: center; gap: .4rem;
+        padding: .5rem 1.1rem;
+        border-radius: 8px; border: none;
+        background: var(--charcoal);
+        font-family: var(--font-b); font-size: .76rem; font-weight: 600;
+        color: var(--white); cursor: pointer;
+        transition: background .22s, box-shadow .22s, transform .15s;
+        white-space: nowrap;
+    }
+    .ai-book-btn svg { width: 12px; height: 12px; }
+    .ai-book-btn:hover {
+        background: var(--gold-dark);
+        box-shadow: 0 4px 12px rgba(168,132,42,.28);
+        transform: translateY(-1px);
+    }
+
+    /* empty state */
+    .ai-empty {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 3rem 1.5rem;
+        background: var(--white);
+        border-radius: 14px;
+        border: 1.5px dashed var(--border);
+    }
+    .ai-empty-ico {
+        width: 50px; height: 50px; border-radius: 50%;
+        background: var(--gold-light);
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto .85rem; color: var(--gold-dark);
+    }
+    .ai-empty-ico svg { width: 20px; height: 20px; }
+    .ai-empty-title { font-family:var(--font-d); font-size:.95rem; font-weight:700; color:var(--charcoal); margin-bottom:.3rem; }
+    .ai-empty-sub   { font-size:.76rem; color:var(--warm-grey); line-height:1.6; }
+
+    /* section divider */
+    .ai-divider {
+        height: 1px; background: var(--border);
+        margin: .25rem 0;
+    }
+
+    @media (max-width: 860px) {
+        .ai-wrap { grid-template-columns: 1fr; }
+        .ai-sidebar { position: static; flex-direction: row; flex-wrap: wrap; }
+        .ai-event-card { flex: 1 1 100%; }
+        .ai-stat-card  { flex: 1 1 calc(50% - .55rem); }
+        .ai-powered-badge { flex: 1 1 100%; }
+        .ai-alert { grid-column: 1; }
+    }
+    @media (max-width: 520px) {
+        .ai-stat-card { flex: 1 1 100%; }
+        .ai-grid { grid-template-columns: 1fr; }
     }
 </style>
 
-<div class="rec-wrap">
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('AI Recommendations') }}</h2>
+    </x-slot>
 
-    {{-- ── Banner ── --}}
-    <div class="rec-banner">
-        <div class="rec-banner-inner">
-            <div class="rec-eyebrow">
-                <svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M10 2l2.4 4.9L18 7.6l-4 3.9.9 5.5L10 14.4l-5 2.6.9-5.5L2 7.6l5.6-.7z"/>
-                </svg>
-                Smart Matching
-            </div>
-            <h1>Recommended <em>Packages</em></h1>
-            <div class="rec-banner-meta">
-                <span class="rec-ai-badge">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
-                        <path d="M12 2a3 3 0 013 3v1a3 3 0 01-3 3H8a3 3 0 01-3-3V5a3 3 0 013-3h4z"/>
-                        <path d="M2 15a3 3 0 013-3h10a3 3 0 013 3v1a2 2 0 01-2 2H4a2 2 0 01-2-2v-1z"/>
-                    </svg>
-                    AI Matched
-                </span>
-                @if(isset($event))
-                <span class="rec-meta-chip">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="14" rx="2"/><path d="M2 9h16M7 2v4M13 2v4"/></svg>
-                    {{ $event->event_type ?? 'Your Event' }}
-                </span>
-                @if($event->budget)
-                <span class="rec-meta-chip">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><line x1="10" y1="2" x2="10" y2="18"/><path d="M14 6H8.5a2.5 2.5 0 000 5h3a2.5 2.5 0 010 5H6"/></svg>
-                    Budget: ₱{{ number_format($event->budget) }}
-                </span>
-                @endif
-                @endif
-                <span class="rec-meta-chip">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 12l2 2 4-4M5 7h10M5 11h6M5 15h4"/></svg>
-                    {{ count($recommendations) }} match{{ count($recommendations) !== 1 ? 'es' : '' }} found
-                </span>
-            </div>
+    <div class="ai-wrap">
+
+        {{-- ── ALERTS ── --}}
+        @if(session('success'))
+        <div class="ai-alert success">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2 8 6 12 14 4"/></svg>
+            {{ session('success') }}
         </div>
-    </div>
-
-    {{-- ── Results ── --}}
-    @forelse($recommendations as $index => $package)
-    @php
-        $rank      = $index + 1;
-        $rankClass = $rank === 1 ? 'rank-1' : ($rank === 2 ? 'rank-2' : 'rank-other');
-        $isTop     = $rank === 1;
-
-        $rawScore  = $package->score ?? 0;
-        $scorePct  = $rawScore > 1 ? (int) round($rawScore) : (int) round($rawScore * 100);
-        $scoreFill = $scorePct >= 75 ? 'high' : ($scorePct >= 45 ? 'mid' : 'low');
-
-        $inclusions = is_array($package->inclusions)
-            ? $package->inclusions
-            : (method_exists($package->inclusions ?? null, 'all') ? $package->inclusions->all() : []);
-
-        // ✅ Supplier info
-        $supplier         = $package->supplier ?? $package->supplierProfile ?? null;
-        $supplierName     = $supplier?->business_name
-                         ?? $supplier?->name
-                         ?? $supplier?->user?->name
-                         ?? 'Unknown Supplier';
-        $supplierCategory = $supplier?->category ?? $supplier?->supplierProfile?->category ?? null;
-        $supplierPhoto    = $supplier?->photo
-                         ?? $supplier?->supplierProfile?->photo
-                         ?? null;
-        $supplierInitials = strtoupper(substr($supplierName, 0, 2));
-    @endphp
-
-    <div class="rec-card {{ $isTop ? 'top-pick' : '' }}">
-        @if(!$isTop)<div class="rec-card-accent"></div>@endif
-
-        {{-- Main body --}}
-        <div class="rec-card-main">
-            <div class="rec-rank {{ $rankClass }}">{{ $rank }}</div>
-
-            <div class="rec-info">
-                <div class="rec-top-row">
-                    <div class="rec-name">{{ $package->name }}</div>
-                    <div class="rec-price">₱{{ number_format($package->price) }}</div>
-                </div>
-
-                {{-- ✅ SUPPLIER NAME ROW — only addition to the original design --}}
-                <div class="rec-supplier-row">
-                    <div class="rec-supplier-avatar">
-                        @if($supplierPhoto)
-                            <img src="{{ asset('storage/' . $supplierPhoto) }}" alt="{{ $supplierName }}">
-                        @else
-                            {{ $supplierInitials }}
-                        @endif
-                    </div>
-                    <span class="rec-supplier-name">by <strong>{{ $supplierName }}</strong></span>
-                    @if($supplierCategory)
-                        <span class="rec-supplier-sep"></span>
-                        <span class="rec-supplier-category">{{ $supplierCategory }}</span>
-                    @endif
-                </div>
-
-                @if($package->description)
-                <p class="rec-desc">{{ $package->description }}</p>
-                @endif
-
-                {{-- Score bar --}}
-                <div class="rec-score-row">
-                    <span class="score-label">Match</span>
-                    <div class="score-track">
-                        <div class="score-fill {{ $scoreFill }}" style="width:{{ $scorePct }}%"></div>
-                    </div>
-                    <span class="score-val">{{ $scorePct }}%</span>
-                </div>
-
-                {{-- Pills --}}
-                <div class="rec-pills">
-                    @if($package->guest_capacity)
-                    <span class="pill pill-guest">
-                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
-                            <path d="M14 17v-1a4 4 0 00-4-4H6a4 4 0 00-4 4v1"/><circle cx="8" cy="7" r="4"/>
-                            <path d="M18 17v-1a4 4 0 00-3-3.87M14 3.13a4 4 0 010 7.75"/>
-                        </svg>
-                        Up to {{ number_format($package->guest_capacity) }} guests
-                    </span>
-                    @endif
-                    @if(isset($event) && $event->budget)
-                        @if($package->price <= $event->budget)
-                            <span class="pill" style="background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;">Within budget</span>
-                        @elseif($package->price <= $event->budget * 1.2)
-                            <span class="pill" style="background:#FEF9EC;color:#92400E;border:1px solid #FDE68A;">Near budget</span>
-                        @else
-                            <span class="pill" style="background:#FEF2F2;color:#B91C1C;border:1px solid #FECACA;">Over budget</span>
-                        @endif
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        {{-- Inclusions --}}
-        @if(count($inclusions))
-        <div class="rec-inclusions">
-            <div class="incl-head">
-                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M2 4h10M2 7h10M2 10h6"/>
-                </svg>
-                What's included
-            </div>
-            <div class="incl-grid">
-                @foreach($inclusions as $inc)
-                <div class="incl-item">
-                    <span class="incl-dot"></span>
-                    {{ is_string($inc) ? $inc : ($inc->title ?? $inc->name ?? '') }}
-                </div>
-                @endforeach
-            </div>
+        @endif
+        @if(session('error'))
+        <div class="ai-alert error">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="8" cy="8" r="6"/>
+                <line x1="8" y1="5" x2="8" y2="8"/>
+                <circle cx="8" cy="11" r=".6" fill="currentColor" stroke="none"/>
+            </svg>
+            {{ session('error') }}
         </div>
         @endif
 
-        {{-- Footer --}}
-        <div class="rec-card-foot">
-            <div class="foot-left">
-                @if($isTop)
-                <span class="top-pick-badge">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path d="M10 2l2.4 4.9L18 7.6l-4 3.9.9 5.5L10 14.4l-5 2.6.9-5.5L2 7.6l5.6-.7z"/>
-                    </svg>
-                    Top pick
-                </span>
-                @endif
+        {{-- ══════════════════════════════════
+             SIDEBAR
+        ══════════════════════════════════ --}}
+        <aside class="ai-sidebar">
+
+            {{-- Event info --}}
+            <div class="ai-event-card">
+                <div class="ai-event-badge">Your Event</div>
+                <div class="ai-event-name">{{ $event->event_name }}</div>
+                <div class="ai-event-type">{{ $event->event_type }}</div>
+                <hr class="ai-event-divider">
+                <div class="ai-event-meta">
+                    @if(!empty($event->event_date))
+                    <div class="ai-event-meta-row">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <rect x="2" y="3" width="12" height="11" rx="2"/>
+                            <path d="M5 2v2M11 2v2M2 7h12"/>
+                        </svg>
+                        {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}
+                    </div>
+                    @endif
+                    @if(!empty($event->location))
+                    <div class="ai-event-meta-row">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M8 2C5.8 2 4 3.8 4 6c0 3.5 4 8 4 8s4-4.5 4-8c0-2.2-1.8-4-4-4z"/>
+                            <circle cx="8" cy="6" r="1.5"/>
+                        </svg>
+                        {{ $event->location }}
+                    </div>
+                    @endif
+                    @if(!empty($event->guest_count))
+                    <div class="ai-event-meta-row">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="6" cy="5" r="2.5"/>
+                            <circle cx="11" cy="5" r="2"/>
+                            <path d="M1 13c0-2.8 2.2-5 5-5s5 2.2 5 5"/>
+                            <path d="M11 8c1.7.3 3 1.8 3 3.5"/>
+                        </svg>
+                        {{ $event->guest_count }} guests
+                    </div>
+                    @endif
+                </div>
             </div>
 
-            <form action="{{ route('bookings.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="event_id"   value="{{ $event->id }}">
-                <input type="hidden" name="package_id" value="{{ $package->id }}">
+            {{-- Supplier packages count --}}
+            <a href="#supplier-section" class="ai-stat-card" id="statSupplier">
+                <div class="ai-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <rect x="2" y="7" width="20" height="14" rx="2"/>
+                        <path d="M16 7V5a4 4 0 00-8 0v2"/>
+                    </svg>
+                </div>
+                <div class="ai-stat-info">
+                    <div class="ai-stat-label">Supplier Packages</div>
+                    <div class="ai-stat-count">{{ count($supplierPackages) }}</div>
+                    <div class="ai-stat-sub">AI-matched for your event</div>
+                </div>
+            </a>
 
-                {{-- Disable booking button if email not verified, but still show the form for potential future use after verification --}}
-                {{--@if(auth()->user()->hasVerifiedEmail())--}}
+            {{-- Popular bundles count --}}
+            <a href="#bundle-section" class="ai-stat-card" id="statBundle">
+                <div class="ai-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                        <line x1="12" y1="22.08" x2="12" y2="12"/>
+                    </svg>
+                </div>
+                <div class="ai-stat-info">
+                    <div class="ai-stat-label">Bundle Packages</div>
+                    <div class="ai-stat-count">{{ count($popularPackages) }}</div>
+                    <div class="ai-stat-sub">Popular curated bundles</div>
+                </div>
+            </a>
 
-                    <button type="submit" class="btn-book">
-                        <span>Book This Package</span>
-                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 3l5 5-5 5"/>
-                        </svg>
-                    </button>
-               
-                {{--@else
+            {{-- AI note --}}
+            <div class="ai-powered-badge">
+                <div class="ai-powered-badge-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span>Recommendations are AI-ranked based on your event type, date, and guest count.</span>
+            </div>
 
-                    <button type="button" class="btn-book opacity-50 cursor-not-allowed"
-                        onclick="alert('Please verify your email before booking.')">
+        </aside>
 
-                        <span>Verify Email to Book</span>
-                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 3l5 5-5 5"/>
-                        </svg>
-                    </button>
+        {{-- ══════════════════════════════════
+             MAIN CONTENT
+        ══════════════════════════════════ --}}
+        <main class="ai-main">
 
-                @endif--}}
-            </form>
-        </div>
+            {{-- ── SUPPLIER PACKAGES ── --}}
+            <section id="supplier-section" class="ai-sec-anchor">
+                <div class="ai-sec-head">
+                    <div>
+                        <h2 class="ai-sec-title">Supplier <em>Packages</em></h2>
+                        <p class="ai-sec-sub">Individual packages matched to your event</p>
+                    </div>
+                    <span class="ai-count-pill">{{ count($supplierPackages) }} found</span>
+                </div>
 
-    </div>
-    @empty
+                <div class="ai-grid">
+                    @forelse($supplierPackages as $package)
+                    <div class="ai-card">
+                        <div class="ai-card-top">
+                            <div class="ai-card-supplier">
+                                {{ $package->supplier->business_name ?? ($package->supplier->first_name ?? 'Unknown Supplier') }}
+                            </div>
+                            <div class="ai-card-name">{{ $package->name }}</div>
 
-    <div class="rec-empty">
-        <div class="rec-empty-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-                <path d="M12 2l3 6.2L22 9.2l-5 4.9 1.2 6.9L12 17.8l-6.2 3.2L7 14.1 2 9.2l7-.1z"/>
-            </svg>
-        </div>
-        <h3>No recommendations found</h3>
-        <p>We couldn't find packages matching your event.<br>Try adjusting your event details or browse all packages.</p>
-    </div>
+                            @if(!empty($package->score))
+                            <div class="ai-score">
+                                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="2 6 5 9 10 3"/>
+                                </svg>
+                                Match score: {{ $package->score }}
+                            </div>
+                            @endif
 
-    @endforelse
+                            @if($package->inclusions && count($package->inclusions) > 0)
+                            <ul class="ai-inc">
+                                @foreach($package->inclusions as $inc)
+                                <li>{{ is_object($inc) ? $inc->title : $inc }}</li>
+                                @endforeach
+                            </ul>
+                            @endif
+                        </div>
 
-</div>
+                        <div class="ai-card-foot">
+                            <div class="ai-price">
+                                ₱{{ number_format($package->price, 2) }}
+                                <small>/ package</small>
+                            </div>
+                            <form action="{{ route('bookings.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="event_id"   value="{{ $event->id }}">
+                                <input type="hidden" name="package_id" value="{{ $package->id }}">
+                                <button type="submit" class="ai-book-btn">
+                                    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 7l3 3 5-5"/>
+                                    </svg>
+                                    Book
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="ai-empty">
+                        <div class="ai-empty-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                                <path d="M16 7V5a4 4 0 00-8 0v2"/>
+                            </svg>
+                        </div>
+                        <div class="ai-empty-title">No supplier packages found</div>
+                        <div class="ai-empty-sub">We couldn't find matching packages for this event type yet.</div>
+                    </div>
+                    @endforelse
+                </div>
+            </section>
+
+            <div class="ai-divider"></div>
+
+            {{-- ── POPULAR BUNDLE PACKAGES ── --}}
+            <section id="bundle-section" class="ai-sec-anchor">
+                <div class="ai-sec-head">
+                    <div>
+                        <h2 class="ai-sec-title">Popular <em>Bundles</em></h2>
+                        <p class="ai-sec-sub">Curated all-in-one packages for your event</p>
+                    </div>
+                    <span class="ai-count-pill">{{ count($popularPackages) }} found</span>
+                </div>
+
+                <div class="ai-grid">
+                    @forelse($popularPackages as $bundle)
+                    <div class="ai-card">
+                        <div class="ai-card-top">
+                            <div class="ai-card-supplier">{{ $bundle->event_type }}</div>
+                            <div class="ai-card-name">{{ $bundle->name }}</div>
+
+                            @if(!empty($bundle->score))
+                            <div class="ai-score">
+                                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="2 6 5 9 10 3"/>
+                                </svg>
+                                Match score: {{ $bundle->score }}
+                            </div>
+                            @endif
+
+                            @if($bundle->items && count($bundle->items) > 0)
+                            <div class="ai-bundle-list">
+                                @foreach($bundle->items as $item)
+                                <div class="ai-bundle-item">
+                                    <div class="ai-bundle-dot"></div>
+                                    <div>
+                                        <div>{{ $item->package->name ?? 'Package' }}</div>
+                                        <div class="ai-bundle-supplier">{{ $item->supplier->business_name ?? 'Supplier' }}</div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                            @endif
+                        </div>
+
+                        <div class="ai-card-foot">
+                            <div class="ai-price">
+                                ₱{{ number_format($bundle->price, 2) }}
+                                <small>/ bundle</small>
+                            </div>
+                            <form action="{{ route('bookings.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="event_id"          value="{{ $event->id }}">
+                                <input type="hidden" name="popular_package_id" value="{{ $bundle->id }}">
+                                <button type="submit" class="ai-book-btn">
+                                    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 7l3 3 5-5"/>
+                                    </svg>
+                                    Book Bundle
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="ai-empty">
+                        <div class="ai-empty-ico">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                            </svg>
+                        </div>
+                        <div class="ai-empty-title">No bundle packages found</div>
+                        <div class="ai-empty-sub">No popular bundles match this event type yet.</div>
+                    </div>
+                    @endforelse
+                </div>
+            </section>
+
+        </main>
+
+    </div>{{-- /ai-wrap --}}
+
+<script>
+    /* Highlight active sidebar stat card on scroll */
+    const sections = [
+        { id: 'supplier-section', stat: 'statSupplier' },
+        { id: 'bundle-section',   stat: 'statBundle'   },
+    ];
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const match = sections.find(s => s.id === entry.target.id);
+                if (!match) return;
+                sections.forEach(s => document.getElementById(s.stat)?.classList.remove('active'));
+                document.getElementById(match.stat)?.classList.add('active');
+            }
+        });
+    }, { threshold: 0.35 });
+
+    sections.forEach(s => {
+        const el = document.getElementById(s.id);
+        if (el) observer.observe(el);
+    });
+</script>
 
 </x-client-layout>

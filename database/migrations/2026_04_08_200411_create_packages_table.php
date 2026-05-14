@@ -23,6 +23,9 @@ return new class extends Migration
             $table->boolean('is_listed')->default(false);
             $table->boolean('is_featured')->default(false);
             $table->string('event_type');
+            $table->decimal('min_price', 10, 2)->nullable();
+            $table->decimal('max_price', 10, 2)->nullable();
+            $table->boolean('is_negotiable')->default(false);
             $table->timestamps();
         });
     }

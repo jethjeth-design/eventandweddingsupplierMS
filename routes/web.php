@@ -7,6 +7,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\EventcategoryController;
 use App\Http\Controllers\VenueController;
 use App\Http\Controllers\LocationController;
@@ -32,7 +33,8 @@ use App\Http\Controllers\Admin\FeaturedPackageController;
 use App\Http\Controllers\Admin\EventBundleController;
 use App\Http\Controllers\PopularPackageController;
 use App\Http\Controllers\Admin\FeaturedSupplierController;
-
+use App\Http\Controllers\PopularTrackingController;
+use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 //Welcome Pages
@@ -105,6 +107,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//Admin Dashboard
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'dashboard'])
+    ->name('admin.dashboard');
+});
+
+//Client Dashboard
+Route::middleware(['auth'])->group(function () {
+    Route::get('/client/dashboard', [ClientDashboardController::class, 'dashboard'])
+    ->name('client.dashboard');
+});
+
 // Theme management routes for admin
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/themes', [ThemeController::class, 'index'])->name('admin.themes.list');
@@ -125,6 +139,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/categories/{category:slug}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
     Route::put('/admin/categories/{category:slug}', [CategoryController::class, 'update'])->name('admin.categories.update');
     Route::delete('/admin/categories/{category:slug}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/subcategories', [SubcategoryController::class, 'index'])->name('subcategories.list');
+    Route::get('subcategories/create', [SubcategoryController::class, 'create'])->name('subcategories.create');
+    Route::post('subcategories', [SubcategoryController::class, 'store'])->name('subcategories.store');
+   Route::put('subcategories/{subcategory}', [SubcategoryController::class, 'update'])->name('subcategories.update');
+    Route::delete('subcategories/{id}', [SubcategoryController::class, 'destroy'])->name('subcategories.destroy');
 });
 
 //Event Categories
@@ -178,6 +200,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/supplier/supplierProfiles/{supplierProfile}/updateidentity', [SupplierProfileController::class, 'updateidentity'])
     ->name('supplier.updateidentity');
     Route::put('/supplier/supplierProfiles/{supplierProfile}', [SupplierProfileController::class, 'update'])->name('supplier.update');
+    //Pricing Updates
+    Route::get('/supplier/pricing/{supplierProfile}/editPricing', [SupplierProfileController::class, 'editPricing'])->name('supplier.editPricing');
+    Route::put('/supplier/pricing/{supplierProfile}',[SupplierProfileController::class, 'updatePricing'])->name('supplier.pricing.update');
+    //Delete
     Route::delete('/supplier/supplierProfiles/{supplierProfile}', [SupplierProfileController::class, 'destroy'])->name('supplier.destroy');
     //Cover Photo
     Route::post('/supplier/cover-photo', [SupplierProfileController::class, 'storeCoverPhoto'])
@@ -222,6 +248,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/client/bookings', [BookingController::class, 'store'])
     ->name('client.bookings.store');
+     
+    //Popular Packages
+    Route::post(
+    '/bookings/store',
+    [BookingController::class, 'store']
+)->name('bookings.store');
 
     // Client Calendar
     Route::get('/supplier/{id}/calendar', [ClientCalendarController::class, 'show'])
@@ -245,6 +277,22 @@ Route::middleware(['auth'])->group(function () {
     // Send message (both client & supplier)
     Route::post('/chat/send', [MessageController::class, 'send'])
         ->name('chat.send');
+
+    // Send offer (client bid)
+    Route::post('/messages/offer', [MessageController::class, 'sendOffer'])
+        ->name('messages.offer');
+
+    // Supplier accepts offer
+    Route::post('/messages/{id}/accept', [MessageController::class, 'acceptOffer'])
+        ->name('messages.accept');
+
+    // Supplier sends counter offer
+    Route::post('/messages/{id}/counter', [MessageController::class, 'counterOffer'])
+        ->name('messages.counter');
+
+    // Reject offer (optional)
+    Route::post('/messages/{id}/reject', [MessageController::class, 'rejectOffer'])
+        ->name('messages.reject');
 
 });
 
@@ -294,12 +342,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/index', [PackageController::class, 'list'])->name('admin.package.list');
 });
 
-//Client Dashboard
-Route::middleware(['auth'])->group(function () {
-    Route::get('/client/dashboard', [ClientDashboardController::class, 'dashboard'])
-    ->name('client.dashboard');
-});
-
 //Event for Client
 Route::middleware(['auth'])->group(function () {
     //Admin view of events
@@ -311,6 +353,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/client/events', [EventController::class, 'store'])->name('client.events.store');
     Route::patch('/client/events/{id}/cancel', [EventController::class, 'cancel'])
     ->name('client.events.cancel');
+    Route::patch('/client/events/{id}/complete', [EventController::class, 'complete'])->name('client.events.complete');
     Route::delete('/client/events/{event}', [EventController::class, 'destroy'])->name('client.events.destroy');
 });
 //Client Booking routes
@@ -453,7 +496,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/popular-packages', [PopularPackageController::class, 'store'])
         ->name('admin.popular.store');
-});
+
+    Route::delete('/popular-package/{id}', [PopularPackageController::class, 'destroy'])
+    ->name('admin.popular.delete');
+
+    Route::get('/popular-packages.supplier/{id}',
+    [PopularPackageController::class, 'matching'])->name('popular.package.show');
+
+    });
 
 Route::middleware(['auth'])->group(function () {
  
@@ -465,4 +515,18 @@ Route::middleware(['auth'])->group(function () {
          ->name('featured-suppliers.toggle');
  
 });
+Route::middleware(['auth'])->group(function () {
+ 
+     Route::get('/popular-tracking', [
+        PopularTrackingController::class,
+        'index'
+    ])->name('admin.popular.tracking');
+
+    Route::get('/popular-tracking/{id}', [
+        PopularTrackingController::class,
+        'show'
+    ])->name('admin.popular.tracking.show');
+ 
+});
+
 require __DIR__.'/auth.php';

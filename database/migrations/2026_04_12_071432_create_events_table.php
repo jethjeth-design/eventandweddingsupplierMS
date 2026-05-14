@@ -13,14 +13,35 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade');
+
             $table->string('event_name');
-            $table->string('event_type'); // birthday, wedding, etc.
+            $table->string('event_type'); // wedding, birthday, etc.
+
             $table->date('event_date');
+
+            // 💰 CORE OF YOUR SYSTEM
             $table->integer('budget');
-            $table->text('description')->nullable();
+
+            // 👥 event details
             $table->integer('guest_count')->nullable();
+
+            // 📍 better structure than plain text later
             $table->string('venue')->nullable();
+
+            // 🧠 recommendation system support
+            $table->boolean('is_recommended')->default(false);
+            $table->timestamp('recommended_at')->nullable();
+
+            // 📌 event lifecycle
+            $table->string('status')->default('pending');
+            // pending | planning | confirmed | completed | cancelled
+
+            $table->text('description')->nullable();
+
             $table->timestamps();
         });
     }
