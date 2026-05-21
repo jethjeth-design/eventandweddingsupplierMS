@@ -29,15 +29,12 @@ class SupplierProfileController extends Controller
             ? Role::where('supplier_id', $supplier->id)->latest()->get()
             : collect();
 
-        $teams = $supplier
-            ? Team::where('supplier_id', $supplier->id)->get()
-            : collect();
 
         $supplierProfile = SupplierProfile::with('categories')
             ->where('user_id', $user->id)
             ->first();
 
-        return view('supplier.supplierprofile', compact('supplierProfile','teams', 'roles'));
+        return view('supplier.supplierprofile', compact('supplierProfile', 'roles'));
     }
 
     /**

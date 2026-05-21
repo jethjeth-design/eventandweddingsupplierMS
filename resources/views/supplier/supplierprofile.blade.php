@@ -114,104 +114,24 @@
         .bv-empty-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--charcoal);margin-bottom:0.4rem;}
         .bv-empty-desc{font-size:0.82rem;color:var(--warm-grey);margin-bottom:1.25rem;line-height:1.6;}
 
-        /* ══ PRICING SECTION — simplified, starting_price only ══ */
-        .pr-price-hero{
-            display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;
-            padding:1.5rem;
-            background:linear-gradient(135deg,rgba(201,168,76,0.06) 0%,rgba(201,168,76,0.02) 100%);
-            border-radius:10px;
-            border:1px solid rgba(201,168,76,0.18);
-            margin-bottom:1.1rem;
-        }
-        .pr-price-icon{
-            width:52px;height:52px;border-radius:12px;flex-shrink:0;
-            background:rgba(201,168,76,0.12);
-            display:flex;align-items:center;justify-content:center;
-            color:var(--gold-dark);
-        }
+        /* ══ PRICING ══ */
+        .pr-price-hero{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;padding:1.5rem;background:linear-gradient(135deg,rgba(201,168,76,0.06) 0%,rgba(201,168,76,0.02) 100%);border-radius:10px;border:1px solid rgba(201,168,76,0.18);margin-bottom:1.1rem;}
+        .pr-price-icon{width:52px;height:52px;border-radius:12px;flex-shrink:0;background:rgba(201,168,76,0.12);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);}
         .pr-price-icon svg{width:24px;height:24px;}
-        .pr-price-body{}
         .pr-price-label{font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C0B8B0;margin-bottom:0.3rem;}
         .pr-price-display{display:flex;align-items:baseline;gap:0.3rem;}
         .pr-currency{font-size:1.05rem;font-weight:700;color:var(--gold-dark);font-family:var(--font-display);}
         .pr-amount{font-size:1.8rem;font-weight:700;color:var(--charcoal);font-family:var(--font-display);line-height:1;}
         .pr-price-note{font-size:0.72rem;color:var(--warm-grey);margin-top:0.25rem;}
-
         .pr-nil{display:flex;align-items:center;gap:0.5rem;padding:1rem 1.1rem;background:#F9F7F4;border-radius:8px;border:1px dashed #E5DDD5;}
         .pr-nil svg{width:16px;height:16px;color:#C0B8B0;flex-shrink:0;}
         .pr-nil span{font-size:0.8rem;color:#C0B8B0;font-style:italic;}
 
-        /* ══ TEAMS PANEL ══ */
-        .tm-card{background:var(--white);border-radius:12px;border:1px solid #F0EBE5;overflow:hidden;box-shadow:0 1px 4px rgba(30,27,24,0.04);}
-        .tm-card-head{display:flex;align-items:center;justify-content:space-between;gap:0.65rem;padding:1rem 1.4rem;border-bottom:1px solid #F7F3EF;flex-wrap:wrap;}
-        .tm-card-head-l{display:flex;align-items:center;gap:0.65rem;}
-        .tm-card-icon{width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);flex-shrink:0;}
-        .tm-card-icon svg{width:15px;height:15px;}
-        .tm-card-title{font-family:var(--font-display);font-size:0.9rem;font-weight:700;color:var(--charcoal);}
-        .tm-card-desc{font-size:0.7rem;color:var(--warm-grey);margin-top:0.06rem;}
-        .tm-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-        .tm-table{width:100%;border-collapse:collapse;}
-        .tm-table thead tr{border-bottom:1px solid #F0EBE5;}
-        .tm-table th{padding:0.7rem 1rem;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C0B8B0;text-align:left;white-space:nowrap;}
-        .tm-table tbody tr{border-bottom:1px solid #F7F3EF;transition:background 0.15s;}
-        .tm-table tbody tr:last-child{border-bottom:none;}
-        .tm-table tbody tr:hover{background:rgba(201,168,76,0.03);}
-        .tm-table td{padding:0.85rem 1rem;font-size:0.83rem;color:var(--charcoal);vertical-align:middle;}
-        @media(max-width:600px){.tm-table th,.tm-table td{padding:0.65rem 0.75rem;font-size:0.78rem;}}
-        .tm-row-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:0.85rem;font-weight:700;color:var(--white);flex-shrink:0;}
-        .tm-name-cell{display:flex;align-items:center;gap:0.75rem;}
-        .tm-name-text{font-weight:600;color:var(--charcoal);font-size:0.84rem;}
-        .tm-role-badge{display:inline-flex;align-items:center;gap:0.25rem;padding:0.18rem 0.6rem;border-radius:999px;background:rgba(201,168,76,0.1);color:var(--gold-dark);font-size:0.65rem;font-weight:600;}
-        .tm-role-badge::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold);}
-        .tm-contact-text{font-size:0.78rem;color:var(--warm-grey);}
-        .tm-contact-text span{display:block;line-height:1.5;}
-        .tm-del-btn{display:inline-flex;align-items:center;gap:0.3rem;padding:0.28rem 0.65rem;border-radius:6px;border:1.5px solid #FADBD8;background:transparent;font-family:var(--font-body);font-size:0.7rem;font-weight:500;color:#C0392B;cursor:pointer;transition:background 0.15s,border-color 0.15s;}
-        .tm-del-btn svg{width:10px;height:10px;}
-        .tm-del-btn:hover{background:#FFF5F5;border-color:#C0392B;}
-        .tm-empty{text-align:center;padding:2.5rem 1.5rem;}
-        .tm-empty-icon{width:46px;height:46px;border-radius:50%;background:rgba(201,168,76,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;color:var(--gold-dark);}
-        .tm-empty-icon svg{width:20px;height:20px;}
-        .tm-empty p{font-size:0.8rem;color:var(--warm-grey);line-height:1.6;}
-
-        /* ══ ADD TEAM MODAL ══ */
-        .tm-modal-overlay{position:fixed;inset:0;z-index:8000;background:rgba(30,27,24,0.55);display:none;align-items:center;justify-content:center;padding:1rem;}
-        .tm-modal-overlay.open{display:flex;}
-        .tm-modal{background:var(--white);border-radius:14px;border:1px solid #F0EBE5;box-shadow:0 8px 40px rgba(30,27,24,0.18);width:100%;max-width:520px;overflow:hidden;animation:tmSlideIn 0.22s ease;}
-        @keyframes tmSlideIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-        .tm-modal-head{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem;border-bottom:1px solid #F7F3EF;}
-        .tm-modal-head-l{display:flex;align-items:center;gap:0.65rem;}
-        .tm-modal-icon{width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);flex-shrink:0;}
-        .tm-modal-icon svg{width:15px;height:15px;}
-        .tm-modal-title{font-family:var(--font-display);font-size:0.95rem;font-weight:700;color:var(--charcoal);}
-        .tm-modal-close{width:30px;height:30px;border-radius:50%;border:1.5px solid #E5DDD5;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--warm-grey);transition:border-color 0.15s,color 0.15s,background 0.15s;}
-        .tm-modal-close:hover{border-color:var(--gold);color:var(--gold-dark);background:rgba(201,168,76,0.05);}
-        .tm-modal-close svg{width:12px;height:12px;}
-        .tm-modal-body{padding:1.35rem 1.4rem;}
-        .tm-modal-foot{padding:0.85rem 1.4rem;border-top:1px solid #F7F3EF;display:flex;align-items:center;justify-content:flex-end;gap:0.55rem;}
-        .tm-fg{display:grid;grid-template-columns:repeat(2,1fr);gap:0.9rem;}
-        @media(max-width:480px){.tm-fg{grid-template-columns:1fr;}}
-        .tm-lbl{display:flex;align-items:center;justify-content:space-between;font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--warm-grey);margin-bottom:0.38rem;}
-        .tm-req{font-size:0.58rem;color:#C0392B;font-weight:500;text-transform:none;letter-spacing:0;}
-        .tm-opt{font-size:0.58rem;color:#C0B8B0;font-weight:400;text-transform:none;letter-spacing:0;}
-        .tm-inp,.tm-sel{width:100%;padding:0.68rem 0.9rem;background:var(--ivory);border:1.5px solid #E5DDD5;border-radius:8px;font-family:var(--font-body);font-size:0.84rem;color:var(--charcoal);outline:none;transition:border-color 0.2s,box-shadow 0.2s,background 0.2s;appearance:none;display:block;}
-        .tm-inp:focus,.tm-sel:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.12);background:var(--white);}
-        .tm-inp::placeholder{color:#C0B8B0;}
-        .tm-sw{position:relative;}
-        .tm-sw::after{content:'';position:absolute;right:0.85rem;top:50%;transform:translateY(-50%);width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #C0B8B0;pointer-events:none;}
-        .tm-iw{position:relative;}
-        .tm-ico{position:absolute;left:0.8rem;top:50%;transform:translateY(-50%);width:14px;height:14px;color:#C0B8B0;pointer-events:none;}
-        .tm-iw:focus-within .tm-ico{color:var(--gold-dark);}
-        .tm-iw .tm-inp{padding-left:2.35rem;}
-        .tm-btn-save{display:inline-flex;align-items:center;gap:0.45rem;padding:0.62rem 1.5rem;border-radius:6px;border:none;background:var(--charcoal);font-family:var(--font-body);font-size:0.82rem;font-weight:500;color:var(--white);cursor:pointer;transition:background 0.2s,box-shadow 0.2s,transform 0.15s;}
-        .tm-btn-save svg{width:13px;height:13px;}
-        .tm-btn-save:hover{background:var(--gold-dark);box-shadow:0 4px 12px rgba(201,168,76,0.2);transform:translateY(-1px);}
-        .tm-btn-cancel{display:inline-flex;align-items:center;gap:0.4rem;padding:0.62rem 1.1rem;border-radius:6px;border:1.5px solid #E5DDD5;background:var(--white);font-family:var(--font-body);font-size:0.82rem;font-weight:500;color:var(--warm-grey);cursor:pointer;transition:border-color 0.2s,color 0.2s;}
-        .tm-btn-cancel:hover{border-color:var(--gold);color:var(--charcoal);}
-
         /* ══ COVER PHOTO MODAL ══ */
         .cp-modal-overlay{position:fixed;inset:0;z-index:8100;background:rgba(30,27,24,0.6);display:none;align-items:center;justify-content:center;padding:1rem;}
         .cp-modal-overlay.open{display:flex;}
-        .cp-modal{background:var(--white);border-radius:14px;border:1px solid #F0EBE5;box-shadow:0 8px 40px rgba(30,27,24,0.2);width:100%;max-width:480px;overflow:hidden;animation:tmSlideIn 0.22s ease;}
+        .cp-modal{background:var(--white);border-radius:14px;border:1px solid #F0EBE5;box-shadow:0 8px 40px rgba(30,27,24,0.2);width:100%;max-width:480px;overflow:hidden;animation:cpSlideIn 0.22s ease;}
+        @keyframes cpSlideIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
         .cp-modal-head{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem;border-bottom:1px solid #F7F3EF;}
         .cp-modal-head-l{display:flex;align-items:center;gap:0.65rem;}
         .cp-modal-icon{width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;color:var(--gold-dark);flex-shrink:0;}
@@ -243,6 +163,7 @@
         .cp-btn-save{display:inline-flex;align-items:center;gap:0.45rem;padding:0.62rem 1.5rem;border-radius:6px;border:none;background:var(--charcoal);font-family:var(--font-body);font-size:0.82rem;font-weight:500;color:var(--white);cursor:pointer;transition:background 0.2s,box-shadow 0.2s,transform 0.15s;}
         .cp-btn-save svg{width:13px;height:13px;}
         .cp-btn-save:hover{background:var(--gold-dark);box-shadow:0 4px 12px rgba(201,168,76,0.2);transform:translateY(-1px);}
+        .cp-btn-save:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
         .cp-btn-cancel{display:inline-flex;align-items:center;gap:0.4rem;padding:0.62rem 1.1rem;border-radius:6px;border:1.5px solid #E5DDD5;background:var(--white);font-family:var(--font-body);font-size:0.82rem;font-weight:500;color:var(--warm-grey);cursor:pointer;transition:border-color 0.2s,color 0.2s;}
         .cp-btn-cancel:hover{border-color:var(--gold);color:var(--charcoal);}
 
@@ -284,11 +205,6 @@
         @media(max-width:480px){
             .bv-header-actions .bv-btn-secondary span,
             .bv-header-actions .bv-btn-primary span{display:none;}
-            .tm-modal-body{padding:1rem;}
-            .tm-modal-foot{padding:0.75rem 1rem;}
-        }
-        @media(max-width:600px){
-            .tm-hide-sm{display:none;}
         }
     </style>
 
@@ -347,17 +263,15 @@
                 $supplierProfile->bio,
                 $supplierProfile->description,
                 $supplierProfile->photo,
-                $supplierProfile->starting_price,   // ← only starting_price now
+                $supplierProfile->starting_price,
             ])->filter()->count();
             $pct = round(($filled / 9) * 100);
-
-            // ── Only starting_price used now ──
             $startingPrice = $supplierProfile->starting_price ?? null;
         @endphp
 
         <div class="bv-outer-layout">
 
-            {{-- ══ LEFT: TAB SIDEBAR ══ --}}
+            {{-- ══ LEFT: TAB SIDEBAR (2 tabs only) ══ --}}
             <div class="bv-profile-sidebar">
                 <div class="bv-sidebar-label">Navigation</div>
 
@@ -376,16 +290,6 @@
                         <path d="M10 6v8M7.5 8.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3H13"/>
                     </svg>
                     Pricing
-                </button>
-
-                <div class="bv-sidebar-divider"></div>
-
-                <button class="bv-tab" onclick="switchTab('teams', this)">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
-                        <circle cx="7" cy="7" r="3"/><circle cx="14" cy="7" r="3"/>
-                        <path d="M1 17c0-3 2.7-5 6-5"/><path d="M10 17c0-3 2.7-5 6-5 3.3 0 3 2 3 5"/>
-                    </svg>
-                    Teams
                 </button>
             </div>
 
@@ -412,6 +316,7 @@
                                 {{ empty($supplierProfile->cover_photo) ? 'Add Cover Photo' : 'Change Cover' }}
                             </button>
                         </div>
+
                         <div class="bv-id-card-inner">
                             <div class="bv-id-avatar-wrap">
                                 <div class="bv-id-avatar {{ $supplierProfile->photo ? 'has-photo' : '' }}">
@@ -422,8 +327,11 @@
                                     @endif
                                 </div>
                             </div>
+
                             <div class="bv-id-main">
-                                <div class="bv-id-name">{{ $supplierProfile->business_name ?: trim(($supplierProfile->first_name ?? '').' '.($supplierProfile->last_name ?? '')) ?: Auth::user()->name }}</div>
+                                <div class="bv-id-name">
+                                    {{ $supplierProfile->business_name ?: trim(($supplierProfile->first_name ?? '').' '.($supplierProfile->last_name ?? '')) ?: Auth::user()->name }}
+                                </div>
                                 <div class="bv-id-category">
                                     @forelse($supplierProfile->categories as $cat)
                                         <span class="bv-tag">{{ $cat->name }}</span>
@@ -432,6 +340,7 @@
                                     @endforelse
                                 </div>
                                 <div class="bv-id-badge">Active Supplier</div>
+
                                 <div class="bv-id-meta">
                                     <div class="bv-id-meta-row">
                                         <svg class="bv-id-meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M1 6l7 4 7-4"/></svg>
@@ -449,36 +358,43 @@
                                         <div class="bv-id-meta-text"><strong>Location</strong>{{ implode(', ', array_filter([$supplierProfile->city, $supplierProfile->province])) }}</div>
                                     </div>
                                     @endif
-                                    {{-- ── Simplified price pill — starting_price only ── --}}
                                     @if($startingPrice)
                                     <div class="bv-id-meta-row">
                                         <svg class="bv-id-meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="6"/><path d="M8 5v6M6 7h3a1 1 0 010 2H7a1 1 0 000 2h3"/></svg>
-                                        <div class="bv-id-meta-text">
-                                            <strong>Starting Price</strong>
-                                            ₱{{ number_format($startingPrice) }}
-                                        </div>
+                                        <div class="bv-id-meta-text"><strong>Starting Price</strong>₱{{ number_format($startingPrice) }}</div>
                                     </div>
                                     @endif
                                 </div>
+
                                 @if($supplierProfile->tagline)
                                 <div class="bv-id-tagline">"{{ $supplierProfile->tagline }}"</div>
                                 @endif
+
                                 <div class="bv-id-links">
                                     <a href="{{ route('supplier.edit', $supplierProfile->id) }}" class="bv-id-link">
-                                        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>Edit Profile
+                                        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>
+                                        Edit Profile
                                     </a>
                                     <a href="{{ route('supplier.profile') }}" class="bv-id-link">
-                                        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="7" r="2"/><path d="M7 1v1.2M7 11.8V13M1 7h1.2M11.8 7H13M2.8 2.8l.85.85M10.35 10.35l.85.85M10.35 3.65l-.85.85M3.65 10.35l-.85.85"/></svg>Account Settings
+                                        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="7" r="2"/><path d="M7 1v1.2M7 11.8V13M1 7h1.2M11.8 7H13M2.8 2.8l.85.85M10.35 10.35l.85.85M10.35 3.65l-.85.85M3.65 10.35l-.85.85"/></svg>
+                                        Account Settings
                                     </a>
                                     <a href="{{ route('supplier.portfolio.index', $supplierProfile->id) }}" class="bv-id-link">
-                                        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="12" height="9" rx="1.5"/><circle cx="5" cy="6.5" r="1"/><path d="M1 10l3-3 2.5 2.5 2-2 3.5 3.5"/></svg>Portfolio
+                                        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="12" height="9" rx="1.5"/><circle cx="5" cy="6.5" r="1"/><path d="M1 10l3-3 2.5 2.5 2-2 3.5 3.5"/></svg>
+                                        Portfolio
                                     </a>
                                 </div>
                             </div>
+
                             <div class="bv-id-right">
                                 <div>
-                                    <div class="bv-completion-label"><span>Profile completion</span><strong>{{ $pct }}%</strong></div>
-                                    <div class="bv-completion-bar"><div class="bv-completion-fill" style="width:{{ $pct }}%;"></div></div>
+                                    <div class="bv-completion-label">
+                                        <span>Profile completion</span>
+                                        <strong>{{ $pct }}%</strong>
+                                    </div>
+                                    <div class="bv-completion-bar">
+                                        <div class="bv-completion-fill" style="width:{{ $pct }}%;"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -488,8 +404,13 @@
                     <div class="bv-sc">
                         <div class="bv-sc-head">
                             <div class="bv-sc-head-l">
-                                <div class="bv-sc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="7" r="4"/><path d="M2 17c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-                                <div><div class="bv-sc-title">Personal Identity</div><div class="bv-sc-desc">Name, business identity and category</div></div>
+                                <div class="bv-sc-icon">
+                                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="7" r="4"/><path d="M2 17c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                                </div>
+                                <div>
+                                    <div class="bv-sc-title">Personal Identity</div>
+                                    <div class="bv-sc-desc">Name, business identity and category</div>
+                                </div>
                             </div>
                             <a href="{{ route('supplier.editidentity', $supplierProfile->id) }}" class="bv-btn-edit">
                                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>Edit
@@ -497,9 +418,18 @@
                         </div>
                         <div class="bv-sc-body">
                             <div class="bv-row-grid">
-                                <div><div class="bv-info-k">First Name</div><div class="bv-info-v {{ !$supplierProfile->first_name ? 'nil' : '' }}">{{ $supplierProfile->first_name ?: '—' }}</div></div>
-                                <div><div class="bv-info-k">Last Name</div><div class="bv-info-v {{ !$supplierProfile->last_name ? 'nil' : '' }}">{{ $supplierProfile->last_name ?: '—' }}</div></div>
-                                <div><div class="bv-info-k">Business Name</div><div class="bv-info-v {{ !$supplierProfile->business_name ? 'nil' : '' }}">{{ $supplierProfile->business_name ?: 'Using full name' }}</div></div>
+                                <div>
+                                    <div class="bv-info-k">First Name</div>
+                                    <div class="bv-info-v {{ !$supplierProfile->first_name ? 'nil' : '' }}">{{ $supplierProfile->first_name ?: '—' }}</div>
+                                </div>
+                                <div>
+                                    <div class="bv-info-k">Last Name</div>
+                                    <div class="bv-info-v {{ !$supplierProfile->last_name ? 'nil' : '' }}">{{ $supplierProfile->last_name ?: '—' }}</div>
+                                </div>
+                                <div>
+                                    <div class="bv-info-k">Business Name</div>
+                                    <div class="bv-info-v {{ !$supplierProfile->business_name ? 'nil' : '' }}">{{ $supplierProfile->business_name ?: 'Using full name' }}</div>
+                                </div>
                                 <div>
                                     <div class="bv-info-k">Category</div>
                                     <div class="bv-info-v">
@@ -508,7 +438,10 @@
                                         @endforeach
                                     </div>
                                 </div>
-                                <div class="bv-row-full"><div class="bv-info-k">Tagline</div><div class="bv-info-v {{ !$supplierProfile->tagline ? 'nil' : '' }}">{{ $supplierProfile->tagline ?: '—' }}</div></div>
+                                <div class="bv-row-full">
+                                    <div class="bv-info-k">Tagline</div>
+                                    <div class="bv-info-v {{ !$supplierProfile->tagline ? 'nil' : '' }}">{{ $supplierProfile->tagline ?: '—' }}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -517,8 +450,13 @@
                     <div class="bv-sc">
                         <div class="bv-sc-head">
                             <div class="bv-sc-head-l">
-                                <div class="bv-sc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 5a2 2 0 012-2h1l2 4-1.5 1.5a11 11 0 004 4L12 11l4 2v1a2 2 0 01-2 2C7.5 16 4 12.5 4 7a2 2 0 011-1.7V5z"/></svg></div>
-                                <div><div class="bv-sc-title">Contact & Location</div><div class="bv-sc-desc">Phone, address and location details</div></div>
+                                <div class="bv-sc-icon">
+                                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 5a2 2 0 012-2h1l2 4-1.5 1.5a11 11 0 004 4L12 11l4 2v1a2 2 0 01-2 2C7.5 16 4 12.5 4 7a2 2 0 011-1.7V5z"/></svg>
+                                </div>
+                                <div>
+                                    <div class="bv-sc-title">Contact & Location</div>
+                                    <div class="bv-sc-desc">Phone, address and location details</div>
+                                </div>
                             </div>
                             <a href="{{ route('supplier.edit', $supplierProfile->id) }}" class="bv-btn-edit">
                                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>Edit
@@ -526,11 +464,26 @@
                         </div>
                         <div class="bv-sc-body">
                             <div class="bv-row-grid">
-                                <div><div class="bv-info-k">Email</div><div class="bv-info-v"><a href="mailto:{{ Auth::user()->email }}">{{ Auth::user()->email }}</a></div></div>
-                                <div><div class="bv-info-k">Phone</div><div class="bv-info-v {{ !$supplierProfile->phone ? 'nil' : '' }}">{{ $supplierProfile->phone ?: '—' }}</div></div>
-                                <div><div class="bv-info-k">City</div><div class="bv-info-v {{ !$supplierProfile->city ? 'nil' : '' }}">{{ $supplierProfile->city ?: '—' }}</div></div>
-                                <div><div class="bv-info-k">Province</div><div class="bv-info-v {{ !$supplierProfile->province ? 'nil' : '' }}">{{ $supplierProfile->province ?: '—' }}</div></div>
-                                <div class="bv-row-full"><div class="bv-info-k">Full Address</div><div class="bv-info-v {{ !$supplierProfile->address ? 'nil' : '' }}">{{ $supplierProfile->address ?: '—' }}</div></div>
+                                <div>
+                                    <div class="bv-info-k">Email</div>
+                                    <div class="bv-info-v"><a href="mailto:{{ Auth::user()->email }}">{{ Auth::user()->email }}</a></div>
+                                </div>
+                                <div>
+                                    <div class="bv-info-k">Phone</div>
+                                    <div class="bv-info-v {{ !$supplierProfile->phone ? 'nil' : '' }}">{{ $supplierProfile->phone ?: '—' }}</div>
+                                </div>
+                                <div>
+                                    <div class="bv-info-k">City</div>
+                                    <div class="bv-info-v {{ !$supplierProfile->city ? 'nil' : '' }}">{{ $supplierProfile->city ?: '—' }}</div>
+                                </div>
+                                <div>
+                                    <div class="bv-info-k">Province</div>
+                                    <div class="bv-info-v {{ !$supplierProfile->province ? 'nil' : '' }}">{{ $supplierProfile->province ?: '—' }}</div>
+                                </div>
+                                <div class="bv-row-full">
+                                    <div class="bv-info-k">Full Address</div>
+                                    <div class="bv-info-v {{ !$supplierProfile->address ? 'nil' : '' }}">{{ $supplierProfile->address ?: '—' }}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -539,8 +492,13 @@
                     <div class="bv-sc">
                         <div class="bv-sc-head">
                             <div class="bv-sc-head-l">
-                                <div class="bv-sc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="2" width="12" height="16" rx="2"/><path d="M7 7h6M7 10h6M7 13h4"/></svg></div>
-                                <div><div class="bv-sc-title">About & Service</div><div class="bv-sc-desc">Bio, service description and experience</div></div>
+                                <div class="bv-sc-icon">
+                                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="2" width="12" height="16" rx="2"/><path d="M7 7h6M7 10h6M7 13h4"/></svg>
+                                </div>
+                                <div>
+                                    <div class="bv-sc-title">About & Service</div>
+                                    <div class="bv-sc-desc">Bio, service description and experience</div>
+                                </div>
                             </div>
                             <a href="{{ route('supplier.edit', $supplierProfile->id) }}" class="bv-btn-edit">
                                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>Edit
@@ -561,11 +519,7 @@
                 </div>{{-- /panel-info --}}
 
 
-                {{-- ════════════════════════════════════════════
-                     PANEL: Pricing  — starting_price ONLY
-                     price_type / base_price_min / base_price_max
-                     have been fully removed.
-                ════════════════════════════════════════════ --}}
+                {{-- ── PANEL: Pricing ── --}}
                 <div id="panel-pricing" class="bv-tab-panel">
 
                     <div class="bv-sc">
@@ -586,11 +540,8 @@
                                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2l2 2-7 7H3v-2L10 2z"/></svg>Edit
                             </a>
                         </div>
-
                         <div class="bv-sc-body">
-
                             @if($startingPrice)
-                            {{-- ── Price hero display ── --}}
                             <div class="pr-price-hero">
                                 <div class="pr-price-icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -607,9 +558,7 @@
                                     <div class="pr-price-note">Clients will see this as your base rate</div>
                                 </div>
                             </div>
-
                             @else
-                            {{-- ── No price set ── --}}
                             <div class="pr-nil">
                                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
                                     <circle cx="10" cy="10" r="7"/>
@@ -618,7 +567,6 @@
                                 <span>No starting price set yet. Click <strong>Edit</strong> to add your pricing.</span>
                             </div>
                             @endif
-
                         </div>
                     </div>
 
@@ -639,98 +587,15 @@
 
                 </div>{{-- /panel-pricing --}}
 
-
-                {{-- ── PANEL: Teams ── --}}
-                <div id="panel-teams" class="bv-tab-panel">
-
-                    <div class="tm-card">
-                        <div class="tm-card-head">
-                            <div class="tm-card-head-l">
-                                <div class="tm-card-icon">
-                                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
-                                        <circle cx="7" cy="7" r="3"/><circle cx="14" cy="7" r="3"/>
-                                        <path d="M1 17c0-3 2.7-5 6-5"/><path d="M10 17c0-3 2.7-5 6-5 3.3 0 3 2 3 5"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <div class="tm-card-title">Team Members</div>
-                                    <div class="tm-card-desc">
-                                        @php $teamCount = isset($teams) ? count($teams) : 0; @endphp
-                                        {{ $teamCount }} {{ $teamCount === 1 ? 'member' : 'members' }}
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button" class="bv-btn-primary" onclick="tmModalOpen()">
-                                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 2v10M2 7h10"/></svg>
-                                Add Member
-                            </button>
-                        </div>
-
-                        @if(isset($teams) && count($teams))
-                        <div class="tm-table-wrap">
-                            <table class="tm-table">
-                                <thead>
-                                    <tr>
-                                        <th>Member</th>
-                                        <th>Role</th>
-                                        <th class="tm-hide-sm">Contact</th>
-                                        <th style="width:80px;"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($teams as $team)
-                                    <tr>
-                                        <td>
-                                            <div class="tm-name-cell">
-                                                <div class="tm-row-avatar">{{ strtoupper(substr($team->name, 0, 2)) }}</div>
-                                                <span class="tm-name-text">{{ $team->name }}</span>
-                                            </div>
-                                        </td>
-                                        <td><span class="tm-role-badge">{{ $team->role }}</span></td>
-                                        <td class="tm-hide-sm">
-                                            <div class="tm-contact-text">
-                                                @if($team->email)<span>{{ $team->email }}</span>@endif
-                                                @if($team->phone)<span>{{ $team->phone }}</span>@endif
-                                                @if(!$team->email && !$team->phone)<span style="color:#C0B8B0;font-style:italic;">—</span>@endif
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <form method="POST" action="{{ route('teams.destroy', $team->id) }}"
-                                                  onsubmit="return confirm('Remove {{ addslashes($team->name) }} from your team?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="tm-del-btn">
-                                                    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3.5h10M5 3.5V2.5h4v1M4.5 3.5v7a1 1 0 001 1h3a1 1 0 001-1v-7"/></svg>
-                                                    Remove
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        @else
-                        <div class="tm-empty">
-                            <div class="tm-empty-icon">
-                                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <circle cx="7" cy="7" r="3"/><circle cx="14" cy="7" r="3"/>
-                                    <path d="M1 17c0-3 2.7-5 6-5"/><path d="M10 17c0-3 2.7-5 6-5 3.3 0 3 2 3 5"/>
-                                </svg>
-                            </div>
-                            <p>No team members yet.<br>Click <strong>Add Member</strong> to get started.</p>
-                        </div>
-                        @endif
-                    </div>
-
-                </div>{{-- /panel-teams --}}
-
             </div>{{-- /right content --}}
         </div>{{-- /bv-outer-layout --}}
 
         @else
         <div class="bv-sc">
             <div class="bv-sc-body bv-empty">
-                <div class="bv-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-8 8-8s8 4 8 8"/></svg></div>
+                <div class="bv-empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-8 8-8s8 4 8 8"/></svg>
+                </div>
                 <div class="bv-empty-title">No Profile Yet</div>
                 <div class="bv-empty-desc">You haven't set up your supplier profile. Create one to start receiving bookings from clients.</div>
                 <a href="{{ route('supplier.create') }}" class="bv-btn-primary">
@@ -742,72 +607,6 @@
         @endif
 
     </div>{{-- /page-content --}}
-
-    {{-- ══ ADD TEAM MEMBER MODAL ══ --}}
-    <div class="tm-modal-overlay" id="tmModalOverlay" onclick="if(event.target===this)tmModalClose()">
-        <div class="tm-modal">
-            <div class="tm-modal-head">
-                <div class="tm-modal-head-l">
-                    <div class="tm-modal-icon">
-                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
-                            <circle cx="7" cy="7" r="3"/><circle cx="14" cy="7" r="3"/>
-                            <path d="M1 17c0-3 2.7-5 6-5"/><path d="M10 17c0-3 2.7-5 6-5 3.3 0 3 2 3 5"/>
-                        </svg>
-                    </div>
-                    <div class="tm-modal-title">Add Team Member</div>
-                </div>
-                <button type="button" class="tm-modal-close" onclick="tmModalClose()">
-                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
-                </button>
-            </div>
-            <form action="{{ route('teams.store') }}" method="POST">
-                @csrf
-                <div class="tm-modal-body">
-                    <div class="tm-fg">
-                        <div>
-                            <label class="tm-lbl" for="tm_name">Name <span class="tm-req">Required</span></label>
-                            <div class="tm-iw">
-                                <svg class="tm-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="7" r="4"/><path d="M2 18c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-                                <input id="tm_name" type="text" name="name" class="tm-inp" placeholder="e.g. Juan Dela Cruz" required>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="tm-lbl" for="tm_role">Role <span class="tm-req">Required</span></label>
-                            <div class="tm-sw">
-                                <select id="tm_role" name="role" class="tm-sel" required>
-                                    <option value="" disabled selected>Select role...</option>
-                                    @foreach($roles as $role)
-                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="tm-lbl" for="tm_email">Email <span class="tm-opt">Optional</span></label>
-                            <div class="tm-iw">
-                                <svg class="tm-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 7l8 5 8-5"/></svg>
-                                <input id="tm_email" type="email" name="email" class="tm-inp" placeholder="e.g. juan@email.com">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="tm-lbl" for="tm_phone">Phone <span class="tm-opt">Optional</span></label>
-                            <div class="tm-iw">
-                                <svg class="tm-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 5a2 2 0 012-2h1l2 4-1.5 1.5a11 11 0 004 4L12 11l4 2v1a2 2 0 01-2 2C7.5 16 4 12.5 4 7a2 2 0 011-1.7V5z"/></svg>
-                                <input id="tm_phone" type="text" name="phone" class="tm-inp" placeholder="+63 917 000 0000">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tm-modal-foot">
-                    <button type="button" class="tm-btn-cancel" onclick="tmModalClose()">Cancel</button>
-                    <button type="submit" class="tm-btn-save">
-                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l4 4 6-6"/></svg>
-                        Save Member
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     {{-- ══ COVER PHOTO MODAL ══ --}}
     <div class="cp-modal-overlay" id="cpModalOverlay" onclick="if(event.target===this)cpModalClose()">
@@ -826,6 +625,7 @@
                     <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
                 </button>
             </div>
+
             <form id="cpUploadForm" action="{{ route('supplier.cover.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="cp-modal-body">
@@ -843,12 +643,14 @@
                         <div class="cp-dropzone-label">Click to upload or drag & drop</div>
                         <div class="cp-dropzone-sub">JPG, PNG, WEBP or GIF · Max 5 MB<br>Recommended: 1200 × 300 px</div>
                     </div>
+
                     <div class="cp-preview-wrap" id="cpPreviewWrap">
                         <img id="cpPreviewImg" src="" alt="Preview">
                         <button type="button" class="cp-preview-remove" onclick="cpClearPreview()" title="Remove">
                             <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 1l10 10M11 1L1 11"/></svg>
                         </button>
                     </div>
+
                     @if(!empty($supplierProfile->cover_photo))
                     <div class="cp-remove-row" id="cpRemoveRow">
                         <span>Remove current cover photo</span>
@@ -859,6 +661,7 @@
                     </div>
                     @endif
                 </div>
+
                 <div class="cp-modal-foot">
                     <button type="button" class="cp-btn-cancel" onclick="cpModalClose()">Cancel</button>
                     <button type="submit" class="cp-btn-save" id="cpSaveBtn" disabled>
@@ -867,6 +670,7 @@
                     </button>
                 </div>
             </form>
+
             <form id="cpRemoveForm" action="{{ route('supplier.cover.delete') }}" method="POST" style="display:none;">
                 @csrf @method('DELETE')
             </form>
@@ -913,20 +717,6 @@
             if (panel) panel.classList.add('active');
         }
 
-        /* ── TEAM MODAL ── */
-        function tmModalOpen() {
-            document.getElementById('tmModalOverlay').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-        function tmModalClose() {
-            document.getElementById('tmModalOverlay').classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { tmModalClose(); cpModalClose(); fbLbClose(); }
-        });
-
         /* ── COVER PHOTO MODAL ── */
         function cpModalOpen() {
             document.getElementById('cpModalOverlay').classList.add('open');
@@ -964,14 +754,19 @@
         (function() {
             var dz = document.getElementById('cpDropzone');
             if (!dz) return;
-            dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('drag-over'); });
-            dz.addEventListener('dragleave', function() { dz.classList.remove('drag-over'); });
-            dz.addEventListener('drop', function(e) {
+            dz.addEventListener('dragover',  function(e){ e.preventDefault(); dz.classList.add('drag-over'); });
+            dz.addEventListener('dragleave', function(){ dz.classList.remove('drag-over'); });
+            dz.addEventListener('drop', function(e){
                 e.preventDefault(); dz.classList.remove('drag-over');
                 var fi = document.getElementById('cpFileInput');
-                if (e.dataTransfer.files.length) { fi.files = e.dataTransfer.files; cpHandleFile(fi); }
+                if (e.dataTransfer.files.length){ fi.files = e.dataTransfer.files; cpHandleFile(fi); }
             });
         })();
+
+        /* ── ESC key closes modals ── */
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { cpModalClose(); fbLbClose(); }
+        });
 
         /* ── LIGHTBOX ── */
         var fbUrls=[],fbIdx=0,fbTitle='';
@@ -982,7 +777,7 @@
             if(urls.length>1){
                 for(var i=0;i<urls.length;i++){
                     var th=document.createElement('img');
-                    th.src=urls[i]; th.className='fb-lb-thumb'+(i===idx?' lb-active':'');
+                    th.src=urls[i];th.className='fb-lb-thumb'+(i===idx?' lb-active':'');
                     th.onclick=(function(ii){return function(){fbLbGo(ii);};})(i);
                     strip.appendChild(th);
                 }
@@ -1016,7 +811,7 @@
         function fbLbClose(){
             document.getElementById('fbLb').classList.remove('open');
             document.body.style.overflow='';
-            var vid=document.getElementById('fbLbVideo'); vid.pause(); vid.src='';
+            var vid=document.getElementById('fbLbVideo');vid.pause();vid.src='';
         }
         document.addEventListener('keydown',function(e){
             if(!document.getElementById('fbLb').classList.contains('open'))return;

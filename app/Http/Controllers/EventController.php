@@ -219,4 +219,9 @@ class EventController extends Controller
 
         return view('client.supplier-matching', compact('event', 'matchedPackages'));
     }
+    
+
+
+
+    
 }

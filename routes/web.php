@@ -22,7 +22,6 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\GalleryController;
-use App\Http\Controllers\TeamController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierAvailabilityController;
 use App\Http\Controllers\AdminAvailabilityController;
@@ -31,10 +30,15 @@ use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\Admin\FeaturedPackageController;
 use App\Http\Controllers\Admin\EventBundleController;
+use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\PopularPackageController;
 use App\Http\Controllers\Admin\FeaturedSupplierController;
 use App\Http\Controllers\PopularTrackingController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Supplier\SupplierDashboardController;
+use App\Http\Controllers\CollaborationController;
+use App\Http\Controllers\CollaborationMemberController;
+use App\Http\Controllers\SupplierTeamMemberController;
 use Illuminate\Support\Facades\Route;
 
 //Welcome Pages
@@ -113,6 +117,11 @@ Route::middleware(['auth'])->group(function () {
     ->name('admin.dashboard');
 });
 
+//Supplier Dasyhboard
+Route::middleware(['auth'])->group(function () {
+    Route::get('/supplier/dashboard', [SupplierDashboardController::class, 'dashboard'])
+    ->name('supplier.dashboard');
+});
 //Client Dashboard
 Route::middleware(['auth'])->group(function () {
     Route::get('/client/dashboard', [ClientDashboardController::class, 'dashboard'])
@@ -276,23 +285,19 @@ Route::middleware(['auth'])->group(function () {
 
     // Send message (both client & supplier)
     Route::post('/chat/send', [MessageController::class, 'send'])
-        ->name('chat.send');
+        ->name('messages.send');
 
-    // Send offer (client bid)
     Route::post('/messages/offer', [MessageController::class, 'sendOffer'])
-        ->name('messages.offer');
+    ->name('messages.offer');
 
-    // Supplier accepts offer
-    Route::post('/messages/{id}/accept', [MessageController::class, 'acceptOffer'])
-        ->name('messages.accept');
+Route::post('/messages/counter/{messageId}', [MessageController::class, 'counterOffer'])
+    ->name('messages.counter');
 
-    // Supplier sends counter offer
-    Route::post('/messages/{id}/counter', [MessageController::class, 'counterOffer'])
-        ->name('messages.counter');
+Route::post('/messages/accept/{messageId}', [MessageController::class, 'acceptOffer'])
+    ->name('messages.accept');
 
-    // Reject offer (optional)
-    Route::post('/messages/{id}/reject', [MessageController::class, 'rejectOffer'])
-        ->name('messages.reject');
+Route::post('/messages/reject/{messageId}', [MessageController::class, 'rejectOffer'])
+    ->name('messages.reject');
 
 });
 
@@ -355,6 +360,12 @@ Route::middleware(['auth'])->group(function () {
     ->name('client.events.cancel');
     Route::patch('/client/events/{id}/complete', [EventController::class, 'complete'])->name('client.events.complete');
     Route::delete('/client/events/{event}', [EventController::class, 'destroy'])->name('client.events.destroy');
+
+    Route::get('/client/calendar', [EventController::class, 'calendar'])
+    ->name('client.calendar');
+
+Route::get('/client/events/calendar-data', [EventController::class, 'calendarData'])
+    ->name('client.calendar.data');
 });
 //Client Booking routes
 Route::middleware(['auth'])->group(function () {
@@ -404,18 +415,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/supplier/ratings', [RatingController::class, 'reviews'])
         ->name('supplier.ratings.index');
 
-});
-//Supplier Teams
-Route::middleware(['auth'])->group(function () {
-
-    Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
-    Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
-    Route::post('/teams/store', [TeamController::class, 'store'])->name('teams.store');
-
-    Route::get('/teams/edit/{id}', [TeamController::class, 'edit'])->name('teams.edit');
-    Route::put('/teams/update/{id}', [TeamController::class, 'update'])->name('teams.update');
-
-    Route::delete('/teams/delete/{id}', [TeamController::class, 'destroy'])->name('teams.destroy');
 });
 
 //Role Routes
@@ -515,6 +514,7 @@ Route::middleware(['auth'])->group(function () {
          ->name('featured-suppliers.toggle');
  
 });
+// ADMIN Popular Tracking
 Route::middleware(['auth'])->group(function () {
  
      Route::get('/popular-tracking', [
@@ -527,6 +527,176 @@ Route::middleware(['auth'])->group(function () {
         'show'
     ])->name('admin.popular.tracking.show');
  
+});
+//Supplier Collaborations 
+Route::middleware(['auth'])->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Collaboration Projects
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/collaborations',
+        [CollaborationController::class, 'index']
+    )->name('collaborations.index');
+
+    Route::post(
+        '/collaborations',
+        [CollaborationController::class, 'store']
+    )->name('collaborations.store');
+  
+    Route::patch(
+        '/collaborations/{collaboration}/complete',
+        [CollaborationController::class, 'complete']
+    )->name('collaborations.complete');
+    
+    Route::put(
+        '/collaborations/{collaboration}',
+        [CollaborationController::class, 'update']
+    )->name('collaborations.update');
+
+    Route::delete(
+        '/collaborations/{collaboration}',
+        [CollaborationController::class, 'destroy']
+    )->name('collaborations.destroy');
+
+    Route::get(
+        '/collaborations/{collaboration}',
+        [CollaborationController::class, 'show']
+    )->name('collaborations.show');
+    
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Collaboration Members
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/collaboration-members',
+        [CollaborationMemberController::class, 'store']
+    )->name('collaboration.members.store');
+
+    Route::patch(
+        '/collaboration-members/{member}/accept',
+        [CollaborationMemberController::class, 'accept']
+    )->name('collaboration.members.accept');
+
+    Route::patch(
+        '/collaboration-members/{member}/reject',
+        [CollaborationMemberController::class, 'reject']
+    )->name('collaboration.members.reject');
+    Route::delete(
+    '/collaboration-members/{member}',
+    [CollaborationMemberController::class, 'destroy']
+    )->name('collaboration.members.destroy');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Incoming Invitations
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/my-collaborations',
+        [CollaborationMemberController::class, 'myCollaborations']
+    )->name('my.collaborations');
+
+});
+
+//Supplier Team Members
+Route::middleware(['auth'])->group(function () {
+    Route::get(
+        '/supplier/team-members',
+        [SupplierTeamMemberController::class, 'index']
+    )->name('supplier.team-members.index');
+
+    Route::post(
+        '/supplier/team-members/store',
+        [SupplierTeamMemberController::class, 'store']
+    )->name('supplier.team-members.store');
+
+    Route::post(
+        '/supplier/team-members/{member}',
+        [SupplierTeamMemberController::class, 'update']
+    )->name('supplier.team-members.update');
+
+    Route::delete(
+        '/supplier/team-members/{member}',
+        [SupplierTeamMemberController::class, 'destroy']
+    )->name('supplier.team-members.destroy');
+
+});
+//Messaging Routes
+Route::middleware(['auth'])->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Inbox
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/messages',
+        [MessageController::class, 'inbox']
+    )->name('messages.inbox');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Open Chat
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/messages/open/{user}',
+        [MessageController::class, 'open']
+    )->name('messages.open');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Chat Room
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/messages/chat/{conversation}',
+        [MessageController::class, 'chat']
+    )->name('messages.chat');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Send Message
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/messages/send', [MessageController::class, 'send'])
+    ->name('messages.send');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Send Message
+    |--------------------------------------------------------------------------
+    */
+    Route::post(
+        '/group-chat/store',
+        [MessageController::class, 'storeGroupChat']
+    )->name('group.chat.store');
+    
+    
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/inbox', [AdminMessageController::class, 'inbox'])
+        ->name('admin.inbox');
+
+    Route::get('/admin/chat/{conversation}', [AdminMessageController::class, 'chat'])
+        ->name('admin.chat');
+
+    Route::post('/admin/messages/send', [AdminMessageController::class, 'send'])
+        ->name('admin.messages.send');
 });
 
 require __DIR__.'/auth.php';

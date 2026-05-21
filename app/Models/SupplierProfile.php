@@ -76,8 +76,29 @@ class SupplierProfile extends Model
         return $this->belongsToMany(Venue::class, 'supplier_venue');
     }
 
-    public function teams()
+    // Suppliers I invited
+    public function collaborators()
     {
-        return $this->hasMany(Team::class);
+        return $this->hasMany(
+            SupplierCollaborator::class,
+            'supplier_id'
+        );
+    }
+
+    // Suppliers inviting me
+    public function collaborationInvites()
+    {
+        return $this->hasMany(
+            SupplierCollaborator::class,
+            'collaborator_id'
+        );
+    }
+
+    public function teamMembers()
+    {
+        return $this->hasMany(
+            SupplierTeamMember::class,
+            'supplier_profile_id'
+        );
     }
 }

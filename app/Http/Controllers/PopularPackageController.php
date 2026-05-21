@@ -36,6 +36,10 @@ class PopularPackageController extends Controller
         'price' => 'nullable|numeric',
         'guest_capacity' => 'nullable|integer',
         'duration_hours' => 'nullable|integer',
+        'description' => 'nullable|string',
+        'min_price' => 'nullable|numeric',
+        'is_negotiable' => 'nullable|boolean',
+        'is_featured' => 'nullable|boolean',
 
         // ✅ inclusions
         'inclusions' => 'nullable|array',
@@ -65,6 +69,10 @@ class PopularPackageController extends Controller
             'price' => $request->price,
             'guest_capacity' => $request->guest_capacity,
             'duration_hours' => $request->duration_hours,
+            'description' => $request->description,
+            'min_price' => $request->min_price,
+            'is_negotiable' => $request->is_negotiable ? true : false,
+            'is_featured' => $request->is_featured ? true : false,
         ]);
 
         /*
@@ -144,6 +152,10 @@ public function update(Request $request, PopularPackage $popular)
             'supplier_ids.*'    => 'nullable|exists:suppliers,id',
             'supplier_package_ids'   => 'nullable|array',
             'supplier_package_ids.*' => 'nullable|exists:supplier_packages,id',
+            'description' => 'nullable|string',
+            'min_price' => 'nullable|numeric',
+            'is_negotiable' => 'nullable|boolean',
+            'is_featured' => 'nullable|boolean',
         ]);
  
         DB::transaction(function () use ($popular, $validated) {
@@ -153,6 +165,10 @@ public function update(Request $request, PopularPackage $popular)
                 'price'          => $validated['price']          ?? null,
                 'guest_capacity' => $validated['guest_capacity'] ?? null,
                 'duration_hours' => $validated['duration_hours'] ?? null,
+                'description' => $validated['description'] ?? null,
+                'min_price' => $validated['min_price'] ?? null,
+                'is_negotiable' => $validated['is_negotiable'] ?? false,
+                'is_featured' => $validated['is_featured'] ?? false,
             ]);
  
             // Sync inclusions (delete old, insert new)

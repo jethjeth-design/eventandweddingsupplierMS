@@ -20,6 +20,13 @@ return new class extends Migration
             $table->integer('guest_capacity')->nullable();
             $table->integer('duration_hours')->nullable();
 
+            $table->text('description')->nullable();
+            $table->decimal('min_price', 10, 2)
+            ->nullable();
+            $table->boolean('is_negotiable')
+            ->default(false);
+            $table->boolean('is_featured')
+            ->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
