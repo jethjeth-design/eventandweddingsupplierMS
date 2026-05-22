@@ -12,6 +12,10 @@ class PopularPackage extends Model
         'price',
         'guest_capacity',
         'duration_hours',
+        'description',
+        'min_price',
+        'is_negotiable',
+        'is_featured',
         'is_active'
     ];
 

@@ -2,107 +2,212 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Message;
 use App\Models\User;
+use App\Models\Message;
+use App\Models\Conversation;
+use Illuminate\Http\Request;
+use App\Models\ConversationParticipant;
 
 class MessageController extends Controller
-{ 
-    
-    //Show the Client Inbox
-    public function inbox(Request $request)
-    {   
-        $userId = $request->user_id;
-        $supplierId = $request->supplier_id;
-        $authId = auth()->id();
-     
-        $messages = Message::where(function ($q) use ($userId, $supplierId) {
-            $q->where('sender_id', auth()->id())
-              ->where('receiver_id', $userId)
-              ->where('supplier_id', $supplierId);
-        })
-        ->orWhere(function ($q) use ($userId, $supplierId) {
-            $q->where('sender_id', $userId)
-              ->where('receiver_id', auth()->id())
-              ->where('supplier_id', $supplierId);
-        })
-        ->orderBy('created_at', 'asc')
-        ->get();
- 
-        $conversations = Message::where('receiver_id', auth()->id())
-        ->orWhere('sender_id', auth()->id())
-        ->with('sender', 'receiver')
-        ->latest()
-        ->get()
-        ->unique(function ($msg) {
-            return $msg->sender_id == auth()->id()
-                ? $msg->receiver_id
-                : $msg->sender_id;
-        });
+{
+    /*
+    |--------------------------------------------------------------------------
+    | INBOX
+    |--------------------------------------------------------------------------
+    */
+    public function inbox()
+    {
+        $user = auth()->user();
 
-     return view('client.inbox.list', compact('conversations', 'messages'));
-    }
+        $conversations = Conversation::whereHas('participants', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
+            ->with(['participants.user', 'messages'])
+            ->latest()
+            ->get();
 
-    // ✅ Open Chat (Client or Supplier)
-    public function chat($userId, $supplierId)
-    {   
+        $suppliers = User::whereHas('supplier')->get();
+
+        $clients = User::where('role', 'client')->get();
         
-        $messages = Message::where(function ($q) use ($userId, $supplierId) {
-            $q->where('sender_id', auth()->id())
-              ->where('receiver_id', $userId)
-              ->where('supplier_id', $supplierId);
-        })
-        ->orWhere(function ($q) use ($userId, $supplierId) {
-            $q->where('sender_id', $userId)
-              ->where('receiver_id', auth()->id())
-              ->where('supplier_id', $supplierId);
-        })
-        ->orderBy('created_at', 'asc')
-        ->get();
+        // ✅ ADD THIS
+        $admins = User::where('role', 'admin')->get();
 
-        // ✅ mark messages as read
-        Message::where('receiver_id', auth()->id())
-            ->where('sender_id', $userId)
-            ->where('supplier_id', $supplierId)
-            ->update(['is_read' => true]);
-
-        return view('messages.chatbox', compact('messages', 'userId', 'supplierId'));
+        return view('messages.inbox', compact(
+            'conversations',
+            'suppliers',
+            'clients',
+            'admins'
+        ));
     }
 
-    // ✅ Send Message (Client or Supplier)
+    /*
+    |--------------------------------------------------------------------------
+    | OPEN CHAT (PRIVATE CHAT ONLY)
+    |--------------------------------------------------------------------------
+    */
+    public function open(User $user)
+    {
+        $authUser = auth()->user();
+
+        $conversation = Conversation::whereIn('type', [
+                'client_supplier',
+                'supplier_collaboration'
+            ])
+            ->whereHas('participants', function ($q) use ($authUser) {
+                $q->where('user_id', $authUser->id);
+            })
+            ->whereHas('participants', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
+            ->withCount('participants')
+            ->having('participants_count', 2)
+            ->first();
+
+        if (!$conversation) {
+
+            $conversation = Conversation::create([
+                'created_by' => $authUser->id,
+                'type' => (
+                    $authUser->supplierProfile && $user->supplierProfile
+                ) ? 'supplier_collaboration' : 'client_supplier',
+            ]);
+
+            ConversationParticipant::create([
+                'conversation_id' => $conversation->id,
+                'user_id' => $authUser->id,
+                'role' => $authUser->supplierProfile ? 'supplier' : 'client'
+            ]);
+
+            ConversationParticipant::create([
+                'conversation_id' => $conversation->id,
+                'user_id' => $user->id,
+                'role' => $user->supplierProfile ? 'supplier' : 'client'
+            ]);
+        }
+
+        return redirect()->route('messages.chat', $conversation->id);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CHAT ROOM
+    |--------------------------------------------------------------------------
+    */
+    public function chat(Conversation $conversation)
+    {
+        $conversation->load([
+            'messages.sender',
+            'participants.user'
+        ]);
+
+        return view('messages.chat', compact('conversation'));
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SEND MESSAGE (FIXED SAFE VERSION)
+    |--------------------------------------------------------------------------
+    */
     public function send(Request $request)
     {
         $request->validate([
-            'receiver_id' => 'required|exists:users,id',
-            'supplier_id' => 'required|exists:supplier_profiles,id',
-            'message' => 'required|string'
+            'conversation_id' => 'required|exists:conversations,id',
+            'message' => 'required'
         ]);
 
-        $user = auth()->user();
+        $conversation = Conversation::find($request->conversation_id);
 
-        // Get receiver
-        $receiver = User::findOrFail($request->receiver_id);
-
-        // ✅ Only allow:
-        // Client → Supplier
-        // Supplier → Client
-        
-        if ($user->isClient() && !$receiver->isSupplier()) {
-            abort(403, 'Client can only message suppliers.');
+        if (!$conversation) {
+            return back()->with('error', 'Conversation not found');
         }
 
-        if ($user->isSupplier() && !$receiver->isClient()) {
-            abort(403, 'Supplier can only message clients.');
+        // safety: user must be participant
+        $isMember = $conversation->participants()
+            ->where('user_id', auth()->id())
+            ->exists();
+
+        if (!$isMember) {
+            return back()->with('error', 'Unauthorized');
         }
 
         Message::create([
+            'conversation_id' => $conversation->id,
             'sender_id' => auth()->id(),
-            'receiver_id' => $receiver->id,
-            'supplier_id' => $request->supplier_id,
-            'message' => $request->message,
+            'message' => $request->message
         ]);
 
         return back();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | MANUAL GROUP CHAT CREATION (FIXED & CLEAN)
+    |--------------------------------------------------------------------------
+    */
+    public function storeGroupChat(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'participants' => 'nullable|array',
+            'client_id' => 'nullable|exists:users,id'
+        ]);
+
+        $authUser = auth()->user();
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE GROUP CONVERSATION
+        |--------------------------------------------------------------------------
+        */
+        $conversation = Conversation::create([
+            'type' => 'group',
+            'title' => $request->title,
+            'created_by' => $authUser->id
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD CREATOR (SUPPLIER OWNER OR ADMIN)
+        |--------------------------------------------------------------------------
+        */
+        ConversationParticipant::create([
+            'conversation_id' => $conversation->id,
+            'user_id' => $authUser->id,
+            'role' => $authUser->role ?? 'supplier'
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD CLIENT (OPTIONAL)
+        |--------------------------------------------------------------------------
+        */
+        if ($request->client_id) {
+            ConversationParticipant::create([
+                'conversation_id' => $conversation->id,
+                'user_id' => $request->client_id,
+                'role' => 'client'
+            ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD SUPPLIERS / COLLABORATORS
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->participants ?? [] as $userId) {
+
+            if ($userId == $authUser->id) continue;
+
+            ConversationParticipant::create([
+                'conversation_id' => $conversation->id,
+                'user_id' => $userId,
+                'role' => 'supplier'
+            ]);
+        }
+
+        return redirect()
+            ->route('messages.chat', $conversation->id)
+            ->with('success', 'Group chat created successfully.');
+    }
 }

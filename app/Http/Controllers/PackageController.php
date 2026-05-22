@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Package;
-use App\Models\Team;
 use App\Models\Eventcategory;
 use App\Helpers\ActivityLogger;
 use Illuminate\Support\Facades\Auth;
@@ -55,7 +54,6 @@ class PackageController extends Controller
             'is_listed' => 'nullable|boolean',
             'is_negotiable' => 'nullable|boolean',
             'min_price' => 'nullable|numeric|min:0',
-            'max_price' => 'nullable|numeric|gte:min_price',
         ]);
 
         // 🧠 SAFETY: ensure supplier exists
@@ -78,7 +76,6 @@ class PackageController extends Controller
             'is_listed' => $request->is_listed ?? false,
             'is_negotiable' => $request->is_negotiable ?? false,
             'min_price' => $request->min_price,
-            'max_price' => $request->max_price,
         ]);
 
         // 📦 Inclusions handling (clean + safe)
@@ -125,13 +122,11 @@ class PackageController extends Controller
             'inclusions' => 'nullable|array',
             'inclusions.*' => 'nullable|string',
 
-            'teams' => 'nullable|array',
 
             // optional (for future bidding system)
             'is_listed' => 'nullable|boolean',
             'is_negotiable' => 'nullable|boolean',
             'min_price' => 'nullable|numeric|min:0',
-            'max_price' => 'nullable|numeric|gte:min_price',
         ]);
 
         $package = Package::findOrFail($id);
@@ -154,7 +149,6 @@ class PackageController extends Controller
             'is_listed' => $request->is_listed ?? false,
             'is_negotiable' => $request->is_negotiable ?? false,
             'min_price' => $request->min_price,
-            'max_price' => $request->max_price,
         ]);
 
         // ✅ FIX: update inclusions (delete + recreate)
@@ -174,19 +168,6 @@ class PackageController extends Controller
                 ]);
             }
         }
-
-        // ✅ FIX: sync teams with roles
-        $syncData = [];
-
-        if ($request->teams) {
-            foreach ($request->teams as $teamId) {
-                $syncData[$teamId] = [
-                    'role_in_package' => $request->roles[$teamId] ?? null
-                ];
-            }
-        }
-
-        $package->teams()->sync($syncData);
 
 
         return back()->with('success', 'Package updated successfully!');
@@ -208,46 +189,7 @@ class PackageController extends Controller
             ->with('success', 'Package deleted successfully.');
     }
     
-    public function showAssignTeams($id)
-    {   
-        if (!auth()->user()->hasVerifiedEmail()) {
-            return redirect()->back()->with('error', 'Please verify your email before booking.');
-        }
-        $package = Package::findOrFail($id);
-
-        $teams = Team::where('supplier_id', auth()->user()->supplier->id)->get();
-
-        return view('supplier.packages.create', compact('package', 'teams'));
-    }
     
-    public function assignTeams(Request $request, $id)
-    {
-        $request->validate([
-            'teams' => 'nullable|array'
-        ]);
-
-        $package = Package::findOrFail($id);
-
-        // 🔒 Security check
-        if ($package->supplier_id !== auth()->user()->supplier->id) {
-            abort(403);
-        }
-
-        $syncData = [];
-
-        if ($request->teams) {
-            foreach ($request->teams as $teamId) {
-                $syncData[$teamId] = [
-                    'role_in_package' => $request->roles[$teamId] ?? null
-                ];
-            }
-        }
-
-        // ✅ THIS SAVES TO PIVOT
-        $package->teams()->sync($syncData);
-
-        return back()->with('success', 'Teams assigned successfully!');
-    }
  
     public function list(Request $request)
     {

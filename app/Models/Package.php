@@ -15,7 +15,6 @@ class Package extends Model
         'event_type',
         'is_listed',
         'min_price',
-        'max_price',
         'is_negotiable',
         'is_featured',
     ];

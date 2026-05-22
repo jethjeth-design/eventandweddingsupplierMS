@@ -70,7 +70,7 @@ class User extends Authenticatable
 
     public function supplier()
     {
-        return $this->hasOne(supplierProfile::class);
+        return $this->hasOne(SupplierProfile::class, 'user_id');
     }
 
     public function events()
@@ -82,5 +82,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Booking::class, 'supplier_id');
     }
-
+    
+    public function supplierInvitations()
+    {
+        return $this->hasMany(
+            SupplierInvitation::class,
+            'invited_user_id'
+        );
+    }
 }
