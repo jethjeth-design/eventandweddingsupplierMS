@@ -64,6 +64,7 @@ class EventController extends Controller
         $request->validate([
             'event_name'  => 'required|string|max:255',
             'event_type'  => 'required|string|max:255',
+            'event_time'  => 'required|date_format:H:i',
             'event_date'  => 'required|date|after_or_equal:today',
             'budget'      => 'required|numeric|min:0',
             'guest_count' => 'nullable|integer|min:1',
@@ -71,10 +72,25 @@ class EventController extends Controller
             'description' => 'nullable|string',
         ]);
 
+        $existingEvent = Event::where('user_id', auth()->id())
+            ->whereDate('event_date', $request->event_date)
+            ->whereIn('status', ['pending', 'confirmed', 'completed'])
+            ->exists();
+
+        if ($existingEvent) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'event_date' => 'You already have an event scheduled on this date.'
+                ]);
+        }
+
+
         $event = Event::create([
             'user_id'        => auth()->id(),
             'event_name'     => $request->event_name,
             'event_type'     => $request->event_type,
+            'event_time'     => $request->event_time,
             'event_date'     => $request->event_date,
             'budget'         => $request->budget,
             'guest_count'    => $request->guest_count,
@@ -110,11 +126,6 @@ class EventController extends Controller
         ]);
     }
 
-    // ═════════════════════════════════════════════════════════════════════
-    // CLIENT: CANCEL EVENT
-    // Route: PATCH /client/events/{id}/cancel
-    // Name:  client.events.cancel
-    // ═════════════════════════════════════════════════════════════════════
     public function cancel($id)
     {
         $event = Event::where('id', $id)

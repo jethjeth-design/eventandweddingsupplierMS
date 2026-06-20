@@ -36,7 +36,7 @@
 .ev-select{padding:.42rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.8rem;color:var(--charcoal);background:var(--white);outline:none;cursor:pointer;transition:border-color .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%23C0B8B0' stroke-width='1.5'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6rem center;padding-right:1.8rem;}
 .ev-select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1);}
 
-/* Filter pills — FIX: pointer-events on the X button */
+/* Filter pills */
 .ev-pills{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.65rem;}
 .ev-pill{display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .65rem;border-radius:999px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold-dark);font-size:.68rem;font-weight:600;font-family:var(--font-body);}
 .ev-pill-x{background:none;border:none;cursor:pointer;color:var(--gold-dark);padding:0 0 0 .15rem;line-height:1;font-size:.8rem;opacity:.7;display:inline-flex;align-items:center;}
@@ -59,7 +59,8 @@
 .tbl-wrap::-webkit-scrollbar{height:4px;}
 .tbl-wrap::-webkit-scrollbar-thumb{background:rgba(201,168,76,.45);border-radius:4px;}
 
-.ev-table{width:100%;min-width:860px;border-collapse:collapse;font-family:var(--font-body);}
+/* min-width bumped to fit new columns */
+.ev-table{width:100%;min-width:1060px;border-collapse:collapse;font-family:var(--font-body);}
 .ev-table thead{background:var(--ivory);border-bottom:1.5px solid var(--border);}
 .ev-table thead th{padding:.8rem 1.1rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-grey);text-align:left;white-space:nowrap;}
 .ev-table thead th:first-child{border-left:3px solid var(--gold);}
@@ -82,7 +83,11 @@
 .td-venue{font-size:.8rem;color:var(--charcoal);max-width:160px;line-height:1.4;}
 .td-date{font-size:.8rem;color:var(--charcoal);white-space:nowrap;}
 
-/* ── STATUS BADGES (NEW) ── */
+/* NEW: time + location cell */
+.td-time-loc{font-size:.78rem;color:var(--charcoal);white-space:nowrap;}
+.td-time-loc small{display:block;font-size:.67rem;color:var(--warm-grey);margin-top:2px;white-space:normal;max-width:130px;}
+
+/* ── STATUS BADGES ── */
 .ev-status{display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .68rem;border-radius:20px;font-size:.67rem;font-weight:600;letter-spacing:.04em;white-space:nowrap;font-family:var(--font-body);}
 .ev-status::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0;}
 .ev-status.planning{background:rgba(99,102,241,.1);color:#3730A3;border:1px solid rgba(99,102,241,.22);}
@@ -153,7 +158,7 @@
             </svg>
             <input type="text"
                    id="searchInput"
-                   placeholder="Search event name, client, venue…"
+                   placeholder="Search event name, client, venue, location…"
                    value="{{ request('search') }}"
                    autocomplete="off">
         </div>
@@ -165,7 +170,6 @@
             @endforeach
         </select>
 
-        {{-- NEW: Status filter --}}
         <select id="statusFilter" class="ev-select">
             <option value="">All Status</option>
             @foreach(['planning','confirmed','ongoing','completed','cancelled'] as $st)
@@ -207,21 +211,35 @@
                         <th>Budget</th>
                         <th>Guests</th>
                         <th>Venue</th>
+                        <th>Time &amp; Location</th>{{-- NEW --}}
                         <th>Event Date</th>
-                        <th>Status</th>{{-- NEW --}}
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody id="eventsTbody">
                     @forelse($events as $i => $event)
                     @php
-                        $clientName = $event->user->name ?? 'N/A';
+                        $clientName = $event->user->name    ?? 'N/A';
                         $evtDate    = $event->event_date
                                         ? \Carbon\Carbon::parse($event->event_date)->format('M d, Y')
                                         : '—';
-                        $evtType    = $event->event_type ?? '';
-                        $evtStatus  = $event->status ?? 'planning';
+                        $evtType    = $event->event_type    ?? '';
+                        $evtStatus  = $event->status        ?? 'planning';
+                        $evtTime    = $event->event_time    ?? null;
+                        $evtLoc     = $event->location      ?? null;
+
+                        /* Format event_time HH:MM → 12-hour */
+                        $evtTimeFmt = null;
+                        if ($evtTime) {
+                            $tp = explode(':', $evtTime);
+                            $h  = (int) $tp[0];
+                            $m  = $tp[1] ?? '00';
+                            $ap = $h >= 12 ? 'PM' : 'AM';
+                            $h  = $h % 12 ?: 12;
+                            $evtTimeFmt = $h . ':' . $m . ' ' . $ap;
+                        }
                     @endphp
-                    <tr data-search="{{ strtolower($clientName.' '.$event->event_name.' '.($event->venue ?? '').' '.$evtType) }}"
+                    <tr data-search="{{ strtolower($clientName.' '.$event->event_name.' '.($event->venue ?? '').' '.$evtType.' '.($evtLoc ?? '')) }}"
                         data-type="{{ strtolower($evtType) }}"
                         data-status="{{ strtolower($evtStatus) }}"
                         data-date="{{ $event->event_date }}">
@@ -265,11 +283,26 @@
                             <div class="td-venue">{{ $event->venue ?? '—' }}</div>
                         </td>
 
+                        {{-- NEW: Time & Location column --}}
+                        <td>
+                            <div class="td-time-loc">
+                                @if($evtTimeFmt)
+                                    {{ $evtTimeFmt }}
+                                @else
+                                    <span style="color:#C0B8B0;font-style:italic;font-size:.75rem;">—</span>
+                                @endif
+                                @if($evtLoc)
+                                    <small>{{ $evtLoc }}</small>
+                                @else
+                                    <small style="color:#C0B8B0;font-style:italic;">No location</small>
+                                @endif
+                            </div>
+                        </td>
+
                         <td>
                             <div class="td-date">{{ $evtDate }}</div>
                         </td>
 
-                        {{-- NEW: Status column --}}
                         <td>
                             <span class="ev-status {{ strtolower($evtStatus) }}">
                                 {{ ucfirst($evtStatus) }}
@@ -279,7 +312,7 @@
                     </tr>
                     @empty
                     <tr id="staticEmpty">
-                        <td colspan="9">
+                        <td colspan="10">
                             <div class="ev-empty">
                                 <div class="ev-empty-icon">
                                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -308,12 +341,6 @@
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════════════
-   FIX: All filter clear functions are defined on window
-   so inline event handlers in dynamically created pills
-   can always find them regardless of script load order.
-══════════════════════════════════════════════════════════ */
-
 const searchInput  = document.getElementById('searchInput');
 const typeFilter   = document.getElementById('typeFilter');
 const statusFilter = document.getElementById('statusFilter');
@@ -356,7 +383,7 @@ function applyFilters() {
         if (!liveEmpty) {
             liveEmpty = document.createElement('tr');
             liveEmpty.id = 'liveEmpty';
-            liveEmpty.innerHTML = '<td colspan="9">'
+            liveEmpty.innerHTML = '<td colspan="10">'
                 + '<div class="ev-empty">'
                 + '<div class="ev-empty-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="6"/><path d="M15 15l3 3"/></svg></div>'
                 + '<div class="ev-empty-title">No Matching Events</div>'
@@ -376,7 +403,7 @@ function applyFilters() {
     renderPills();
 }
 
-/* ── FIX: render pills using addEventListener instead of inline onclick ── */
+/* ── Render pills ── */
 function renderPills() {
     filterPills.innerHTML = '';
 
@@ -391,10 +418,7 @@ function renderPills() {
         btn.className = 'ev-pill-x';
         btn.title = 'Clear filter';
         btn.textContent = '✕';
-        /* FIX: attach via addEventListener — no inline onclick string */
-        btn.addEventListener('click', function() {
-            clearF(clearKey);
-        });
+        btn.addEventListener('click', function() { clearF(clearKey); });
 
         p.appendChild(span);
         p.appendChild(btn);
@@ -408,7 +432,7 @@ function renderPills() {
     if (dateTo.value)             addPill('To: <strong>'     + esc(dateTo.value)                + '</strong>', 'to');
 }
 
-/* ── FIX: clearF defined globally and also as a plain named function ── */
+/* ── Clear filter ── */
 function clearF(which) {
     if (which === 'search') searchInput.value  = '';
     if (which === 'type')   typeFilter.value   = '';
@@ -418,7 +442,7 @@ function clearF(which) {
     applyFilters();
     debouncedFetch();
 }
-window.clearF = clearF; /* keep global reference just in case */
+window.clearF = clearF;
 
 /* ── Debounced server reload ── */
 function debouncedFetch() {

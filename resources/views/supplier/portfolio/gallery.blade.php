@@ -212,7 +212,7 @@
                     </div>
 
                     <form method="POST"
-                        action="{{ route('supplier.portfolio.destroy', $portfolio->id) }}"
+                        action=""
                         onsubmit="return confirm('Remove this portfolio item?')">
                         @csrf @method('DELETE')
                         <button type="submit" class="pf-post-delete-btn">

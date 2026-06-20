@@ -7,6 +7,7 @@ use App\Models\Banner;
 use App\Models\Section;
 use App\Models\Category;
 use App\Models\Package;
+use App\Models\Eventcategory;
 use App\Models\PopularPackage;
 use App\Models\SupplierPortfolio;
 use App\Models\SupplierProfile;
@@ -43,26 +44,51 @@ class HomeController extends Controller
         $supplier = SupplierProfile::findOrFail($id);
         return view('welcomepage.supplier.details', compact('supplier'));
     }
+
+    public function gallery()
+{
+    $galleries = SupplierPortfolio::latest()->get();
+    
+
+    return view('welcomepage.gallery', compact('galleries'));
+}
     
     public function showgallery($id)
-    {
-        $supplier = SupplierProfile::findOrFail($id);
+{
+    $supplier = SupplierProfile::with('ratings')->findOrFail($id);
 
-        $portfolios = SupplierPortfolio::where('supplier_id', $supplier->id)
+    $portfolios = SupplierPortfolio::where('supplier_id', $supplier->id)
         ->latest()
         ->get();
 
-        return view('welcomepage.supplier.portfolio', compact('portfolios', 'supplier'));
+    $ratings = $supplier->ratings()->with('user')->get();
+
+    return view('welcomepage.supplier.portfolio', compact(
+        'portfolios',
+        'supplier',
+        'ratings'
+    ));
+}
+
+
+    public function event()
+    {
+        $events = Eventcategory::latest()->get();
+
+        return view('welcomepage.event', compact('events'));
     }
 
     public function package(Request $request)
     {
         // Admin curated packages
-    $curatedPackages = PopularPackage::with('inclusions')
-        ->where('is_active', true)
-        ->get();
+    $curatedPackages = Package::with([
+    'supplier',
+    'inclusions'
+    ])
+    ->where('is_listed', 1)
+    ->latest()
+    ->get();
 
-    
 
     // Featured suppliers — only those marked as featured
     $suppliers = SupplierProfile::where('is_featured', true)

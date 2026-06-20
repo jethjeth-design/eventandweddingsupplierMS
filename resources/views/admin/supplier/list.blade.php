@@ -308,11 +308,12 @@
 
                     {{-- Chips --}}
                     <div class="bv-sup-chips">
-                        @if($supplier->is_available)
+                        {{--@if($supplier->is_available)
                             <span class="bv-chip-avail-yes">● Available</span>
                         @else
                             <span class="bv-chip-avail-no">● Unavailable</span>
-                        @endif
+                        @endif--}}
+
                         @foreach($supplier->categories->take(2) as $cat)
                             <span class="bv-chip-cat">{{ $cat->name }}</span>
                         @endforeach
@@ -406,7 +407,8 @@
                         @if($supplier->tagline)
                             <div class="bv-modal-tagline">"{{ $supplier->tagline }}"</div>
                         @endif
-                        <div class="bv-modal-chips">
+
+                        {{--<div class="bv-modal-chips">
                             @if($supplier->is_available)
                                 <span class="bv-chip-avail-yes">● Available</span>
                             @else
@@ -415,7 +417,7 @@
                             @foreach($supplier->categories as $cat)
                                 <span class="bv-chip-cat">{{ $cat->name }}</span>
                             @endforeach
-                        </div>
+                        </div>--}}
                     </div>
 
                     <button class="bv-modal-close" onclick="closeModal({{ $supplier->id }})" aria-label="Close">
@@ -462,7 +464,8 @@
                             <div class="bv-modal-field-label">Business Name</div>
                             <div class="bv-modal-field-val {{ $supplier->business_name ? '' : 'muted' }}">{{ $supplier->business_name ?? '—' }}</div>
                         </div>
-                        <div class="bv-modal-field">
+
+                        {{--<div class="bv-modal-field">
                             <div class="bv-modal-field-label">Availability</div>
                             <div class="bv-modal-field-val">
                                 @if($supplier->is_available)
@@ -471,7 +474,8 @@
                                     <span class="bv-modal-avail-no"><span class="bv-modal-avail-dot"></span>Unavailable</span>
                                 @endif
                             </div>
-                        </div>
+                        </div>--}}
+
                         <div class="bv-modal-field">
                             <div class="bv-modal-field-label">Rating</div>
                             <div class="bv-modal-field-val">

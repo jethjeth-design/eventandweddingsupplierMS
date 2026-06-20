@@ -11,7 +11,6 @@ class Package extends Model
         'name',
         'description',
         'price',
-        'guest_capacity',
         'event_type',
         'is_listed',
         'min_price',

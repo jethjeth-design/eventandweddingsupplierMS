@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SupplierPortfolio;
 use App\Models\SupplierProfile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class SupplierPortfolioController extends Controller
@@ -15,14 +16,6 @@ class SupplierPortfolioController extends Controller
     {
     $portfolios = SupplierPortfolio::where('supplier_id', auth()->id())->get();  
     return view('supplier.portfolio.index', compact('portfolios'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -65,7 +58,7 @@ class SupplierPortfolioController extends Controller
             'video' => $videoPath,
         ]);
 
-        return redirect()->route('supplier.supplierprofile')->with('success', 'Portfolio created!');
+        return redirect()->route('supplier.portfolio.gallery')->with('success', 'Portfolio created!');
     }
 
     /**
@@ -122,9 +115,40 @@ class SupplierPortfolioController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SupplierPortfolio $supplierPortfolio)
+    public function deleteImage(SupplierPortfolio $supplierPortfolio, $index)
     {
-        $supplierPortfolio->delete();
-        return redirect()->route('supplier.portfolio.index')->with('success', 'Portfolio deleted!');
+        $images = $supplierPortfolio->images ?? [];
+
+        if (isset($images[$index])) {
+
+            // Delete file from storage
+            Storage::disk('public')->delete($images[$index]);
+
+            // Remove image from array
+            unset($images[$index]);
+
+            // Reindex array
+            $images = array_values($images);
+
+            $supplierPortfolio->update([
+                'images' => $images,
+            ]);
+        }
+
+        return back()->with('success', 'Image deleted successfully!');
+    }
+
+    public function deleteVideo(SupplierPortfolio $supplierPortfolio)
+    {
+        if ($supplierPortfolio->video) {
+
+            Storage::disk('public')->delete($supplierPortfolio->video);
+
+            $supplierPortfolio->update([
+                'video' => null,
+            ]);
+        }
+
+        return back()->with('success', 'Video deleted successfully!');
     }
 }

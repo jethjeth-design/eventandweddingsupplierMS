@@ -78,9 +78,9 @@
     .bk-badge.cancelled { background: rgba(185,28,28,0.07); color: #991B1B; border: 1px solid rgba(185,28,28,0.2); }
     .bk-badge.cancelled::before { background: #B91C1C; }
 
-    /* Info grid */
-    .bk-info-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.55rem 1rem; margin-bottom: 0.85rem; }
-    @media(max-width:580px){ .bk-info-grid { grid-template-columns: 1fr 1fr; } }
+    /* Info grid — expanded to 4 cols to fit new fields */
+    .bk-info-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.55rem 1rem; margin-bottom: 0.85rem; }
+    @media(max-width:700px){ .bk-info-grid { grid-template-columns: 1fr 1fr; } }
     .bk-info-item {}
     .bk-info-k { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #C0B8B0; margin-bottom: 0.18rem; display: flex; align-items: center; gap: 0.25rem; }
     .bk-info-k svg { width: 9px; height: 9px; color: var(--gold-dark); }
@@ -185,15 +185,17 @@
 
         @foreach($bookings as $booking)
         @php
-            $status    = $booking->status ?? 'pending';
-            $eventName = $booking->event->event_name ?? 'No Event';
-            $eventType = $booking->event->event_type ?? null;
-            $venue     = $booking->event->venue ?? null;
-            $guests    = $booking->event->guest_count ?? null;
-            $budget    = $booking->event->budget ?? null;
-            $pkgName   = $booking->package->name ?? null;
-            $price     = $booking->total_price ?? 0;
-            $eventDate = $booking->event_date ?? null;
+            $status     = $booking->status ?? 'pending';
+            $eventName  = $booking->event->event_name  ?? 'No Event';
+            $eventType  = $booking->event->event_type  ?? null;
+            $eventTime  = $booking->event->event_time  ?? null;
+            $location   = $booking->event->location    ?? null;
+            $venue      = $booking->event->venue       ?? null;
+            $guests     = $booking->event->guest_count ?? null;
+            $budget     = $booking->event->budget      ?? null;
+            $pkgName    = $booking->package->name      ?? null;
+            $price      = $booking->total_price        ?? 0;
+            $eventDate  = $booking->event_date         ?? null;
         @endphp
 
         <div class="bk-card st-{{ $status }} reveal" data-status="{{ $status }}">
@@ -216,6 +218,38 @@
                             </div>
                             <div class="bk-info-v {{ !$eventType ? 'nil' : '' }}">{{ $eventType ?? '—' }}</div>
                         </div>
+
+                        {{-- NEW: Event Time --}}
+                        <div class="bk-info-item">
+                            <div class="bk-info-k">
+                                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="4.5"/><path d="M6 3.5V6l1.5 1.5"/></svg>
+                                Event Time
+                            </div>
+                            <div class="bk-info-v {{ !$eventTime ? 'nil' : '' }}">
+                                @if($eventTime)
+                                    @php
+                                        $tp = explode(':', $eventTime);
+                                        $h  = (int) $tp[0];
+                                        $m  = $tp[1] ?? '00';
+                                        $ap = $h >= 12 ? 'PM' : 'AM';
+                                        $h  = $h % 12 ?: 12;
+                                    @endphp
+                                    {{ $h . ':' . $m . ' ' . $ap }}
+                                @else
+                                    —
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- NEW: Location --}}
+                        <div class="bk-info-item">
+                            <div class="bk-info-k">
+                                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 1C4.343 1 3 2.343 3 4c0 2.625 3 7 3 7s3-4.375 3-7c0-1.657-1.343-3-3-3z"/><circle cx="6" cy="4" r="1"/></svg>
+                                Location
+                            </div>
+                            <div class="bk-info-v {{ !$location ? 'nil' : '' }}">{{ $location ?? '—' }}</div>
+                        </div>
+
                         <div class="bk-info-item">
                             <div class="bk-info-k">
                                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 1C4.343 1 3 2.343 3 4c0 2.625 3 7 3 7s3-4.375 3-7c0-1.657-1.343-3-3-3z"/><circle cx="6" cy="4" r="1"/></svg>
@@ -223,6 +257,7 @@
                             </div>
                             <div class="bk-info-v {{ !$venue ? 'nil' : '' }}">{{ $venue ?? '—' }}</div>
                         </div>
+
                         <div class="bk-info-item">
                             <div class="bk-info-k">
                                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 10v-1a3 3 0 00-3-3H3a3 3 0 00-3 3v1"/><circle cx="4.5" cy="4" r="2.5"/><path d="M12 10v-1a3 3 0 00-2-2.83M8 1.17a3 3 0 010 5.66"/></svg>
@@ -230,6 +265,7 @@
                             </div>
                             <div class="bk-info-v {{ !$guests ? 'nil' : '' }}">{{ $guests ? number_format($guests) : '—' }}</div>
                         </div>
+
                         <div class="bk-info-item">
                             <div class="bk-info-k">
                                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="4.5"/><path d="M6 2v8M4 4.5h3a1 1 0 010 2H4.5a1 1 0 000 2H8"/></svg>
@@ -237,6 +273,7 @@
                             </div>
                             <div class="bk-info-v {{ !$budget ? 'nil' : '' }}">{{ $budget ? '₱'.number_format($budget) : '—' }}</div>
                         </div>
+
                         <div class="bk-info-item">
                             <div class="bk-info-k">
                                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="2" width="10" height="9" rx="1.5"/><path d="M4 1v2M8 1v2M1 6h10"/></svg>

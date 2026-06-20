@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Mail\CustomEmail;
+use Illuminate\Support\Facades\Mail;
 
 class RegisteredUserController extends Controller
 {
@@ -51,7 +53,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('verification.notice');
+        return redirect()->route('client.dashboard');
     }
 
      // Show supplier registration form
@@ -72,17 +74,9 @@ class RegisteredUserController extends Controller
         // Supplier fields
         'first_name' => 'required|string|max:255',
         'last_name' => 'required|string|max:255',
-        'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'business_name' => 'required|string|max:255',
-        'tagline' => 'nullable|string|max:255',
-        'phone' => 'nullable|string|max:20',
-        'city' => 'required|string|max:255',
-        'province' => 'required|string|max:255',
-        'bio' => 'nullable|string',
         'category_id' => 'required|array',
         'category_id.*' => 'exists:categories,id',
-        'description' => 'nullable|string',
-        'address' => 'nullable|string',
     ]);
 
         $user = User::create([
@@ -94,27 +88,14 @@ class RegisteredUserController extends Controller
 
         ActivityLogger::log('register', $user);
         
-        // ✅ HANDLE PHOTO UPLOAD
-    $photoPath = null;
-    if ($request->hasFile('photo')) {
-        $photoPath = $request->file('photo')->store('supplier_photos', 'public');
-    }
+        
 
     // ✅ CREATE SUPPLIER PROFILE (CONNECTED TO USER)
     $supplier = SupplierProfile::create([
         'user_id' => $user->id,
-
         'first_name' => $request->first_name,
         'last_name' => $request->last_name,
-        'photo' => $photoPath,
         'business_name' => $request->business_name,
-        'tagline' => $request->tagline,
-        'phone' => $request->phone,
-        'city' => $request->city,
-        'province' => $request->province,
-        'bio' => $request->bio,
-        'description' => $request->description,
-        'address' => $request->address,
 
     ]);
 
@@ -126,7 +107,7 @@ class RegisteredUserController extends Controller
         // ✅ FIXED
         $supplier->categories()->sync($request->category_id);
         // redirect to supplier landing page
-        return redirect()->route('verification.notice');
+        return redirect()->route('supplier.dashboard');
     }
 
 }

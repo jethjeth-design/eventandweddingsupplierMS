@@ -236,7 +236,7 @@
         <button class="adm-filter-tab" data-filter="completed">Completed</button>
         <div class="adm-search-wrap">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
-            <input type="text" id="admSearch" class="adm-search" placeholder="Search event, client, supplier…">
+            <input type="text" id="admSearch" class="adm-search" placeholder="Search event, client, supplier, location…">
         </div>
     </div>
 
@@ -246,18 +246,20 @@
 
     @foreach($bookings as $booking)
     @php
-        $status      = $booking->status ?? 'pending';
+        $status      = $booking->status         ?? 'pending';
         $eventName   = $booking->event->event_name ?? 'Unnamed Event';
         $eventType   = $booking->event->event_type ?? null;
-        $venue       = $booking->event->venue ?? null;
-        $eventDate   = $booking->event_date ?? null;
-        $pkgName     = $booking->package->name ?? null;
-        $price       = $booking->total_price ?? 0;
+        $eventTime   = $booking->event->event_time ?? null;
+        $location    = $booking->event->location   ?? null;
+        $venue       = $booking->event->venue      ?? null;
+        $eventDate   = $booking->event_date        ?? null;
+        $pkgName     = $booking->package->name     ?? null;
+        $price       = $booking->total_price       ?? 0;
         $supplierBiz = $booking->package->supplier->business_name
                     ?? $booking->package->supplier->name
                     ?? null;
-        $clientName  = $booking->user->name ?? null;
-        $clientId    = $booking->user_id ?? null;
+        $clientName  = $booking->user->name  ?? null;
+        $clientId    = $booking->user_id     ?? null;
         $clientInit  = $clientName ? strtoupper(substr($clientName, 0, 2)) : 'CL';
         $placedAt    = $booking->created_at
                         ? $booking->created_at->format('M d, Y g:i A')
@@ -266,11 +268,22 @@
             ? \Carbon\Carbon::parse($eventDate)->format('M d, Y')
             : '—';
 
+        /* Format event_time HH:MM → 12-hour */
+        $formattedTime = null;
+        if ($eventTime) {
+            $tp = explode(':', $eventTime);
+            $h  = (int) $tp[0];
+            $m  = $tp[1] ?? '00';
+            $ap = $h >= 12 ? 'PM' : 'AM';
+            $h  = $h % 12 ?: 12;
+            $formattedTime = $h . ':' . $m . ' ' . $ap;
+        }
+
         // Auto event status
         $eventCarbon = $eventDate ? \Carbon\Carbon::parse($eventDate) : null;
         $eventStatus = 'upcoming';
         if ($eventCarbon) {
-            if ($eventCarbon->isToday())   $eventStatus = 'ongoing';
+            if ($eventCarbon->isToday())    $eventStatus = 'ongoing';
             elseif ($eventCarbon->isPast()) $eventStatus = 'completed';
         }
 
@@ -286,20 +299,19 @@
             default     => 'step-waiting',
         };
         $stepEvent = match(true) {
-            $status === 'cancelled'              => 'step-waiting',
-            $eventStatus === 'ongoing'           => 'step-ongoing',
-            $eventStatus === 'completed'         => 'step-grey',
-            $status === 'confirmed'              => 'step-active',
-            default                              => 'step-waiting',
+            $status === 'cancelled'      => 'step-waiting',
+            $eventStatus === 'ongoing'   => 'step-ongoing',
+            $eventStatus === 'completed' => 'step-grey',
+            $status === 'confirmed'      => 'step-active',
+            default                      => 'step-waiting',
         };
 
-        // Data attr for filter/search
         $filterStatus = $displayStatus;
     @endphp
 
     <div class="adm-booking reveal"
          data-status="{{ $filterStatus }}"
-         data-search="{{ strtolower($eventName.' '.($clientName ?? '').' '.($supplierBiz ?? '')) }}">
+         data-search="{{ strtolower($eventName.' '.($clientName ?? '').' '.($supplierBiz ?? '').' '.($location ?? '')) }}">
 
         {{-- Header --}}
         <div class="adm-booking-header">
@@ -316,6 +328,20 @@
                         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="2" width="10" height="9" rx="1.5"/><path d="M4 1v2M8 1v2M1 6h10"/></svg>
                         {{ $formattedDate }}
                     </span>
+                    {{-- NEW: event_time chip in header --}}
+                    @if($formattedTime)
+                    <span class="adm-meta-chip">
+                        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="4.5"/><path d="M6 3.5V6l1.5 1.5"/></svg>
+                        {{ $formattedTime }}
+                    </span>
+                    @endif
+                    {{-- NEW: location chip in header --}}
+                    @if($location)
+                    <span class="adm-meta-chip">
+                        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 1C4.343 1 3 2.343 3 4c0 2.625 3 7 3 7s3-4.375 3-7c0-1.657-1.343-3-3-3z"/><circle cx="6" cy="4" r="1"/></svg>
+                        {{ $location }}
+                    </span>
+                    @endif
                     @if($clientName)
                     <span class="adm-client-chip">
                         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 10v-1a3 3 0 013-3h2a3 3 0 013 3v1"/><circle cx="6" cy="4" r="2"/></svg>
@@ -394,13 +420,13 @@
                             </div>
                             <div class="adm-step-sub">
                                 @if($eventStatus === 'upcoming' && $status === 'confirmed')
-                                    Scheduled — {{ $formattedDate }}
+                                    Scheduled — {{ $formattedDate }}@if($formattedTime) at {{ $formattedTime }}@endif
                                 @elseif($eventStatus === 'ongoing')
-                                    Happening today · {{ $formattedDate }}
+                                    Happening today · {{ $formattedDate }}@if($formattedTime) at {{ $formattedTime }}@endif
                                 @elseif($eventStatus === 'completed')
                                     Completed on {{ $formattedDate }}
                                 @else
-                                    {{ $formattedDate }}
+                                    {{ $formattedDate }}@if($formattedTime) · {{ $formattedTime }}@endif
                                 @endif
                             </div>
                         </div>
@@ -453,6 +479,24 @@
                             Total Price
                         </div>
                         <div class="adm-price-v">₱{{ number_format($price, 2) }}</div>
+                    </div>
+
+                    {{-- NEW: Event Time --}}
+                    <div>
+                        <div class="adm-detail-k">
+                            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="4.5"/><path d="M6 3.5V6l1.5 1.5"/></svg>
+                            Event Time
+                        </div>
+                        <div class="adm-detail-v {{ !$formattedTime ? 'nil' : '' }}">{{ $formattedTime ?? '—' }}</div>
+                    </div>
+
+                    {{-- NEW: Location --}}
+                    <div>
+                        <div class="adm-detail-k">
+                            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 1C4.343 1 3 2.343 3 4c0 2.625 3 7 3 7s3-4.375 3-7c0-1.657-1.343-3-3-3z"/><circle cx="6" cy="4" r="1"/></svg>
+                            Venue
+                        </div>
+                        <div class="adm-detail-v {{ !$venue ? 'nil' : '' }}">{{ $venue ?? '—' }}</div>
                     </div>
 
                     @if($venue)
