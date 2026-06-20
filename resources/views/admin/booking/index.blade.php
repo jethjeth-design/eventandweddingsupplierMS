@@ -56,7 +56,7 @@
 .tbl-wrap::-webkit-scrollbar-thumb{background:rgba(201,168,76,.45);border-radius:4px;}
 
 /* ── TABLE ── */
-.bk-table{width:100%;min-width:780px;border-collapse:collapse;font-family:var(--font-body);}
+.bk-table{width:100%;min-width:920px;border-collapse:collapse;font-family:var(--font-body);}
 .bk-table thead{background:var(--ivory);border-bottom:1.5px solid var(--border);}
 .bk-table thead th{padding:.8rem 1.1rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-grey);text-align:left;white-space:nowrap;}
 .bk-table thead th:first-child{border-left:3px solid var(--gold);}
@@ -81,6 +81,10 @@
 .td-date small{display:block;font-size:.68rem;color:var(--warm-grey);}
 .td-price{font-weight:700;font-size:.9rem;color:var(--gold-dark);white-space:nowrap;}
 .td-price small{font-size:.66rem;color:var(--warm-grey);font-weight:400;margin-left:2px;}
+
+/* NEW: event time + location cell */
+.td-evt-meta{font-size:.78rem;color:var(--charcoal);white-space:nowrap;}
+.td-evt-meta small{display:block;font-size:.67rem;color:var(--warm-grey);margin-top:2px;white-space:normal;max-width:130px;}
 
 /* Status badges */
 .bk-status{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;border-radius:20px;font-size:.68rem;font-weight:600;letter-spacing:.04em;white-space:nowrap;font-family:var(--font-body);}
@@ -166,7 +170,7 @@
             </svg>
             <input type="text"
                    id="searchInput"
-                   placeholder="Search event, client, supplier, package…"
+                   placeholder="Search event, client, supplier, package, location…"
                    value="{{ request('search') }}"
                    autocomplete="off">
         </div>
@@ -218,6 +222,7 @@
                     <tr>
                         <th>#</th>
                         <th>Event</th>
+                        <th>Time &amp; Venue</th>
                         <th>Client</th>
                         <th>Supplier</th>
                         <th>Package</th>
@@ -229,19 +234,32 @@
                 <tbody id="bookingsTbody">
                     @forelse($bookings as $i => $booking)
                     @php
-                        $evtName   = $booking->event->event_name ?? '—';
-                        $evtType   = $booking->event->event_type ?? '';
-                        $clientId  = $booking->user_id ?? '—';
-                        $clientName= $booking->user->name ?? null;
-                        $supName   = $booking->package->supplier->business_name
-                                  ?? trim(($booking->package->supplier->first_name ?? '').' '.($booking->package->supplier->last_name ?? ''))
-                                  ?: 'N/A';
-                        $pkgName   = $booking->package->name ?? '—';
-                        $evtDate   = $booking->event_date ? \Carbon\Carbon::parse($booking->event_date)->format('M d, Y') : '—';
-                        $price     = $booking->total_price ?? 0;
-                        $status    = $booking->status ?? 'pending';
+                        $evtName    = $booking->event->event_name  ?? '—';
+                        $evtType    = $booking->event->event_type  ?? '';
+                        $evtTime    = $booking->event->event_time  ?? null;
+                        $evtLoc     = $booking->event->venue    ?? null;
+                        $clientId   = $booking->user_id            ?? '—';
+                        $clientName = $booking->user->name         ?? null;
+                        $supName    = $booking->package->supplier->business_name
+                                   ?? trim(($booking->package->supplier->first_name ?? '').' '.($booking->package->supplier->last_name ?? ''))
+                                   ?: 'N/A';
+                        $pkgName    = $booking->package->name      ?? '—';
+                        $evtDate    = $booking->event_date ? \Carbon\Carbon::parse($booking->event_date)->format('M d, Y') : '—';
+                        $price      = $booking->total_price        ?? 0;
+                        $status     = $booking->status             ?? 'pending';
+
+                        /* Format event_time to 12-hour */
+                        $evtTimeFmt = null;
+                        if ($evtTime) {
+                            $tp = explode(':', $evtTime);
+                            $h  = (int) $tp[0];
+                            $m  = $tp[1] ?? '00';
+                            $ap = $h >= 12 ? 'PM' : 'AM';
+                            $h  = $h % 12 ?: 12;
+                            $evtTimeFmt = $h . ':' . $m . ' ' . $ap;
+                        }
                     @endphp
-                    <tr data-search="{{ strtolower($evtName.' '.$evtType.' '.($clientName ?? $clientId).' '.$supName.' '.$pkgName) }}"
+                    <tr data-search="{{ strtolower($evtName.' '.$evtType.' '.($clientName ?? $clientId).' '.$supName.' '.$pkgName.' '.($evtLoc ?? '')) }}"
                         data-status="{{ $status }}"
                         data-event-type="{{ strtolower($evtType) }}"
                         data-date="{{ $booking->event_date }}">
@@ -251,6 +269,21 @@
                             @if($evtType)
                             <div class="td-event-type"><span>{{ $evtType }}</span></div>
                             @endif
+                        </td>
+                        {{-- NEW: Event Time & Venue column --}}
+                        <td>
+                            <div class="td-evt-meta">
+                                @if($evtTimeFmt)
+                                    {{ $evtTimeFmt }}
+                                @else
+                                    <span style="color:#C0B8B0;font-style:italic;font-size:.75rem;">—</span>
+                                @endif
+                                @if($evtLoc)
+                                    <small>{{ $evtLoc }}</small>
+                                @else
+                                    <small style="color:#C0B8B0;font-style:italic;">No location</small>
+                                @endif
+                            </div>
                         </td>
                         <td>
                             <div class="td-client">
@@ -288,7 +321,7 @@
                     </tr>
                     @empty
                     <tr id="emptyRow">
-                        <td colspan="8">
+                        <td colspan="9">
                             <div class="bk-empty">
                                 <div class="bk-empty-icon">
                                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -347,10 +380,10 @@ function applyFilters() {
     const rows = tbody.querySelectorAll('tr[data-search]');
 
     rows.forEach(function(row) {
-        const rowSearch  = row.dataset.search  || '';
-        const rowStatus  = row.dataset.status  || '';
+        const rowSearch  = row.dataset.search   || '';
+        const rowStatus  = row.dataset.status   || '';
         const rowEvtType = row.dataset.eventType || '';
-        const rowDate    = row.dataset.date    || '';
+        const rowDate    = row.dataset.date      || '';
 
         const matchQ    = !q       || rowSearch.includes(q);
         const matchSt   = !status  || rowStatus === status;
@@ -369,7 +402,7 @@ function applyFilters() {
         if (!emptyRow) {
             emptyRow = document.createElement('tr');
             emptyRow.id = 'liveEmptyRow';
-            emptyRow.innerHTML = `<td colspan="8">
+            emptyRow.innerHTML = `<td colspan="9">
                 <div class="bk-empty">
                     <div class="bk-empty-icon">
                         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">

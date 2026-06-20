@@ -161,13 +161,16 @@ class BookingController extends Controller
             $event   = Event::findOrFail($request->event_id);
             $package = Package::with('supplier')->findOrFail($request->package_id);
 
-            $exists = Booking::where('event_id', $event->id)
-                ->where('package_id', $package->id)
-                ->exists();
+            $supplierBooked = Booking::where('supplier_id', $package->supplier_id)
+                    ->whereDate('event_date', $event->event_date)
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->exists();
 
-            if ($exists) {
-                return back()->with('error', 'Already booked this package.');
-            }
+                if ($supplierBooked) {
+                    return back()->with('error', 'This supplier is already booked on the selected date.');
+                }
+
+
 
             Booking::create([
                 'user_id'     => auth()->id(),

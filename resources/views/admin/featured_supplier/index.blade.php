@@ -237,6 +237,95 @@
 
         /* responsive hide */
         @media (max-width: 900px) { .col-hide { display: none; } }
+
+        /* ── Remove Featured Modal ── */
+        .rf-modal-backdrop {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(30, 27, 24, 0.55);
+            backdrop-filter: blur(3px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.22s ease;
+        }
+        .rf-modal-backdrop.open {
+            opacity: 1; pointer-events: auto;
+        }
+        .rf-modal {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            width: 100%; max-width: 420px;
+            box-shadow: 0 20px 60px rgba(30,27,24,0.18);
+            transform: translateY(10px) scale(0.98);
+            transition: transform 0.22s ease;
+            overflow: hidden;
+        }
+        .rf-modal-backdrop.open .rf-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .rf-modal-top {
+            padding: 1.5rem 1.5rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: flex-start; gap: 1rem;
+        }
+        .rf-modal-icon {
+            width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+            background: var(--danger-bg);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .rf-modal-icon svg { width: 20px; height: 20px; color: var(--danger); }
+
+        .rf-modal-heading {
+            font-family: var(--font-display);
+            font-size: 1.05rem; font-weight: 700;
+            color: var(--charcoal); line-height: 1.25;
+            margin-bottom: 0.3rem;
+        }
+        .rf-modal-sub {
+            font-size: 0.75rem; color: var(--warm-grey); line-height: 1.55;
+        }
+        .rf-modal-sub strong { color: var(--charcoal); font-weight: 600; }
+
+        .rf-modal-body {
+            padding: 1.1rem 1.5rem;
+        }
+        .rf-modal-notice {
+            display: flex; align-items: flex-start; gap: 0.65rem;
+            background: #FDFAF6; border: 1px solid rgba(201,168,76,0.25);
+            border-radius: 8px; padding: 0.75rem 1rem;
+            font-size: 0.73rem; color: var(--warm-grey); line-height: 1.55;
+        }
+        .rf-modal-notice svg { width: 14px; height: 14px; color: var(--gold-dark); flex-shrink: 0; margin-top: 1px; }
+
+        .rf-modal-footer {
+            padding: 1rem 1.5rem 1.4rem;
+            display: flex; gap: 0.6rem; justify-content: flex-end;
+        }
+        .rf-btn {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.55rem 1.2rem; border-radius: 7px;
+            font-family: var(--font-body); font-size: 0.76rem; font-weight: 600;
+            border: 1.5px solid; cursor: pointer; transition: all 0.18s;
+            text-decoration: none; white-space: nowrap;
+        }
+        .rf-btn svg { width: 12px; height: 12px; }
+        .rf-btn-cancel {
+            background: var(--white); color: var(--warm-grey);
+            border-color: var(--border-md);
+        }
+        .rf-btn-cancel:hover { border-color: var(--charcoal); color: var(--charcoal); background: #F5F2ED; }
+        .rf-btn-confirm {
+            background: var(--danger); color: var(--white);
+            border-color: var(--danger);
+        }
+        .rf-btn-confirm:hover { background: #9E3535; border-color: #9E3535; }
+
+        @media (max-width: 480px) {
+            .rf-modal-footer { flex-direction: column-reverse; }
+            .rf-btn { justify-content: center; }
+        }
     </style>
 
     <div class="fs-page">
@@ -424,11 +513,12 @@
                                 <div class="action-cell">
                                     <form method="POST"
                                           action="{{ route('featured-suppliers.toggle', $supplier->id) }}"
-                                          onsubmit="return confirmToggle('{{ $bizName }}', {{ $isFeat ? 'true' : 'false' }})">
+                                          id="unfeature-form-{{ $supplier->id }}">
                                         @csrf
                                         @method('PATCH')
                                         @if($isFeat)
-                                            <button type="submit" class="toggle-btn unfeature">
+                                            <button type="button" class="toggle-btn unfeature"
+                                                onclick="openRemoveModal('{{ $supplier->id }}', '{{ addslashes($bizName) }}')">
                                                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M2 6h8"/>
                                                 </svg>
@@ -463,6 +553,50 @@
 
         </div>{{-- /fs-content --}}
     </div>{{-- /fs-page --}}
+
+    {{-- ── Remove Featured Modal ── --}}
+    <div class="rf-modal-backdrop" id="rfModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="rfModalHeading">
+        <div class="rf-modal">
+            <div class="rf-modal-top">
+                <div class="rf-modal-icon">
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                        <path d="M10 1l2.4 4.9L18 6.9l-4 3.9 1 5.5L10 13.8l-5.1 2.5 1-5.5-4-3.9 5.6-.7z"/>
+                        <line x1="4" y1="4" x2="16" y2="16" stroke-width="1.7"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="rf-modal-heading" id="rfModalHeading">Remove from Featured</div>
+                    <div class="rf-modal-sub">
+                        You're about to unfeature <strong id="rfSupplierName">this supplier</strong>. They will no longer appear in the featured section on the public Packages page.
+                    </div>
+                </div>
+            </div>
+
+            <div class="rf-modal-body">
+                <div class="rf-modal-notice">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="8" cy="8" r="7"/><path d="M8 5v4M8 11v.5"/>
+                    </svg>
+                    This action won't delete the supplier — you can feature them again at any time from this page.
+                </div>
+            </div>
+
+            <div class="rf-modal-footer">
+                <button type="button" class="rf-btn rf-btn-cancel" onclick="closeRemoveModal()">
+                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 2l8 8M10 2l-8 8"/>
+                    </svg>
+                    Cancel
+                </button>
+                <button type="button" class="rf-btn rf-btn-confirm" id="rfConfirmBtn" onclick="confirmRemove()">
+                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 6h8"/>
+                    </svg>
+                    Yes, Remove
+                </button>
+            </div>
+        </div>
+    </div>
 
     {{-- Toasts + Search + Filter --}}
     <script>
@@ -514,5 +648,38 @@
         }
 
         fsSearch?.addEventListener('input', applyFilters);
+
+        /* ── Remove Featured Modal ── */
+        let _pendingFormId = null;
+
+        function openRemoveModal(supplierId, supplierName) {
+            _pendingFormId = 'unfeature-form-' + supplierId;
+            document.getElementById('rfSupplierName').textContent = supplierName;
+            document.getElementById('rfModalBackdrop').classList.add('open');
+            document.getElementById('rfConfirmBtn').focus();
+        }
+
+        function closeRemoveModal() {
+            document.getElementById('rfModalBackdrop').classList.remove('open');
+            _pendingFormId = null;
+        }
+
+        function confirmRemove() {
+            if (_pendingFormId) {
+                const form = document.getElementById(_pendingFormId);
+                if (form) form.submit();
+            }
+            closeRemoveModal();
+        }
+
+        /* close on backdrop click */
+        document.getElementById('rfModalBackdrop').addEventListener('click', function (e) {
+            if (e.target === this) closeRemoveModal();
+        });
+
+        /* close on Escape key */
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeRemoveModal();
+        });
     </script>
 </x-app-layout>

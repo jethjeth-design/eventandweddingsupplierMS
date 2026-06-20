@@ -17,7 +17,6 @@ return new class extends Migration
 
             $table->string('name');
             $table->text('description')->nullable();
-            $table->integer('guest_capacity')->nullable();
             $table->string('event_type');
 
             $table->decimal('price', 10, 2);

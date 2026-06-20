@@ -23,6 +23,8 @@ return new class extends Migration
 
             $table->date('event_date');
 
+            $table->time('event_time');
+
             // 💰 CORE OF YOUR SYSTEM
             $table->integer('budget');
 

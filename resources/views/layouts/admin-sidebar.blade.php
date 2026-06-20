@@ -1,8 +1,15 @@
+    @php
+
+        $adminBookingCount = \App\Models\Booking::where('status', 'pending')
+            ->count();
+        
+        $eventCount = \App\Models\Event::where('status', '!=', 'cancelled')
+        ->count();
+    @endphp
     <aside class="sidebar" id="sidebar">
 
-        {{-- Logo --}}
         <div class="sidebar-header">
-            <a href="{{ url('/') }}" class="sidebar-logo">Bikol's<em>Craft</em></a>
+            <a href="{{ url('/') }}" class="sidebar-logo">WES<em>TEAM</em></a>
             <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <path d="M15 18l-6-6 6-6"/>
@@ -10,7 +17,6 @@
             </button>
         </div>
 
-        {{-- Nav --}}
         <nav class="sidebar-nav">
 
             <div class="nav-group-label">Main</div>
@@ -29,20 +35,29 @@
 
             <a href="{{ route('admin.events.index') }}"
                class="nav-item {{ request()->routeIs('admin.events.*') ? 'active' : '' }}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                    <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <rect x="3" y="4" width="14" height="13" rx="2" />
+                    <path d="M7 2v4M13 2v4M3 9h14" />
                 </svg>
-                <span>My Events</span>
-                <span class="nav-tooltip">My Events</span>
-                <span class="nav-badge">3</span>
+                <span>Events List</span>
+                <span class="nav-tooltip">Events List</span>
+                {{-- EVENT COUNT BADGE --}}
+                @if($eventCount > 0)
+
+                    <span class="nav-badge">
+
+                        {{ $eventCount > 99 ? '99+' : $eventCount }}
+
+                    </span>
+
+                @endif
             </a>
 
             <a href="{{ route('admin.suppliers.index') }}"
                class="nav-item {{ request()->routeIs('admin.suppliers.*') ? 'active' : '' }}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                    <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/>
-                    <circle cx="5.5" cy="18.5" r="2.5"/>
-                    <circle cx="18.5" cy="18.5" r="2.5"/>
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <circle cx="10" cy="7" r="4" />
+                    <path d="M2 17c0-4 3.6-7 8-7s8 3 8 7" />
                 </svg>
                 <span>Suppliers</span>
                 <span class="nav-tooltip">Suppliers</span>
@@ -57,7 +72,16 @@
                 </svg>
                 <span>Bookings</span>
                 <span class="nav-tooltip">Bookings</span>
-                <span class="nav-badge">5</span>
+                {{-- BADGE --}}
+                @if($adminBookingCount > 0)
+
+                    <span class="nav-badge">
+
+                        {{ $adminBookingCount > 99 ? '99+' : $adminBookingCount }}
+
+                    </span>
+
+                @endif
             </a>
 
             <a href="{{ route('admin.package.list') }}"
@@ -71,14 +95,14 @@
                 <span class="nav-tooltip">Packages</span>
             </a>
 
-            <a href="{{ route('admin.popular.index') }}"
+            {{--<a href="{{ route('admin.popular.index') }}"
                class="nav-item {{ request()->routeIs('admin.popular.index*') ? 'active' : '' }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
                     <path d="M12 2l2.4 4.9L18 7.6l-4 3.9.9 5.5L10 14.4l-5 2.6.9-5.5L2 7.6l5.6-.7z"/>
                 </svg>
                 <span>Popular Packages</span>
                 <span class="nav-tooltip">Popular Packages</span>
-            </a>
+            </a>--}}
 
             <a href="{{ route('featured-suppliers') }}"
                class="nav-item {{ request()->routeIs('featured-suppliers*') ? 'active' : '' }}">
@@ -103,14 +127,14 @@
                 <span class="nav-tooltip">Calendar</span>
             </a>
 
-            <a href="{{ route('admin.popular.tracking') }}"
+            {{--<a href="{{ route('admin.popular.tracking') }}"
                class="nav-item {{ request()->routeIs('admin.popular.tracking') ? 'active' : '' }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
                     <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
                 </svg>
                 <span>Tracking</span>
                 <span class="nav-tooltip">Tracking</span>
-            </a>
+            </a>--}}
 
             <a href="{{ route('admin.timeline') }}"
                class="nav-item {{ request()->routeIs('admin.timeline') || request()->routeIs('admin.timeline.*') ? 'active' : '' }}">
@@ -150,7 +174,7 @@
                 <span class="nav-tooltip">Activity Logs</span>
             </a>
 
-            {{-- ══ SETTINGS GROUP ══ --}}
+            {{-- SETTINGS GROUP --}}
             @php
                 $settingsActive =
                     request()->routeIs('admin.user') ||
@@ -183,75 +207,49 @@
 
                     <a href="{{ route('admin.user') }}"
                        class="nav-subitem {{ request()->routeIs('admin.user') ? 'active' : '' }}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
                         User Roles
                     </a>
 
                     <a href="{{ route('admin.homepage.banners') }}"
                        class="nav-subitem {{ request()->routeIs('admin.homepage.*') ? 'active' : '' }}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-                            <rect x="3" y="3" width="18" height="14" rx="2"/>
-                            <path d="M8 21h8M12 17v4"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
                         Homepage Banners
                     </a>
 
                     <a href="{{ route('admin.categories.list') }}"
                        class="nav-subitem {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-                            <path d="M4 6h16M4 10h10M4 14h7"/>
-                            <circle cx="19" cy="14" r="3"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h16M4 10h10M4 14h7"/><circle cx="19" cy="14" r="3"/></svg>
                         Supplier Categories
                     </a>
 
                     <a href="{{ route('subcategories.list') }}"
                        class="nav-subitem {{ request()->routeIs('categories.*') ? 'active' : '' }}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-                            <path d="M4 6h16M4 10h8M4 14h5"/>
-                            <circle cx="17" cy="14" r="3"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h16M4 10h8M4 14h5"/><circle cx="17" cy="14" r="3"/></svg>
                         Sub-Categories
                     </a>
 
                     <a href="{{ route('admin.event.list') }}"
                        class="nav-subitem {{ request()->routeIs('admin.event.list') ? 'active' : '' }}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2"/>
-                            <path d="M16 2v4M8 2v4M3 10h18"/>
-                            <path d="M8 14h.01M12 14h.01M16 14h.01"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>
                         Event Categories
                     </a>
 
                     <a href="{{ route('admin.venue.list') }}"
                        class="nav-subitem {{ request()->routeIs('admin.venue.*') ? 'active' : '' }}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                            <polyline points="9 22 9 12 15 12 15 22"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         Venues
                     </a>
 
                     <a href="{{ route('admin.themes.list') }}"
                        class="nav-subitem {{ request()->routeIs('admin.themes.*') ? 'active' : '' }}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4"/></svg>
                         Themes
                     </a>
 
                     <a href="{{ route('admin.location.list') }}"
                        class="nav-subitem {{ request()->routeIs('admin.location.*') ? 'active' : '' }}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-                            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                         Locations
                     </a>
 
@@ -260,7 +258,6 @@
 
         </nav>
 
-        {{-- Footer --}}
         <div class="sidebar-footer">
             <div class="sidebar-user-row">
                 <a href="{{ route('admin.profile') ?? '#' }}" class="sidebar-user">

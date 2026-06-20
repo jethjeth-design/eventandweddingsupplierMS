@@ -39,6 +39,9 @@ use App\Http\Controllers\Supplier\SupplierDashboardController;
 use App\Http\Controllers\CollaborationController;
 use App\Http\Controllers\CollaborationMemberController;
 use App\Http\Controllers\SupplierTeamMemberController;
+
+use App\Http\Controllers\ClientBidController;
+use App\Http\Controllers\SupplierBidController;
 use Illuminate\Support\Facades\Route;
 
 //Welcome Pages
@@ -46,7 +49,9 @@ Route::get('/', [HomeController::class, 'index'])->name('welcomepage.welcome');
     Route::get('/profile', [HomeController::class, 'showprofile'])->name('welcomepage.profile');
     Route::get('/profile/{id}', [HomeController::class, 'showprofiledetails'])->name('welcomepage.profiledetails');
     Route::get('/gallery/{id}', [HomeController::class, 'showgallery'])->name('welcomepage.gallery');
+    Route::get('/gallery/', [HomeController::class, 'gallery'])->name('welcomepage.galleries');
     Route::get('/package', [HomeController::class, 'package'])->name('welcomepage.package');
+    Route::get('/event', [HomeController::class, 'event'])->name('welcomepage.event');
     Route::get('/popular-packages/{id}', [HomeController::class, 'showPopular'])
     ->name('popular.show');
 
@@ -56,7 +61,7 @@ Route::get('/admin/logs', [ActivityLogController::class, 'index'])
 
 Route::get('/dashboard', function () {
     $role = auth()->user()->role;
-
+   
     return match($role) {
         'admin' => redirect()->route('admin.dashboard'),
         'supplier' => redirect()->route('supplier.dashboard'),
@@ -77,6 +82,7 @@ Route::post('/register/supplier', [RegisteredUserController::class, 'storeSuppli
 
 // Admin routes
 Route::middleware(['auth', 'verified','role:admin'])->group(function () {
+    
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
@@ -230,7 +236,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/supplier/portfolio', [SupplierPortfolioController::class, 'store'])->name('supplier.portfolio.store');
     Route::get('/supplier/portfolio/{portfolio}/edit', [SupplierPortfolioController::class, 'edit'])->name('supplier.portfolio.edit');
     Route::put('/supplier/portfolio/{portfolio}', [SupplierPortfolioController::class, 'update'])->name('supplier.portfolio.update');
-    Route::delete('/supplier/portfolio/{portfolio}', [SupplierPortfolioController::class, 'destroy'])->name('supplier.portfolio.destroy');
+    Route::delete(
+    '/supplier/portfolio/{supplierPortfolio}/image/{index}',
+    [SupplierPortfolioController::class, 'deleteImage']
+)->name('supplier.portfolio.image.delete');
+
+Route::delete(
+    '/supplier/portfolio/{supplierPortfolio}/video',
+    [SupplierPortfolioController::class, 'deleteVideo']
+)->name('supplier.portfolio.video.delete');
     //Gallery Routes
     Route::get('/supplier/gallery', [GalleryController::class, 'index'])->name('supplier.portfolio.gallery');
 });
@@ -644,6 +658,8 @@ Route::middleware(['auth'])->group(function () {
         [MessageController::class, 'inbox']
     )->name('messages.inbox');
 
+    Route::get('/messages/start/{user}', [MessageController::class, 'startChat'])->name('messages.start');
+
     /*
     |--------------------------------------------------------------------------
     | Open Chat
@@ -697,6 +713,51 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/admin/messages/send', [AdminMessageController::class, 'send'])
         ->name('admin.messages.send');
+});
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/client/bids',
+        [ClientBidController::class,'index'])
+        ->name('client.bids.index');
+
+    Route::get('/client/bids/{bid}',
+        [ClientBidController::class,'show'])
+        ->name('client.bids.show');
+
+    Route::post('/client/bids/package/{package}',
+        [ClientBidController::class,'store'])
+        ->name('client.bids.store');
+
+    Route::post('/client/bids/{bid}/reply',
+        [ClientBidController::class,'reply'])
+        ->name('client.bids.reply');
+    Route::post(
+        '/client/bids/{bid}/accept',
+        [ClientBidController::class, 'accept']
+    )->name('client.bids.accept');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/supplier/bids',
+        [SupplierBidController::class,'index'])
+        ->name('supplier.bids.index');
+
+    Route::get('/supplier/bids/{bid}',
+        [SupplierBidController::class,'show'])
+        ->name('supplier.bids.show');
+
+    Route::post('/supplier/bids/{bid}/counter',
+        [SupplierBidController::class,'counter'])
+        ->name('supplier.bids.counter');
+
+    Route::post('/supplier/bids/{bid}/accept',
+        [SupplierBidController::class,'accept'])
+        ->name('supplier.bids.accept');
+
+    Route::post('/supplier/bids/{bid}/reject',
+        [SupplierBidController::class,'reject'])
+        ->name('supplier.bids.reject');
 });
 
 require __DIR__.'/auth.php';

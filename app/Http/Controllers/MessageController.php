@@ -15,79 +15,99 @@ class MessageController extends Controller
     | INBOX
     |--------------------------------------------------------------------------
     */
-    public function inbox()
-    {
-        $user = auth()->user();
+public function inbox(Request $request)
+{
+    $user = auth()->user();
 
-        $conversations = Conversation::whereHas('participants', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })
-            ->with(['participants.user', 'messages'])
-            ->latest()
-            ->get();
+    $conversations = Conversation::whereHas('participants', function ($q) use ($user) {
+        $q->where('user_id', $user->id);
+    })
+    ->with(['participants.user', 'messages.sender'])
+    ->latest()
+    ->get();
 
-        $suppliers = User::whereHas('supplier')->get();
+    $suppliers = User::whereHas('supplier')->get();
+    $clients = User::where('role', 'client')->get();
+    $admins = User::where('role', 'admin')->get();
 
-        $clients = User::where('role', 'client')->get();
-        
-        // ✅ ADD THIS
-        $admins = User::where('role', 'admin')->get();
+    $conversation = null;
 
-        return view('messages.inbox', compact(
-            'conversations',
-            'suppliers',
-            'clients',
-            'admins'
-        ));
+    if ($request->conversation_id) {
+        $conversation = Conversation::with([
+            'messages.sender',
+            'participants.user'
+        ])->find($request->conversation_id);
+
+    /*
+        |--------------------------------------------------------------------------
+        | MARK MESSAGES AS READ
+        |--------------------------------------------------------------------------
+        */
+
+        if ($conversation) {
+
+            Message::where('conversation_id', $conversation->id)
+                ->where('sender_id', '!=', auth()->id())
+                ->where('is_read', false)
+                ->update([
+                    'is_read' => true,
+                    'read_at' => now()
+                ]);
+        }
     }
+
+    return view('messages.inbox', compact(
+        'conversations',
+        'suppliers',
+        'clients',
+        'admins',
+        'conversation'
+    ));
+}
 
     /*
     |--------------------------------------------------------------------------
     | OPEN CHAT (PRIVATE CHAT ONLY)
     |--------------------------------------------------------------------------
     */
-    public function open(User $user)
-    {
-        $authUser = auth()->user();
+public function open(User $user)
+{
+    $authUser = auth()->user();
 
-        $conversation = Conversation::whereIn('type', [
-                'client_supplier',
-                'supplier_collaboration'
-            ])
-            ->whereHas('participants', function ($q) use ($authUser) {
-                $q->where('user_id', $authUser->id);
-            })
-            ->whereHas('participants', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })
-            ->withCount('participants')
-            ->having('participants_count', 2)
-            ->first();
+    $conversation = Conversation::whereHas('participants', function ($q) use ($authUser) {
+            $q->where('user_id', $authUser->id);
+        })
+        ->whereHas('participants', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })
+        ->first();
 
-        if (!$conversation) {
+    if (!$conversation) {
 
-            $conversation = Conversation::create([
-                'created_by' => $authUser->id,
-                'type' => (
-                    $authUser->supplierProfile && $user->supplierProfile
-                ) ? 'supplier_collaboration' : 'client_supplier',
-            ]);
+        $conversation = Conversation::create([
+            'type' => (
+                $authUser->supplierProfile && $user->supplierProfile
+            ) ? 'supplier_collaboration' : 'client_supplier',
+        ]);
 
-            ConversationParticipant::create([
-                'conversation_id' => $conversation->id,
-                'user_id' => $authUser->id,
-                'role' => $authUser->supplierProfile ? 'supplier' : 'client'
-            ]);
+        ConversationParticipant::create([
+            'conversation_id' => $conversation->id,
+            'user_id' => $authUser->id,
+            'role' => $authUser->supplierProfile ? 'supplier' : 'client'
+        ]);
 
-            ConversationParticipant::create([
-                'conversation_id' => $conversation->id,
-                'user_id' => $user->id,
-                'role' => $user->supplierProfile ? 'supplier' : 'client'
-            ]);
-        }
-
-        return redirect()->route('messages.chat', $conversation->id);
+        ConversationParticipant::create([
+            'conversation_id' => $conversation->id,
+            'user_id' => $user->id,
+            'role' => $user->supplierProfile ? 'supplier' : 'client'
+        ]);
     }
+
+    // 🔥 IMPORTANT: stay in same page
+    return redirect()->route('messages.inbox', [
+        'conversation_id' => $conversation->id
+    ]);
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -101,6 +121,21 @@ class MessageController extends Controller
             'participants.user'
         ]);
 
+        /*
+    |--------------------------------------------------------------------------
+    | MARK AS READ
+    |--------------------------------------------------------------------------
+    */
+
+    Message::where('conversation_id', $conversation->id)
+        ->where('sender_id', '!=', auth()->id())
+        ->where('is_read', false)
+        ->update([
+            'is_read' => true,
+            'read_at' => now()
+        ]);
+
+
         return view('messages.chat', compact('conversation'));
     }
 
@@ -113,7 +148,8 @@ class MessageController extends Controller
     {
         $request->validate([
             'conversation_id' => 'required|exists:conversations,id',
-            'message' => 'required'
+            'message' => 'required',
+            'file' => 'nullable|image|max:2048'
         ]);
 
         $conversation = Conversation::find($request->conversation_id);
@@ -131,10 +167,18 @@ class MessageController extends Controller
             return back()->with('error', 'Unauthorized');
         }
 
+        $filePath = null;
+
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->store('chat-files', 'public');
+        }
+
+
         Message::create([
             'conversation_id' => $conversation->id,
             'sender_id' => auth()->id(),
-            'message' => $request->message
+            'message' => $request->message,
+            'file' => $filePath
         ]);
 
         return back();
@@ -210,4 +254,125 @@ class MessageController extends Controller
             ->route('messages.chat', $conversation->id)
             ->with('success', 'Group chat created successfully.');
     }
+
+    public function startChat(User $user)
+{
+    $authUser = auth()->user();
+
+    /*
+    |--------------------------------------------------------------------------
+    | FIND PRIVATE CONVERSATION ONLY
+    |--------------------------------------------------------------------------
+    */
+
+    $conversation = Conversation::whereIn('type', [
+            'client_supplier',
+            'supplier_collaboration',
+            'admin_supplier',
+            'client_admin'
+        ])
+
+        ->whereHas('participants', function ($q) use ($authUser) {
+            $q->where('user_id', $authUser->id);
+        })
+
+        ->whereHas('participants', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })
+
+        // ✅ IMPORTANT
+        ->withCount('participants')
+
+        // ✅ ONLY PRIVATE CHAT
+        ->having('participants_count', 2)
+
+        ->first();
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE PRIVATE CHAT
+    |--------------------------------------------------------------------------
+    */
+
+    if (!$conversation) {
+
+        /*
+        |--------------------------------------------------------------------------
+        | DETERMINE CHAT TYPE
+        |--------------------------------------------------------------------------
+        */
+
+        $type = 'client_supplier';
+
+        // admin ↔ supplier/client
+        if (
+            $authUser->role === 'admin' ||
+            $user->role === 'admin'
+        ) {
+            $type = 'admin_supplier';
+        }
+
+        // supplier ↔ supplier
+        if (
+            $authUser->supplierProfile &&
+            $user->supplierProfile
+        ) {
+            $type = 'supplier_collaboration';
+        }
+
+        // client ↔ admin
+        if (
+            $authUser->role === 'client' &&
+            $user->role === 'admin'
+        ) {
+            $type = 'client_admin';
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE CONVERSATION
+        |--------------------------------------------------------------------------
+        */
+
+        $conversation = Conversation::create([
+            'type' => $type,
+            'title' => null,
+            'created_by' => $authUser->id
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | AUTH USER
+        |--------------------------------------------------------------------------
+        */
+
+        ConversationParticipant::create([
+            'conversation_id' => $conversation->id,
+            'user_id' => $authUser->id,
+            'role' => $authUser->role
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | OTHER USER
+        |--------------------------------------------------------------------------
+        */
+
+        ConversationParticipant::create([
+            'conversation_id' => $conversation->id,
+            'user_id' => $user->id,
+            'role' => $user->role
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | OPEN CHAT IN SAME PAGE
+    |--------------------------------------------------------------------------
+    */
+
+    return redirect()->route('messages.inbox', [
+        'conversation_id' => $conversation->id
+    ]);
+}
 }

@@ -25,7 +25,21 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .cl-page { padding: 1.75rem 2rem 4rem; max-width: 860px; font-family: var(--font-body); }
+    /* ── CENTERED WRAPPER ── */
+    .cl-outer {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2rem 1.25rem 4rem;
+        background: #F5F2ED;
+    }
+
+    .cl-page {
+        width: 100%;
+        max-width: 860px;
+        font-family: var(--font-body);
+    }
 
     /* ── PAGE HEADER ── */
     .cl-page-header { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
@@ -165,7 +179,10 @@
 
     .reveal { opacity:0; transform:translateY(12px); transition:opacity .45s ease,transform .45s ease; }
     .reveal.visible { opacity:1; transform:none; }
-    @media(max-width:700px){ .cl-page { padding:1.25rem 1rem 3rem; } }
+
+    @media(max-width:700px){
+        .cl-outer { padding: 1.25rem 1rem 3rem; }
+    }
 </style>
 
 <x-slot name="header">
@@ -174,6 +191,7 @@
     </h2>
 </x-slot>
 
+<div class="cl-outer">
 <div class="cl-page">
 
     {{-- Page Header --}}
@@ -228,12 +246,13 @@
     @foreach($bookings as $booking)
     @php
         $status      = $booking->status ?? 'pending';
-        $eventName   = $booking->event->event_name ?? 'Event';
-        $eventType   = $booking->event->event_type ?? null;
-        $venue       = $booking->event->venue ?? null;
-        $eventDate   = $booking->event_date ?? null;
-        $pkgName     = $booking->package->name ?? null;
-        $price       = $booking->total_price ?? 0;
+        $eventName   = $booking->event->event_name  ?? 'Event';
+        $eventType   = $booking->event->event_type  ?? null;
+        $eventTime   = $booking->event->event_time  ?? null;
+        $venue       = $booking->event->venue       ?? null;
+        $eventDate   = $booking->event_date         ?? null;
+        $pkgName     = $booking->package->name      ?? null;
+        $price       = $booking->total_price        ?? 0;
         $supplierBiz = $booking->package->supplier->business_name
                     ?? $booking->package->supplier->name
                     ?? null;
@@ -243,6 +262,17 @@
         $formattedDate = $eventDate
             ? \Carbon\Carbon::parse($eventDate)->format('M d, Y')
             : '—';
+
+        /* Format event_time HH:MM → 12-hour */
+        $formattedTime = null;
+        if ($eventTime) {
+            $tp = explode(':', $eventTime);
+            $h  = (int) $tp[0];
+            $m  = $tp[1] ?? '00';
+            $ap = $h >= 12 ? 'PM' : 'AM';
+            $h  = $h % 12 ?: 12;
+            $formattedTime = $h . ':' . $m . ' ' . $ap;
+        }
 
         // Auto event status
         $eventCarbon = $eventDate ? \Carbon\Carbon::parse($eventDate) : null;
@@ -289,6 +319,20 @@
                         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="2" width="10" height="9" rx="1.5"/><path d="M4 1v2M8 1v2M1 6h10"/></svg>
                         {{ $formattedDate }}
                     </span>
+                    {{-- NEW: event_time chip in header --}}
+                    @if($formattedTime)
+                    <span class="cl-meta-chip">
+                        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="4.5"/><path d="M6 3.5V6l1.5 1.5"/></svg>
+                        {{ $formattedTime }}
+                    </span>
+                    @endif
+                    {{-- NEW: Venue chip in header --}}
+                    @if($venue)
+                    <span class="cl-meta-chip">
+                        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 1C4.343 1 3 2.343 3 4c0 2.625 3 7 3 7s3-4.375 3-7c0-1.657-1.343-3-3-3z"/><circle cx="6" cy="4" r="1"/></svg>
+                        {{ $venue }}
+                    </span>
+                    @endif
                 </div>
             </div>
             <div class="cl-bh-r">
@@ -361,11 +405,11 @@
                             </div>
                             <div class="cl-step-sub">
                                 @if($eventStatus === 'upcoming' && $status === 'confirmed')
-                                    Scheduled for {{ $formattedDate }}
+                                    Scheduled for {{ $formattedDate }}@if($formattedTime) at {{ $formattedTime }}@endif
                                 @elseif($eventStatus === 'upcoming')
-                                    {{ $formattedDate }}
+                                    {{ $formattedDate }}@if($formattedTime) · {{ $formattedTime }}@endif
                                 @elseif($eventStatus === 'ongoing')
-                                    Happening today! · {{ $formattedDate }}
+                                    Happening today! · {{ $formattedDate }}@if($formattedTime) at {{ $formattedTime }}@endif
                                 @else
                                     Completed · {{ $formattedDate }}
                                 @endif
@@ -416,6 +460,15 @@
                         <div class="cl-price-v">₱{{ number_format($price, 2) }}</div>
                     </div>
 
+                    {{-- NEW: Event Time --}}
+                    <div>
+                        <div class="cl-detail-k">
+                            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="4.5"/><path d="M6 3.5V6l1.5 1.5"/></svg>
+                            Event Time
+                        </div>
+                        <div class="cl-detail-v {{ !$formattedTime ? 'nil' : '' }}">{{ $formattedTime ?? '—' }}</div>
+                    </div>
+
                     {{-- Venue --}}
                     @if($venue)
                     <div>
@@ -447,7 +500,8 @@
     </div>
     @endif
 
-</div>
+</div>{{-- /cl-page --}}
+</div>{{-- /cl-outer --}}
 
 <script>
     /* ── FILTER TABS ── */

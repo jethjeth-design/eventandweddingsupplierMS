@@ -596,7 +596,7 @@
     <div class="hero-inner">
         <div class="hero-eyebrow">Discover Talent</div>
         <h1>Find your perfect <em>event supplier</em></h1>
-        <p class="hero-sub">Browse verified professionals across Bikol and beyond.</p>
+        <p class="hero-sub">Browse verified professionals across WES TEAM and beyond.</p>
         <div class="hero-search-bar">
             <span class="hero-search-icon">
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">

@@ -17,9 +17,14 @@ class ClientBrowseController extends Controller
     public function index(Request $request)
     {
         // Admin curated packages
-    $curatedPackages = PopularPackage::with('inclusions')
-        ->where('is_active', true)
-        ->get();
+    $curatedPackages = Package::with([
+    'supplier',
+    'inclusions'
+    ])
+    ->where('is_listed', 1)
+    ->latest()
+    ->get();
+
 
     // Featured suppliers — only those marked as featured
     $suppliers = SupplierProfile::where('is_featured', true)

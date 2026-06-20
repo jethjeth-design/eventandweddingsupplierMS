@@ -39,7 +39,6 @@ class PackageController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'guest_capacity' => 'required|numeric|min:1',
             'description' => 'required|string',
             'event_type' => 'required|string|max:255',
 
@@ -68,7 +67,6 @@ class PackageController extends Controller
             'supplier_id' => $supplier->id,
             'name' => $request->name,
             'price' => $request->price,
-            'guest_capacity' => $request->guest_capacity,
             'description' => $request->description,
             'event_type' => $request->event_type,
 
@@ -115,7 +113,6 @@ class PackageController extends Controller
         $request->validate([
             'name' => 'required',
             'price' => 'required|numeric',
-            'guest_capacity' => 'required|numeric',
             'description' => 'required',
             'event_type' => 'required',
 
@@ -141,7 +138,6 @@ class PackageController extends Controller
         $package->update([
             'name' => $request->name,
             'price' => $request->price,
-            'guest_capacity' => $request->guest_capacity,
             'description' => $request->description,
             'event_type' => $request->event_type,
 
